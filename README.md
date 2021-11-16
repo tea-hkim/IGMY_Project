@@ -8,7 +8,7 @@
 
   - 사용하려는 데이터(제안된 데이터 중 하나 또는 선택한 다른 데이터 세트)를 명시, 이에 대한 설명
 
-  - 기술 스택 (python, jupyter, javascript, MySQL 등)
+  - 기술 스택: python, jupyter, javascript, postgreSQL
 
   - 사용된 라이브러리 (numpy, matplotlib, wordcloud 등)
 
