@@ -1,4 +1,5 @@
 import React from 'react';
+import TestRedux from './components/TestRedux';
 import './App.css';
 import Auth from './auth/Auth';
 
