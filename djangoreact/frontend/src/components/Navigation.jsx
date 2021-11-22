@@ -24,9 +24,9 @@ export default Navigation;
 
 const BackgroundSquare = () => {
   const style = {
-    position: 'absolute',
+    position: 'relative',
     zIndex: '100',
-    width: '1300px',
+    width: '100%',
     height: '80px',
     backgroundColor: '#B4A2EB',
     borderRadius: '',
@@ -41,12 +41,12 @@ const ContainerBox = styled.div`
 `;
 
 const Container = styled.div`
-  width: 1300px;
+  width: 2000px;
   display: flex;
   position: relative;
   justify-content: space-around;
   align-items: center;
-  height: 60px;
+  height: 0px;
   font-family: 'NotoSansKR';
   font-weight: 'bold';
   font-style: normal;
@@ -55,34 +55,11 @@ const Container = styled.div`
 `;
 
 const StyledLink = styled(Link)`
-  border-bottom: ${(props) => (props.isActive ? '2px solid black' : '')};
   font-size: ${(props) => (props.isActive ? '22px' : '20px')};
 
   &.main {
     position: absolute;
     left: 60px;
-  }
-
-  &.movie {
-    position: absolute;
-    transform: translateY(-60%);
-    left: 250px;
-  }
-
-  &.tv {
-    position: absolute;
-    transform: translateY(-60%);
-    left: 370px;
-  }
-
-  &.potatoBasket {
-    position: absolute;
-    transform: translateY(-60%);
-    left: 470px;
-  }
-
-  &.mypage {
-    position: absolute;
-    right: 180px;
+    margin-bottom: 80px;
   }
 `;
