@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { emailCheck, passwordCheck } from '../components/checkUserInfo';
 import { login } from '../redux/authSlice';
 
-const Auth = () => {
+const LoginPage = () => {
   const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.login);
   const [email, setEamil] = useState('');
@@ -55,8 +55,20 @@ const Auth = () => {
         <input name="password" type="password" placeholder="비밀번호" required={password} onChange={onChange} />
         <input type="submit" value="로그인" />
       </form>
+      <div className="confirmAutoLogin">
+        <input type="checkbox" chekced={autoLogin} onChange={onChecked} />
+        자동로그인
+      </div>
+      <div>
+        <div>아직 이게모약 계정이 없으신가요?</div>
+        <p>가입하기</p>
+      </div>
+      <div>
+        <div>혹시 비밀번호를 잊으셨나요?</div>
+        <p>비밀번호 재설정</p>
+      </div>
     </>
   );
 };
 
-export default Auth;
+export default LoginPage;

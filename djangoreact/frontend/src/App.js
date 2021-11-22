@@ -1,8 +1,9 @@
 import React from 'react';
 import './App.css';
 import { Link, Route, Routes } from 'react-router-dom';
-import MainPage from './components/MainPage';
-import Auth from './auth/Auth';
+import MainPage from './pages/MainPage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 import Navigation from './components/Navigation';
 
 function App() {
@@ -17,10 +18,14 @@ function App() {
         <li>
           <Link to="/login">로그인 페이지</Link>
         </li>
+        <li>
+          <Link to="/register">회원가입 페이지</Link>
+        </li>
       </ul>
       <Routes>
         <Route exact path="/" element={<MainPage />} />
-        <Route path="/login" element={<Auth />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
       </Routes>
     </div>
   );
