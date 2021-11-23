@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework_jwt.settings import api_settings
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.models import update_last_login
-from .models import User
+from .models import User, InfoPill
 
 JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
 JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
@@ -50,3 +50,8 @@ class UserLoginSerializer(serializers.Serializer):
             'email': user.email,
             'token': jwt_token,
         }
+
+class InfoPillSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InfoPill
+        exclude = ['id']
