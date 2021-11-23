@@ -77,9 +77,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 class InfoPill(models.Model):
-    item_num = models.CharField(
-        max_length=30,
-    )
     item_num = models.IntegerField()
     item_name = models.CharField(
         max_length=100,
