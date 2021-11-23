@@ -28,6 +28,9 @@ def createUser(request):
             serializer.save()
             return Response({"message": "ok"}, status=status.HTTP_201_CREATED)
         return Response({"message": "duplicate email"}, status=status.HTTP_409_CONFLICT)
+    else:
+        # return jsonify("result : true")
+        pass
 
 
 '''로그인'''
@@ -49,9 +52,80 @@ def login(request):
             'token': serializer.data['token']
         }
         return Response(response, status=status.HTTP_200_OK)
+    else:
+        return
 
 
 '''카카오(OAuth)'''
+
+
+# @api_view(['GET'])
+# @permission_classes([AllowAny])
+# def oauth(request):
+#     code = request.GET['code']
+#     print('code = ' + str(code))
+
+#     secret_file = os.path.join(BASE_DIR, 'secrets.json')
+
+#     with open(secret_file) as f:
+#         secrets = json.loads(f.read())
+
+#     def get_secret(setting, secrets=secrets):
+#         try:
+#             return secrets[setting]
+#         except KeyError:
+#             error_msg = "Set the {} environment variable".format(setting)
+#             raise ImproperlyConfigured(error_msg)
+
+#     # secrets.json에서 ID, Secret Key 받아옴
+#     KAKAO_CLIENT_ID = get_secret("KAKAO_CLIENT_ID")
+#     #KAKAO_CLIENT_SECRET = get_secret("KAKAO_CLIENT_SECRET")
+
+#     redirect_uri = 'http://127.0.0.1:8000/user/login/kakao/callback'
+
+#     # request로 받은 code로 access_token 받아오기
+#     access_token_request_uri = 'https://kauth.kakao.com/oauth/token?grant_type=authorization_code&'
+#     access_token_request_uri += 'client_id=' + KAKAO_CLIENT_ID
+#     access_token_request_uri += '&code=' + code
+#     access_token_request_uri += '&redirect_uri=' + redirect_uri
+
+#     access_token_request_uri_data = requests.get(access_token_request_uri)
+#     json_data = access_token_request_uri_data.json()  # json 형태로 데이터 저장
+#     access_token = json_data['access_token']  # 액세스 토큰 꺼내와서 저장
+
+#     # 프로필 정보 받아오기
+#     headers = ({'Authorization': f"Bearer {access_token}"})  # header에 꼭 설정해야 함
+
+#     user_profile_info_uri = 'https://kapi.kakao.com/v2/user/me'
+#     user_profile_info = requests.get(user_profile_info_uri, headers=headers)
+
+#     json_data = user_profile_info.json()
+
+#     # 닉네임과 이메일 데이터 가져옴
+#     nickname = json_data['kakao_account']['profile']['nickname']
+#     email = json_data['kakao_account']['email']
+
+#     # 데이터베이스에 이미 저장되어있는 회원이면, user에 회원 저장
+#     if User.objects.filter(email=email).exists():
+#         user = User.objects.get(email=email)
+#     # 회원가입인 경우
+#     else:
+#         user = User.objects.create(
+#             email=email,
+#             nickname=nickname
+#         )
+#         user.save()
+
+#     # 토큰 발행
+#     payload = JWT_PAYLOAD_HANDLER(user)
+#     jwt_token = JWT_ENCODE_HANDLER(payload)
+
+#     response = {
+#         'success': True,
+#         'token': jwt_token
+#     }
+
+#     return Response(response, status=200)
 
 
 def kakao_login(request):
@@ -70,7 +144,7 @@ def kakao_callback(request):
     try:
         code = request.GET.get("code")
         client_id = os.environ.get("KAKAO_ID")
-        redirect_uri = "http://127.0.0.1:8000/users/login/kakao/callback"
+        redirect_uri = "http://127.0.0.1:8000/api/login/kakao/callback"
         token_request = requests.get(
             f"https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id={client_id}&redirect_uri={redirect_uri}&code={code}"
         )
