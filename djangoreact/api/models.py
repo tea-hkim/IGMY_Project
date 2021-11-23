@@ -80,7 +80,7 @@ class InfoPill(models.Model):
     item_num = models.CharField(
         max_length=30,
     )
-    item_name = models.IntegerField()
+    item_num = models.IntegerField()
     item_name = models.CharField(
         max_length=100,
     )
@@ -103,13 +103,14 @@ class InfoPill(models.Model):
     prescription = models.CharField(
         max_length=30,
     )
-    sungbun = models.CharField(
-        max_length=100,
-    )
+    precaution = models.TextField()
     efcy_qesitm = models.TextField()
     use_method_qesitm = models.TextField()
+    atpn_warn_qesitm = models.TextField()
     atpn_qesitm = models.TextField()
     intrc_qesitm = models.TextField()
     se_qesitm = models.TextField()
     deposit_method_qesitm = models.TextField()
-    
+    sungbun = models.CharField(
+        max_length=100,
+    )
