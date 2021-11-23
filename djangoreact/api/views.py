@@ -53,14 +53,14 @@ def search_all(request):
 @api_view(['GET'])
 def search_direct(request):
     pill = InfoPill.objects.all()
-    q = request.GET.get('q', "")
-    s = request.GET.get('s', "")
-    c_f = request.GET.get('c_f', "")
-    c_b = request.GET.get('c_b', "")
+    n = request.GET.get('n', "") # 약 이름
+    s = request.GET.get('s', "") # 약 모양
+    c_f = request.GET.get('c_f', "") # 약 앞면 색상
+    c_b = request.GET.get('c_b', "") # 약 뒷면 색상
     # ?q= {약이름}으로 검색 시 해당 단어가 포함하면 반환해줌
-    if q:
+    if n:
         pill = pill.filter(
-            Q(item_name__icontains=q) &
+            Q(item_name__icontains=n) &
             Q(shape__icontains=s) &
             Q(color_front__icontains=c_f) &
             Q(color_back__icontains=c_b)
