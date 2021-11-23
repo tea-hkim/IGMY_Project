@@ -1,15 +1,24 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { emailCheck, passwordCheck } from '../components/checkUserInfo';
-import { register } from '../redux/authSlice';
+import {
+  AuthContainer,
+  AuthTitle,
+  LineBox,
+  Line,
+  Button,
+  LoginForm,
+  AuthFooterBox,
+  AuthFooterContent,
+  ValidMessage,
+} from '../styles/AuthStyle';
 
 const RegisterPage = () => {
+  const navigate = useNavigate();
   const [email, setEamil] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPw, setConfirmPw] = useState('');
   const [nickName, setNickName] = useState('');
-  const userInfo = useSelector((state) => state.login);
-  const dispatch = useDispatch();
 
   const onChange = (event) => {
     const {
@@ -26,55 +35,85 @@ const RegisterPage = () => {
     }
   };
 
+  // 이메일, 패스워드 유효성 검사
+  let emailValid = '';
+  let passwordValid = '';
+  let confirmPwValie = '';
+  let userValid = '';
+  let isActive = false;
+
+  if (email === '' || password === '' || nickName === '') {
+    userValid = '빈 칸을 모두 채워주세요';
+  } else if (!emailCheck(email)) {
+    emailValid = '이메일 형식에 맞지 않습니다';
+  } else if (!passwordCheck(password)) {
+    passwordValid = '비밀번호는 영문 숫자를 포함하여 8자리 이상이어야 합니다';
+  } else if (password !== confirmPw) {
+    confirmPwValie = '비밀번호가 일치하지 않습니다.';
+  } else {
+    isActive = true;
+  }
+
   const onSubmit = (event) => {
     event.preventDefault();
-    // 이메일, 패스워드 유효성 검사
-    if (email === '' || password === '' || nickName === '') {
-      window.alert('아이디, 이메일, 닉네임을 모두 입력해 주세요');
-    } else if (!emailCheck(email)) {
-      window.alert('이메일 형식에 맞지 않습니다');
-    } else if (!passwordCheck(password)) {
-      window.alert('비밀번호 형식에 맞지 않습니다');
-    } else {
-      dispatch(register({ email, password, nickname: nickName }));
-    }
+  };
+
+  const handleClick = () => {
+    navigate('/login');
   };
 
   return (
-    <div>
-      <section className="registerBox">
-        <h2>회원가입</h2>
-        <form onSubmit={onSubmit}>
-          <h3>이메일</h3>
+    <AuthContainer>
+      <AuthTitle>회원가입</AuthTitle>
+      <LoginForm onSubmit={onSubmit}>
+        <div>
+          <h3 className="registerTitle">이메일</h3>
+          <ValidMessage>{emailValid}</ValidMessage>
           <input name="email" type="text" placeholder="이메일" required value={email} onChange={onChange} />
-          <h3>비밀번호</h3>
-          <input name="password" type="password" placeholder="비밀번호" required={password} onChange={onChange} />
+        </div>
+        <div>
+          <h3 className="registerTitle">비밀번호</h3>
+          <ValidMessage>{passwordValid}</ValidMessage>
+          <input name="password" type="password" placeholder="비밀번호" required value={password} onChange={onChange} />
+          <ValidMessage>{confirmPwValie}</ValidMessage>
           <input
             name="confirmPw"
             type="password"
             placeholder="비밀번호 확인"
-            required={confirmPw}
+            required
+            value={confirmPw}
             onChange={onChange}
           />
-          <div>
-            <h3>닉네임</h3>
-            <input
-              name="nickName"
-              type="text"
-              placeholder="별명(2 ~ 15자)"
-              maxLength="15"
-              required={nickName}
-              onChange={onChange}
-            />
-          </div>
-          <input type="submit" value="회원가입" />
-        </form>
-        <div>
-          이게모약 계정이 있으신가요?
-          <p>로그인 하기</p>
         </div>
-      </section>
-    </div>
+        <div>
+          <h3 className="registerTitle">닉네임</h3>
+          <input
+            name="nickName"
+            type="text"
+            placeholder="별명(2 ~ 15자)"
+            maxLength="15"
+            required
+            value={nickName}
+            onChange={onChange}
+          />
+        </div>
+        <ValidMessage>{userValid}</ValidMessage>
+        <Button className={isActive ? 'activeBtn' : 'unactiveBtn'} type="submit" value="회원가입" disabled={!isActive}>
+          회원가입
+        </Button>
+      </LoginForm>
+      <LineBox>
+        <Line />
+      </LineBox>
+      <AuthFooterBox>
+        <AuthFooterContent>
+          이게모약 계정이 있으신가요?
+          <div tabIndex="0" role="button" onClick={handleClick} onKeyDown={handleClick}>
+            로그인 하기
+          </div>
+        </AuthFooterContent>
+      </AuthFooterBox>
+    </AuthContainer>
   );
 };
 
