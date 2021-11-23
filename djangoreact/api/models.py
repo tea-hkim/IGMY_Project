@@ -75,3 +75,41 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_short_name(self):
         return self.email
+
+class InfoPill(models.Model):
+    item_num = models.CharField(
+        max_length=30,
+    )
+    item_name = models.IntegerField()
+    item_name = models.CharField(
+        max_length=100,
+    )
+    company_name = models.CharField(
+        max_length=100,
+    )
+    image = models.URLField()
+    shape = models.CharField(
+        max_length=100,
+    )
+    color_front = models.CharField(
+        max_length=30,
+    )
+    color_back = models.CharField(
+        max_length=30,
+    )
+    bit = models.CharField(
+        max_length=100,
+    )
+    prescription = models.CharField(
+        max_length=30,
+    )
+    sungbun = models.CharField(
+        max_length=100,
+    )
+    efcy_qesitm = models.TextField()
+    use_method_qesitm = models.TextField()
+    atpn_qesitm = models.TextField()
+    intrc_qesitm = models.TextField()
+    se_qesitm = models.TextField()
+    deposit_method_qesitm = models.TextField()
+    
