@@ -4,9 +4,9 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from .serializers import UserCreateSerializer, UserLoginSerializer, InfoPillSerializer
 from .models import User, InfoPill
-
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.db.models import Q
 
 # 회원가입 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -41,16 +41,33 @@ def login(request):
         }
         return Response(response, status=status.HTTP_200_OK)
 
+# 모든 알약 정보
 @api_view(['GET'])
-def get_info_pill(request):
-    pill = InfoPill(item_name="가스디알정50밀리그램(디메크로틴산마그네슘)")
-    serializer = InfoPillSerializer(pill)
+def search_all(request):
+    pill = InfoPill.objects.all()
+    serializer = InfoPillSerializer(pill, many=True)
 
     return Response(serializer.data)
 
+# 알약 직접 검색
 @api_view(['GET'])
 def search_direct(request):
-    pill = InfoPill()
-    serializer = InfoPillSerializer(pill)
+    pill = InfoPill.objects.all()
+    q = request.GET.get('q', "")
+    s = request.GET.get('s', "")
+    c_f = request.GET.get('c_f', "")
+    c_b = request.GET.get('c_b', "")
+    # ?q= {약이름}으로 검색 시 해당 단어가 포함하면 반환해줌
+    if q:
+        pill = pill.filter(
+            Q(item_name__icontains=q) &
+            Q(shape__icontains=s) &
+            Q(color_front__icontains=c_f) &
+            Q(color_back__icontains=c_b)
+            ).distinct()
 
-    return Response(serializer.data)
+        serializer = InfoPillSerializer(pill, many=True)
+        return Response(serializer.data)
+    else:
+        return Response("해당하는 약 정보가 없습니다.")
+    
