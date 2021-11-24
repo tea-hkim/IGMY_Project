@@ -150,3 +150,10 @@ def kakao_callback(request):
 #     adapter_class = kakao_view.KakaoOAuth2Adapter
 #     callback_url = KAKAO_CALLBACK_URI
 #     client_class = OAuth2Client
+
+
+# 알약 상세정보 보여주기
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def pill_detail(request):
+    pass
