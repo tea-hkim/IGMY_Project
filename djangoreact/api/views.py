@@ -29,14 +29,16 @@ def createUser(request):
 def login(request):
     if request.method == 'POST':
         serializer = UserLoginSerializer(data=request.data)
-
+        
         if not serializer.is_valid(raise_exception=True):
             return Response({'message': 'Request Body Error.'}, status=status.HTTP_409_CONFLICT)
+        if serializer.validated_data['email'] == 'no user':
+            return Response({'message': 'no user'}, status=status.HTTP_200_OK)
         if serializer.validated_data['email'] == 'None':
-            return Response({'message': 'fail'}, status=status.HTTP_200_OK)
+            return Response({'message': 'wrong password'}, status=status.HTTP_200_OK)
         
         response = {
-            'success': 'True',
+            'message': 'login success',
             'token': serializer.data['token']
         }
         return Response(response, status=status.HTTP_200_OK)
