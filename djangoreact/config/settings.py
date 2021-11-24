@@ -1,4 +1,5 @@
 import os
+import environ
 from pathlib import Path
 from datetime import timedelta
 
@@ -25,9 +26,32 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Additional Django apps
+    'django.contrib.sites',
+
+    # CORS 관련
+    'corsheaders',
+
+    # my app
     'api',
+
+    # django-rest-framework
     'rest_framework',
-    'corsheaders',  # CORS 관련
+    'rest_framework_simplejwt.token_blacklist',
+
+    # dj-rest-auth
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+
+    # django-allauth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.kakao',
+    # 'allauth.socialaccount.providers.github',
+    # 'allauth.socialaccount.providers.google',
+
 ]
 
 MIDDLEWARE = [
@@ -180,3 +204,8 @@ JWT_AUTH = {
 
 # api 어플의 User 클래스 사용
 AUTH_USER_MODEL = 'api.User'
+
+
+# Initialise environment variables
+env = environ.Env()
+environ.Env.read_env()

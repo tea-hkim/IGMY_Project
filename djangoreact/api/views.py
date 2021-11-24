@@ -1,5 +1,3 @@
-import os
-import requests
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -10,7 +8,15 @@ from .models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
+
+import os
+import requests
 from django.shortcuts import redirect, reverse
+from json.decoder import JSONDecodeError
+from django.http import JsonResponse
+from allauth.socialaccount.models import SocialAccount
+from django.conf import settings
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 
 '''회원가입'''
 
@@ -58,143 +64,89 @@ def login(request):
 
 '''카카오(OAuth)'''
 
+# state = getattr(settings, 'STATE')
 
-# @api_view(['GET'])
-# @permission_classes([AllowAny])
-# def oauth(request):
-#     code = request.GET['code']
-#     print('code = ' + str(code))
-
-#     secret_file = os.path.join(BASE_DIR, 'secrets.json')
-
-#     with open(secret_file) as f:
-#         secrets = json.loads(f.read())
-
-#     def get_secret(setting, secrets=secrets):
-#         try:
-#             return secrets[setting]
-#         except KeyError:
-#             error_msg = "Set the {} environment variable".format(setting)
-#             raise ImproperlyConfigured(error_msg)
-
-#     # secrets.json에서 ID, Secret Key 받아옴
-#     KAKAO_CLIENT_ID = get_secret("KAKAO_CLIENT_ID")
-#     #KAKAO_CLIENT_SECRET = get_secret("KAKAO_CLIENT_SECRET")
-
-#     redirect_uri = 'http://127.0.0.1:8000/user/login/kakao/callback'
-
-#     # request로 받은 code로 access_token 받아오기
-#     access_token_request_uri = 'https://kauth.kakao.com/oauth/token?grant_type=authorization_code&'
-#     access_token_request_uri += 'client_id=' + KAKAO_CLIENT_ID
-#     access_token_request_uri += '&code=' + code
-#     access_token_request_uri += '&redirect_uri=' + redirect_uri
-
-#     access_token_request_uri_data = requests.get(access_token_request_uri)
-#     json_data = access_token_request_uri_data.json()  # json 형태로 데이터 저장
-#     access_token = json_data['access_token']  # 액세스 토큰 꺼내와서 저장
-
-#     # 프로필 정보 받아오기
-#     headers = ({'Authorization': f"Bearer {access_token}"})  # header에 꼭 설정해야 함
-
-#     user_profile_info_uri = 'https://kapi.kakao.com/v2/user/me'
-#     user_profile_info = requests.get(user_profile_info_uri, headers=headers)
-
-#     json_data = user_profile_info.json()
-
-#     # 닉네임과 이메일 데이터 가져옴
-#     nickname = json_data['kakao_account']['profile']['nickname']
-#     email = json_data['kakao_account']['email']
-
-#     # 데이터베이스에 이미 저장되어있는 회원이면, user에 회원 저장
-#     if User.objects.filter(email=email).exists():
-#         user = User.objects.get(email=email)
-#     # 회원가입인 경우
-#     else:
-#         user = User.objects.create(
-#             email=email,
-#             nickname=nickname
-#         )
-#         user.save()
-
-#     # 토큰 발행
-#     payload = JWT_PAYLOAD_HANDLER(user)
-#     jwt_token = JWT_ENCODE_HANDLER(payload)
-
-#     response = {
-#         'success': True,
-#         'token': jwt_token
-#     }
-
-#     return Response(response, status=200)
+BASE_URL = 'http://localhost:8000/'
+KAKAO_CALLBACK_URI = BASE_URL + 'api/login/kakao/callback'
 
 
 def kakao_login(request):
-    client_id = os.environ.get("KAKAO_ID")
-    redirect_uri = "http://127.0.0.1:8000/api/login/kakao/callback"
+    REST_API_KEY = os.environ.get("KAKAO_ID")
+    REDIRECT_URI = "http://127.0.0.1:8000/api/login/kakao/callback"
     return redirect(
-        f"https://kauth.kakao.com/oauth/authorize?client_id={client_id}&redirect_uri={redirect_uri}&response_type=code"
+        f"https://kauth.kakao.com/oauth/authorize?client_id={REST_API_KEY}&redirect_uri={REDIRECT_URI}&response_type=code"
     )
 
 
-class KakaoException(Exception):
-    pass
-
-
 def kakao_callback(request):
+    code = request.GET.get("code")
+    REST_API_KEY = os.environ.get("KAKAO_ID")
+    REDIRECT_URI = "http://127.0.0.1:8000/api/login/kakao/callback"
+
+    # Access Token Request
+    token_request = requests.get(
+        f"https://kauth.kakao.com/oauth/authorize?client_id={REST_API_KEY}&redirect_uri={REDIRECT_URI}&response_type=code"
+    )
+    token_request_json = token_request.json()
+    error = token_request_json.get("error", None)
+    if error is not None:
+        raise JSONDecodeError(error)  # ??
+
+    access_token = token_request_json.get("access_token")
+
+    # Email Request
+    profile_request = requests.get(
+        "https://kapi.kakao.com/v2/user/me", headers={"Authorization": f"Bearer {access_token}"}
+    )
+    profile_json = profile_request.json()
+    # 중간다리역할) kakao_account를 통해서 이메일 외에 여러 url을 가져올 수 있다(예. 카톡 프로필 이미지)
+    kakao_account = profile_json.get('kakao_account')
+
+    # print(kakao_account)
+    email = kakao_account.get('email')
+
+    if email is None:
+        raise JSONDecodeError(error)
+
+    # Signup or Signin Request
     try:
-        code = request.GET.get("code")
-        client_id = os.environ.get("KAKAO_ID")
-        redirect_uri = "http://127.0.0.1:8000/api/login/kakao/callback"
-        token_request = requests.get(
-            f"https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id={client_id}&redirect_uri={redirect_uri}&code={code}"
-        )
-        token_json = token_request.json()
-        error = token_json.get("error", None)
-        if error is not None:
-            raise KakaoException()
+        user = User.objects.get(email=email)
 
-        access_token = token_json.get("access_token")
-        profile_request = requests.get(
-            "https://kapi.kakao.com/v2/user/me",
-            headers={"Authorization": f"Bearer {access_token}"},
-        )
+        '''다른 SNS로 가입된 유저 
+        (기존에 가입된 유저의 Provider가 kakao가 아니면 에러 발생, 맞으면 로그인)'''
+        # social_user = SocialAccount.objects.get(user=user)
+        # if social_user is None:
+        #     return JsonResponse({'err_msg': 'email exists but not social user'}, status=status.HTTP_400_BAD_REQUEST)
+        # if social_user.provider != 'kakao':
+        #     return JsonResponse({'err_msg': 'no matching social type'}, status=status.HTTP_400_BAD_REQUEST)
 
-        profile_json = profile_request.json()
-        email = profile_json.get("kakao_account").get("email")
-        properties = profile_json.get("properties")
-        nickname = properties.get("nickname")
-        # profile_image = (profile_json.get("kakao_account").get("profile").get("profile_image_url"))
+        '''기존에 Google로 가입된 유저'''
+        # data = {'access_token': access_token, 'code': code}
+        # accept = requests.post(
+        #     f"{BASE_URL}accounts/kakao/login/finish/", data=data)
+        # accept_status = accept.status_code
+        # if accept_status != 200:
+        #     return JsonResponse({'err_msg': 'failed to signin'}, status=accept_status)
+        # accept_json = accept.json()
+        # accept_json.pop('user', None)
+        # return JsonResponse(accept_json)
 
-        # profile_image = profile_json.get("properties").get("profile_image")
+    except User.DoesNotExist:
+        '''기존에 가입된 유저가 없으면 새로 가입'''
+        data = {'access_token': access_token, 'code': code}
+        accept = requests.post(
+            f"{BASE_URL}accounts/kakao/login/finish/", data=data)
+        accept_status = accept.status_code
+        if accept_status != 200:
+            return JsonResponse({'err_msg': 'failed to signup'}, status=accept_status)
+        # user의 pk, email, first name, last name과 Access Token, Refresh token 가져옴
+        accept_json = accept.json()
+        accept_json.pop('user', None)
+        return JsonResponse(accept_json)
 
-        # properties = profile_json.get("kakao_account").get("profile")
-        # nickname = properties.get("nickname")
-        # profile_image = properties.get("profile_image_url")
 
-        if email is None:
-            raise KakaoException()
-        try:
-            user = User.objects.get(email=email)
-            if user.login_method != User.LOGING_KAKAO:
-                raise KakaoException()
-        except User.DoesNotExist:
-            user = User.objects.create(
-                email=email,
-                username=email,
-                first_name=nickname,
-                login_method=User.LOGING_KAKAO,
-                email_verified=True,
-            )
-            user.set_unusable_password()
-            user.save()
-
-            # if profile_image is not None:
-            #     photo_request = requests.get(profile_image)
-            #     user.avatar.save(
-            #         f"{nickname}-avatar", ContentFile(photo_request.content)
-            #     )
-
-        login(request, user)
-        return redirect("")
-    except KakaoException:
-        return redirect(reverse("api:login"))
+'''코치님이 말씀하신 백엔드가 3줄만 하면 된다는 코드'''
+# class kakao_login_finish(SocialLoginView):
+#     adapter_class = kakao_view.KakaoOAuth2Adapter
+#     callback_url = KAKAO_CALLBACK_URI
+#     client_class = OAuth2Client
