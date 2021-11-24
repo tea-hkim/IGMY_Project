@@ -17,8 +17,6 @@ from django.conf import settings
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 
 '''회원가입'''
-
-
 @method_decorator(csrf_exempt, name='dispatch')
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -38,8 +36,6 @@ def createUser(request):
 
 
 '''로그인'''
-
-
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login(request):
