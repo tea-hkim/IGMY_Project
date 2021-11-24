@@ -78,8 +78,12 @@ WSGI_APPLICATION = 'djangoreact.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'elice',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'elice-kdt-2nd-team6.koreacentral.cloudapp.azure.com',
+        'PORT': '5000',
     }
 }
 

@@ -79,7 +79,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 class InfoPill(models.Model):
     item_num = models.IntegerField()
     item_name = models.CharField(
-        max_length=100,
+        max_length=200,
     )
     company_name = models.CharField(
         max_length=100,
@@ -100,7 +100,6 @@ class InfoPill(models.Model):
     prescription = models.CharField(
         max_length=30,
     )
-    precaution = models.TextField()
     efcy_qesitm = models.TextField()
     use_method_qesitm = models.TextField()
     atpn_warn_qesitm = models.TextField()
