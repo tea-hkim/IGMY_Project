@@ -116,4 +116,4 @@ class InfoPill(models.Model):
 # 유저 즐겨찾기 모델
 class UserPill(models.Model):
     user_email = models.ForeignKey(User, to_field='email', db_column='user_email', on_delete=models.CASCADE)
-    pill_num = models.ForeignKey(InfoPill, to_field='item_num', db_column='pill_num' ,on_delete=models.CASCADE)
+    pill_num = models.ForeignKey(InfoPill, to_field='item_num', db_column='pill_num', on_delete=models.CASCADE)
