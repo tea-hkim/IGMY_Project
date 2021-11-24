@@ -1,4 +1,5 @@
 import os
+import environ
 from pathlib import Path
 from datetime import timedelta
 
@@ -25,9 +26,32 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Additional Django apps
+    'django.contrib.sites',
+
+    # CORS 관련
+    'corsheaders',
+
+    # my app
     'api',
+
+    # django-rest-framework
     'rest_framework',
-    'corsheaders',  # CORS 관련
+    'rest_framework_simplejwt.token_blacklist',
+
+    # dj-rest-auth
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+
+    # django-allauth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.kakao',
+    # 'allauth.socialaccount.providers.github',
+    # 'allauth.socialaccount.providers.google',
+
 ]
 
 MIDDLEWARE = [
@@ -46,7 +70,7 @@ CORS_ORIGIN_WHITELIST = [
     "http://127.0.0.1:8000",
 ]
 
-ROOT_URLCONF = 'djangoreact.urls'
+ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
     {
@@ -66,12 +90,12 @@ TEMPLATES = [
     },
 ]
 
-#경로 추가
+# 경로 추가
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'frontend', 'build', 'static'),
 ]
 
-WSGI_APPLICATION = 'djangoreact.wsgi.application'
+WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -139,7 +163,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE':
     10,
     'DEFAULT_PERMISSION_CLASSES': (
-        #'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.IsAuthenticated',
         'rest_framework.permissions.AllowAny', ),
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
@@ -184,3 +208,10 @@ JWT_AUTH = {
 
 # api 어플의 User 클래스 사용
 AUTH_USER_MODEL = 'api.User'
+
+
+# Initialise environment variables
+env = environ.Env()
+environ.Env.read_env()
+
+SITE_ID = 1
