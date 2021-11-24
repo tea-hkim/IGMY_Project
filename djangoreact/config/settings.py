@@ -3,8 +3,6 @@ import environ
 from pathlib import Path
 from datetime import timedelta
 
-# 어드민 페이지 사용하기 위한 코드 ('django.contrib.sites')
-SITE_ID = 1
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
