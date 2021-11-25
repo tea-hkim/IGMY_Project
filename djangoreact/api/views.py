@@ -45,14 +45,14 @@ def createUser(request):
 def login(request):
     if request.method == 'POST':
         serializer = UserLoginSerializer(data=request.data)
-        
+
         if not serializer.is_valid(raise_exception=True):
             return Response({'message': 'Request Body Error.'}, status=status.HTTP_409_CONFLICT)
         if serializer.validated_data['email'] == 'no user':
             return Response({'message': 'no user'}, status=status.HTTP_200_OK)
         if serializer.validated_data['email'] == 'None':
             return Response({'message': 'wrong password'}, status=status.HTTP_200_OK)
-        
+
         response = {
             'message': 'login success',
             'token': serializer.data['token']
@@ -60,6 +60,8 @@ def login(request):
         return Response(response, status=status.HTTP_200_OK)
 
 # 모든 알약 정보
+
+
 @api_view(['GET'])
 def search_all(request):
     pill = InfoPill.objects.all()
@@ -68,13 +70,15 @@ def search_all(request):
     return Response(serializer.data)
 
 # 알약 직접 검색
+
+
 @api_view(['GET'])
 def search_direct(request):
     pill = InfoPill.objects.all()
-    n = request.GET.get('n', "") # 약 이름
-    s = request.GET.get('s', "") # 약 모양
-    c_f = request.GET.get('c_f', "") # 약 앞면 색상
-    c_b = request.GET.get('c_b', "") # 약 뒷면 색상
+    n = request.GET.get('n', "")  # 약 이름
+    s = request.GET.get('s', "")  # 약 모양
+    c_f = request.GET.get('c_f', "")  # 약 앞면 색상
+    c_b = request.GET.get('c_b', "")  # 약 뒷면 색상
     # ?q= {약이름}으로 검색 시 해당 단어가 포함하면 반환해줌
     if n:
         pill = pill.filter(
@@ -82,13 +86,20 @@ def search_direct(request):
             Q(shape__icontains=s) &
             Q(color_front__icontains=c_f) &
             Q(color_back__icontains=c_b)
-            ).distinct()
+        ).distinct()
 
         serializer = InfoPillSerializer(pill, many=True)
         return Response(serializer.data)
     else:
         return Response("해당하는 약 정보가 없습니다.")
-    
+
+
+# 알약 상세 정보 보여주기
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def pill_detail(request):
+    pass
+
 
 '''카카오(OAuth)'''
 
@@ -178,10 +189,3 @@ def kakao_callback(request):
 #     adapter_class = kakao_view.KakaoOAuth2Adapter
 #     callback_url = KAKAO_CALLBACK_URI
 #     client_class = OAuth2Client
-
-
-# 알약 상세정보 보여주기
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def pill_detail(request):
-    pass
