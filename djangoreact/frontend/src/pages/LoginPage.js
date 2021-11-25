@@ -42,8 +42,12 @@ const LoginPage = () => {
     }
   };
 
-  const handleClick = () => {
+  const handleClickToLogin = () => {
     navigate('/register');
+  };
+
+  const handleClickToFindPw = () => {
+    navigate('/findPw');
   };
 
   // 이메일, 패스워드 유효성 검사
@@ -58,7 +62,7 @@ const LoginPage = () => {
   return (
     <AuthContainer>
       <AuthTitle>로그인</AuthTitle>
-      <div>
+      <div className="kakaoLoginBox">
         <Button type="button" kakao>
           <img src="images/카카오톡 아이콘.png" alt="카카오톡 이모티콘" />
           카카오 계정으로 로그인
@@ -82,21 +86,23 @@ const LoginPage = () => {
           로그인
         </Button>
       </LoginForm>
-      <div className="confirmAutoLogin">
+      <div className="autoLoginBox">
         <input type="checkbox" chekced={autoLogin} onChange={onChecked} />
         자동로그인
       </div>
       <AuthFooterBox>
         <AuthFooterContent>
           <div>아직 이게모약 계정이 없으신가요?</div>
-          <div tabIndex="0" role="button" onClick={handleClick} onKeyDown={handleClick}>
+          <div tabIndex="0" role="button" onClick={handleClickToLogin} onKeyDown={handleClickToLogin}>
             가입하기
           </div>
         </AuthFooterContent>
         <Line />
         <AuthFooterContent>
           <div>혹시 비밀번호를 잊으셨나요?</div>
-          <div>비밀번호 재설정</div>
+          <div tabIndex="-1" role="button" onClick={handleClickToFindPw} onKeyDown={handleClickToFindPw}>
+            비밀번호 재설정
+          </div>
         </AuthFooterContent>
       </AuthFooterBox>
     </AuthContainer>
