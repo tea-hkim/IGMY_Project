@@ -8,6 +8,8 @@ import CameraPage from './pages/CameraPage';
 import FindPwPage from './pages/FindPwPage';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import ScanningPage from './pages/ScanningPage';
+import ScanFailPage from './pages/ScanFailPage';
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/findPw" element={<FindPwPage />} />
         <Route path="/camera" element={<CameraPage />} />
+        <Route path="/scanning" element={<ScanningPage />} />
+        <Route path="/scanfail" element={<ScanFailPage />} />
       </Routes>
       <Footer />
     </div>

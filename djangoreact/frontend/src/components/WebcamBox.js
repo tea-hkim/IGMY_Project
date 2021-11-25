@@ -1,8 +1,10 @@
 import React, { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Webcam from 'react-webcam';
 
 const Webcamera = () => {
+  const navigate = useNavigate();
   const webcamRef = useRef(null);
   const [imgSrc, setImgSrc] = useState(null);
   const FACING_MODE_FRONT = 'user';
@@ -29,7 +31,7 @@ const Webcamera = () => {
   };
 
   const submitCamera = () => {
-    return null;
+    navigate('/scanning');
   };
 
   return (
