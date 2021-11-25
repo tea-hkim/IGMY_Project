@@ -12,6 +12,9 @@ export const NavBox = styled.div`
   padding: 0.625rem 3.125rem;
   margin-bottom: 4vh;
   box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.3);
+  svg {
+    cursor: pointer;
+  }
 `;
 
 export const MenuBox = styled.nav`
