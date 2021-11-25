@@ -40,10 +40,12 @@ INSTALLED_APPS = [
     # django-rest-framework
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
+    'rest_framework.authtoken',
 
     # dj-rest-auth
     'dj_rest_auth',
     'dj_rest_auth.registration',
+    'rest_auth',
 
     # django-allauth
     'allauth',
@@ -164,7 +166,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE':
     10,
     'DEFAULT_PERMISSION_CLASSES': (
-        # 'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.IsAuthenticated',
         'rest_framework.permissions.AllowAny', ),
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
@@ -214,3 +216,7 @@ AUTH_USER_MODEL = 'api.User'
 # Initialise environment variables
 env = environ.Env()
 environ.Env.read_env()
+
+SITE_ID = 1
+
+REST_USE_JWT = True

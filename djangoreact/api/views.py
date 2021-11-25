@@ -1,9 +1,12 @@
+from django.core.checks.messages import Info
+from django.db.models.expressions import RawSQL
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from .serializers import UserCreateSerializer, UserLoginSerializer, InfoPillSerializer
-from .models import User, InfoPill
+from .models import User, InfoPill, UserPill
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.db.models import Q
@@ -41,14 +44,16 @@ def createUser(request):
 def login(request):
     if request.method == 'POST':
         serializer = UserLoginSerializer(data=request.data)
-
+        
         if not serializer.is_valid(raise_exception=True):
             return Response({'message': 'Request Body Error.'}, status=status.HTTP_409_CONFLICT)
+        if serializer.validated_data['email'] == 'no user':
+            return Response({'message': 'no user'}, status=status.HTTP_200_OK)
         if serializer.validated_data['email'] == 'None':
-            return Response({'message': 'fail'}, status=status.HTTP_200_OK)
-
+            return Response({'message': 'wrong password'}, status=status.HTTP_200_OK)
+        
         response = {
-            'success': 'True',
+            'message': 'login success',
             'token': serializer.data['token']
         }
         return Response(response, status=status.HTTP_200_OK)
@@ -179,3 +184,71 @@ def kakao_callback(request):
 @permission_classes([AllowAny])
 def pill_detail(request):
     pass
+
+# 유저 즐겨찾기 API
+@api_view(['GET', 'POST', 'DELETE'])
+@permission_classes([IsAuthenticated])
+def user_pill(request):
+    content = { # get으로 약 정보 확인하기 (지금은 유저로 돌림)
+        'user': str(request.user.email),
+    }
+
+    user_email = request.user # 유저 불러오기
+    pill = InfoPill.objects.all() # 약 정보 데이터 베이스 전부 가져오기
+    pn = request.GET.get('pn', "") # 약 넘버
+
+    if request.method == 'GET':
+        if pn:
+            pill = pill.filter(
+                    Q(item_num__exact=pn) # url 약 넘버 정확하게 일치한다면
+                    ).distinct()
+            serializer = InfoPillSerializer(pill, many=True)
+
+            content = {
+                '유저': str(request.user.email),
+                '알약': serializer.data
+            }
+            return Response(content)
+        else:
+            return Response('올바른 요청 값이 아닙니다.')
+
+    if request.method == 'POST':
+        if pn:
+            pill = pill.filter(
+                Q(item_num__exact=pn) # url 약 넘버 정확하게 일치한다면
+                ).distinct()
+            serializer = InfoPillSerializer(pill, many=True)
+            pill_num = InfoPill.objects.get(item_num=pn) # 입력한 약 넘버와 일치하는 약 번호 가져오기
+
+            test = UserPill(user_email=user_email, pill_num=pill_num) # UserPill 테이블에 user_email과 pill_num 저장
+            test.save() # 저장 22
+            return Response(f'{serializer.data}를 성공적으로 즐겨찾기에 추가했습니다.')
+        else:
+            return Response('올바른 요청 값이 아닙니다.') # 정확한 약 넘버가 들어오지 않다면!
+
+    if request.method == 'DELETE':
+        if pn:
+            pill = pill.filter(
+                Q(item_num__exact=pn) # url 약 넘버 정확하게 일치한다면
+                ).distinct()
+            serializer = InfoPillSerializer(pill, many=True)
+            pill_num = InfoPill.objects.get(item_num=pn) # 입력한 약 넘버와 일치하는 약 번호 가져오기
+
+            #test = UserPill(user_email=user_email, pill_num=pill_num)
+            UserPill.objects.filter(user_email=user_email, pill_num=pill_num).delete() # UserPill 테이블에서 해당하는(pn) 값 삭제
+            return Response("삭제 성공!")
+        else:
+            return Response("올바른 삭제 형식을 맞춰주세요.")
+
+# 로그아웃 API
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def logout(request):
+    try:
+        refresh_token = request.data["refresh_token"]
+        token = RefreshToken(refresh_token)
+        token.blacklist()
+
+        return Response(status=status.HTTP_205_RESET_CONTENT)
+    except Exception as e:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
