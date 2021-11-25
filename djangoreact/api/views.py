@@ -59,7 +59,8 @@ def login(request):
         }
         return Response(response, status=status.HTTP_200_OK)
 
-# 모든 알약 정보
+
+'''모든 알약 정보'''
 
 
 @api_view(['GET'])
@@ -69,7 +70,8 @@ def search_all(request):
 
     return Response(serializer.data)
 
-# 알약 직접 검색
+
+'''알약 직접 검색'''
 
 
 @api_view(['GET'])
@@ -94,17 +96,8 @@ def search_direct(request):
         return Response("해당하는 약 정보가 없습니다.")
 
 
-# 알약 상세 정보 보여주기
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def pill_detail(request):
-    pass
-
-
 '''카카오(OAuth)'''
-
 # state = getattr(settings, 'STATE')
-
 BASE_URL = 'http://localhost:8000/'
 KAKAO_CALLBACK_URI = BASE_URL + 'api/login/kakao/callback'
 
