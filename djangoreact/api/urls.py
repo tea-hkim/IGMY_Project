@@ -11,6 +11,7 @@ urlpatterns = [
     path('search-all/', views.search_all),
     path('search-direct/', views.search_direct),
     path('user-pill/', views.user_pill),
+    path('user-pill-list/', views.user_pill_list),
     path('send_email/', views.send_email), # 구글 이메일 보내기 테스트용
     url(r'^rest-auth/', include('rest_auth.urls')), # 로그아웃 url api/rest-auth/logout
     path('logout/', views.logout),

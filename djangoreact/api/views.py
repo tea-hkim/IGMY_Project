@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from .serializers import ImageForm, UserCreateSerializer, UserLoginSerializer, InfoPillSerializer
+from .serializers import ImageForm, UserCreateSerializer, UserLoginSerializer, InfoPillSerializer, UserPillSerializer, UserPillListSerializer
 from .models import User, InfoPill, UserPill
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
@@ -82,8 +82,8 @@ def search_direct(request):
     n = request.GET.get('n', "") # 약 이름
     s = request.GET.get('s', "") # 약 모양
     c_f = request.GET.get('c_f', "") # 약 앞면 색상
-    # ?n= {약이름}만으로 검색 시 해당 이름에 해당 단어가 포함하면 반환해줌
-    
+
+    # 만약 ?n={약이름} 이랑 모양, 앞면 색상으로 검색 시 해당 이름과 모양, 색상이 포함된 값을 반환해줌
     if n and s and c_f:
         pill = pill.filter(
             Q(item_name__contains=n) &
@@ -301,6 +301,26 @@ def user_pill(request):
             return Response("삭제 성공!")
         else:
             return Response("올바른 삭제 형식을 맞춰주세요.")
+
+# 유저가 즐겨찾기 한 목록 보여주는 API
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def user_pill_list(request):
+    '''
+    필요한 반환 리스트: PillInfo
+    약 이름 = item_name
+    사진 링크 = image
+    성분/함량 = sungbun
+    하루 복용량 = use_method_qesitm
+    '''
+
+    user_email = request.user.email
+    user_pill = UserPill.objects.filter(user_email=user_email).values_list('pill_num')
+    pill = InfoPill.objects.filter(item_num__in=user_pill)
+
+    serializer = UserPillListSerializer(pill, many=True)
+    
+    return Response(serializer.data)
 
 # 로그아웃 API
 @api_view(['POST'])
