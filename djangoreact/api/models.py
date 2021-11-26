@@ -117,3 +117,7 @@ class InfoPill(models.Model):
 class UserPill(models.Model):
     user_email = models.ForeignKey(User, to_field='email', db_column='user_email', on_delete=models.CASCADE)
     pill_num = models.ForeignKey(InfoPill, to_field='item_num', db_column='pill_num', on_delete=models.CASCADE)
+
+class UploadFileModel(models.Model):
+    files = models.FileField(upload_to="images", null=True)
+    upload_at = models.DateTimeField(auto_now=True)
