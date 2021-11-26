@@ -58,6 +58,14 @@ const StyledLink = styled(Link)`
   border-bottom: ${(props) => (props.isActive ? '2px solid black' : '')};
   font-size: ${(props) => (props.isActive ? '22px' : '20px')};
 
+  &:focus,
+  &:hover,
+  &:visited,
+  &:link,
+  &:active {
+    text-decoration: none;
+  }
+
   &.main {
     position: absolute;
     left: 60px;
