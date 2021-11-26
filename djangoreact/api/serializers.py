@@ -65,3 +65,5 @@ class UserPillSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserPill
         exclude = ['id']
+
+

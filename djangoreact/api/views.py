@@ -185,3 +185,5 @@ def kakao_callback(request):
 @permission_classes([AllowAny])
 def pill_detail(request):
     pass
+
+
