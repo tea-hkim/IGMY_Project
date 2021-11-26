@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import * as siIcons from 'react-icons/si';
 import {
   AuthContainer,
   AuthTitle,
@@ -64,8 +65,8 @@ const LoginPage = () => {
       <AuthTitle>로그인</AuthTitle>
       <div className="kakaoLoginBox">
         <Button type="button" kakao>
-          <img src="images/카카오톡 아이콘.png" alt="카카오톡 이모티콘" />
-          카카오 계정으로 로그인
+          <siIcons.SiKakaotalk size="30px" />
+          <span>카카오 계정으로 로그인</span>
         </Button>
         <LineBox>
           <Or> 또는 </Or>

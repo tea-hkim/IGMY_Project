@@ -46,15 +46,18 @@ export const Line = styled.div`
 `;
 
 export const Button = styled.button`
+  display: flex;
+  justify-content: space-evenly;
   box-sizing: border-box;
   width: ${loginWidth};
   margin: 0 auto 1.25rem;
-  padding: 0.313rem 0;
+  padding: 0.313rem;
   border: none;
   border-radius: 10px;
   position: relative;
   color: black;
   font-size: 20px;
+  cursor: pointer;
   background-color: ${(props) => {
     if (props.kakao) {
       return kakaoColor;
@@ -64,7 +67,6 @@ export const Button = styled.button`
     }
     return mainPink;
   }};
-  cursor: pointer;
   > img {
     position: absolute;
     left: 0.25em;
