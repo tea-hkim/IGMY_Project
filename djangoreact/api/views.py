@@ -13,7 +13,7 @@ from .models import User, InfoPill, UserPill
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.db.models import Q
-from django.shortcuts import redirect, reverse
+from django.shortcuts import redirect, reverse, get_object_or_404
 from json.decoder import JSONDecodeError
 from django.http import JsonResponse
 from allauth.socialaccount.models import SocialAccount
@@ -25,7 +25,9 @@ import numpy as np
 import cv2
 import json
 import tensorflow as tf
-from .photo_key import photo_key
+# from .photo_key import photo_key
+
+from django.http import HttpResponse
 
 '''회원가입'''
 
@@ -189,18 +191,32 @@ def kakao_callback(request):
         return JsonResponse(accept_json)
 
 
-'''코치님이 말씀하신 백엔드가 3줄만 하면 된다는 코드'''
 # class kakao_login_finish(SocialLoginView):
 #     adapter_class = kakao_view.KakaoOAuth2Adapter
 #     callback_url = KAKAO_CALLBACK_URI
 #     client_class = OAuth2Client
 
 
-# 알약 상세정보 보여주기
-@api_view(['POST'])
+# 알약 상세정보
+'''
+api/pill-detail/<int:pill_id>
+api/pill-detail/?pill_id={품목일련번호}
+'''
+
+
+@api_view(['GET'])
 @permission_classes([AllowAny])
 def pill_detail(request):
-    pass
+    pill_data = request.GET.get('pill_id', "")  # item_num
+
+    if pill_data is None:
+        return Response("해당 품목일련번호가 없습니다.")
+
+    pill = InfoPill.objects.all().filter(item_num=pill_data)
+
+    serializer = InfoPillSerializer(pill, many=True)
+    return Response(serializer.data)
+
 
 # 유저 즐겨찾기 API
 
@@ -289,99 +305,3 @@ def send_email(request):
     message = "메시지 테스트"
     EmailMessage(subject=subject, body=message,
                  to=to, from_email=from_email).send()
-
-
-# 사진 검색 API
-with open('./AI/pill_90.json', 'r') as f:
-    pill_dict = json.load(f)
-
-
-@method_decorator(csrf_exempt, name='dispatch')
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def result_photo(request):
-    form = ImageForm(request.POST, request.FILES)
-    pill = InfoPill.objects.all()
-    if form.is_valid():
-        image_name = form.save()
-        image_path = f'{image_name.files}'
-        try:
-            response = requests.post(
-                'https://sdk.photoroom.com/v1/segment',
-                data={'bg_color': '#000000'},
-                headers={'x-api-key': f'{photo_key}'},
-                files={'image_file': open(f'{image_path}', 'rb')},
-            )
-
-            response.raise_for_status()
-            with open(f'{image_path}', 'wb') as f:
-                f.write(response.content)
-        except:
-            return Response("이미지 형식의 파일을 올려주세요.")
-
-        try:
-            img_array = np.fromfile(f"{image_path}", np.uint8)
-            image = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
-            image_gray = cv2.imdecode(img_array, cv2.IMREAD_GRAYSCALE)
-            number = np.ones_like(image_gray) * 255
-            mul = cv2.multiply(image_gray, number)
-            contours, _ = cv2.findContours(
-                mul, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-            contours_xy = np.array(contours)
-            for i in range(len(contours_xy)):
-                if len(contours_xy[i]) < 10:
-                    continue
-                x_min, x_max = 0, 0
-                value = list()
-                for j in range(len(contours_xy[i])):
-                    value.append(contours_xy[i][j][0][0])
-                    x_min = min(value)
-                    x_max = max(value)
-
-                y_min, y_max = 0, 0
-                value = list()
-                for j in range(len(contours_xy[i])):
-                    value.append(contours_xy[i][j][0][1])
-                    y_min = min(value)
-                    y_max = max(value)
-
-                x = x_min
-                y = y_min
-                w = x_max-x_min
-                h = y_max-y_min
-
-                img_trim = image[y:y+h, x:x+w]
-                cv2.imwrite(f"{image_path}", img_trim)
-        except:
-            return Response("알약이 중앙에 위치하도록 사진을 다시 촬영하여주세요.")
-
-        try:
-            predict_list = []
-            predict_img = cv2.imread(f'{image_path}')
-            print(predict_img.shape)
-            predict_img = cv2.resize(
-                predict_img, (224, 224), interpolation=cv2.INTER_LINEAR)/255
-            predict_list.append(predict_img)
-            predict_list = np.array(predict_list)
-
-            model = tf.keras.models.load_model('model')
-            predict = model.predict(predict_list)
-            num = str(np.argmax(predict[0], axis=0))
-
-            pill = pill.filter(
-                Q(item_num__exact=pill_dict[num])  # url 약 넘버 정확하게 일치한다면
-            ).distinct()
-            serializer = InfoPillSerializer(pill, many=True)
-
-            content = {
-                '1.알약': serializer.data,
-                '1.확률':  '{:.2f}%'.format(round(predict[0][int(num)]*100, 2))
-            }
-
-            return Response(content)
-
-        except:
-            return Response("인공지능 모델을 불러오지 못했습니다.")
-
-    else:
-        return Response("파일을 선택해주세요.")

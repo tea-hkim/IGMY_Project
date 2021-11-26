@@ -22,6 +22,6 @@ urlpatterns = [
     #path("login/kakao/callback", views.kakao_callback, name="kakao_callback"),
     # path('login/kakao/finish/', views.kakao_login_finish.as_view(),
     #      name='kakao_login_todjango'),
-    #path("/pill-detail/<string:pill-id>", views.pill_detail),
-    path('result-photo/', views.result_photo),
+    path("pill-detail/", views.pill_detail),
+    # path('result-photo/', views.result_photo),
 ]
