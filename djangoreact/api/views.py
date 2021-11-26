@@ -21,11 +21,11 @@ from django.conf import settings
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from django.core.mail.message import EmailMessage
 
-import numpy as np
-import cv2
-import json
-import tensorflow as tf
-from .photo_key import photo_key
+# import numpy as np
+# import cv2
+# import json
+# import tensorflow as tf
+# from .photo_key import photo_key
 
 '''회원가입'''
 @method_decorator(csrf_exempt, name='dispatch')
@@ -82,20 +82,73 @@ def search_direct(request):
     n = request.GET.get('n', "") # 약 이름
     s = request.GET.get('s', "") # 약 모양
     c_f = request.GET.get('c_f', "") # 약 앞면 색상
-    c_b = request.GET.get('c_b', "") # 약 뒷면 색상
-    # ?n= {약이름}으로 검색 시 해당 단어가 포함하면 반환해줌
-    if n:
+    # ?n= {약이름}만으로 검색 시 해당 이름에 해당 단어가 포함하면 반환해줌
+    
+    if n and s and c_f:
         pill = pill.filter(
             Q(item_name__contains=n) &
-            Q(shape__contains=s) &
-            Q(color_front__contains=c_f) &
-            Q(color_back__contains=c_b)
+            Q(shape__exact=s) &
+            Q(color_front__contains=c_f)
             ).distinct()
 
         serializer = InfoPillSerializer(pill, many=True)
         return Response(serializer.data)
+
+    elif n and s:
+        pill = pill.filter(
+            Q(item_name__contains=n) &
+            Q(shape__exact=s)
+            ).distinct()
+
+        serializer = InfoPillSerializer(pill, many=True)
+        return Response(serializer.data)
+    
+    elif n and c_f:
+        pill = pill.filter(
+            Q(item_name__contains=n) &
+            Q(color_front__contains=c_f)
+            ).distinct()
+
+        serializer = InfoPillSerializer(pill, many=True)
+        return Response(serializer.data)
+
+    elif s and c_f:
+        pill = pill.filter(
+            Q(item_name__exact=s) &
+            Q(color_front__contains=c_f)
+            ).distinct()
+
+        serializer = InfoPillSerializer(pill, many=True)
+        return Response(serializer.data)
+    
+    elif n:
+        pill = pill.filter(
+            Q(item_name__contains=n)
+            ).distinct()
+
+        serializer = InfoPillSerializer(pill, many=True)
+        return Response(serializer.data)
+
+    elif s:
+        pill = pill.filter(
+            Q(shape__exact=s)
+            ).distinct()
+
+        serializer = InfoPillSerializer(pill, many=True)
+        return Response(serializer.data)
+
+    elif c_f:
+        pill = pill.filter(
+            Q(color_front__contains=c_f)
+            ).distinct()
+
+        serializer = InfoPillSerializer(pill, many=True)
+        return Response(serializer.data)
+
     else:
         return Response("해당하는 약 정보가 없습니다.")
+
+
     
 
 '''카카오(OAuth)'''
@@ -272,95 +325,95 @@ def send_email(request):
     
 
 # 사진 검색 API
-with open('./AI/pill_90.json', 'r') as f:
-    pill_dict = json.load(f)
+# with open('./AI/pill_90.json', 'r') as f:
+#     pill_dict = json.load(f)
 
-@method_decorator(csrf_exempt, name='dispatch')
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def result_photo(request):
-    form = ImageForm(request.POST, request.FILES)
-    pill = InfoPill.objects.all()
-    if form.is_valid():
-        image_name = form.save()
-        image_path = f'{image_name.files}'
-        try:
-            response = requests.post(
-            'https://sdk.photoroom.com/v1/segment',
-            data={'bg_color': '#000000'},
-            headers={'x-api-key': f'{photo_key}'},
-            files={'image_file': open(f'{image_path}', 'rb')},
-            )
+# @method_decorator(csrf_exempt, name='dispatch')
+# @api_view(['POST'])
+# @permission_classes([AllowAny])
+# def result_photo(request):
+#     form = ImageForm(request.POST, request.FILES)
+#     pill = InfoPill.objects.all()
+#     if form.is_valid():
+#         image_name = form.save()
+#         image_path = f'{image_name.files}'
+#         try:
+#             response = requests.post(
+#             'https://sdk.photoroom.com/v1/segment',
+#             data={'bg_color': '#000000'},
+#             headers={'x-api-key': f'{photo_key}'},
+#             files={'image_file': open(f'{image_path}', 'rb')},
+#             )
             
-            response.raise_for_status()
-            with open(f'{image_path}', 'wb') as f:
-                f.write(response.content)
-        except:
-            return Response("이미지 형식의 파일을 올려주세요.")
+#             response.raise_for_status()
+#             with open(f'{image_path}', 'wb') as f:
+#                 f.write(response.content)
+#         except:
+#             return Response("이미지 형식의 파일을 올려주세요.")
         
-        try:
-            img_array = np.fromfile(f"{image_path}", np.uint8)
-            image = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
-            image_gray = cv2.imdecode(img_array, cv2.IMREAD_GRAYSCALE)
-            number = np.ones_like(image_gray) * 255
-            mul = cv2.multiply(image_gray, number)
-            contours, _ = cv2.findContours(mul, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-            contours_xy = np.array(contours)
-            for i in range(len(contours_xy)):
-                if len(contours_xy[i]) < 10:
-                    continue
-                x_min, x_max = 0,0
-                value = list()
-                for j in range(len(contours_xy[i])):
-                    value.append(contours_xy[i][j][0][0])
-                    x_min = min(value)
-                    x_max = max(value)
+#         try:
+#             img_array = np.fromfile(f"{image_path}", np.uint8)
+#             image = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+#             image_gray = cv2.imdecode(img_array, cv2.IMREAD_GRAYSCALE)
+#             number = np.ones_like(image_gray) * 255
+#             mul = cv2.multiply(image_gray, number)
+#             contours, _ = cv2.findContours(mul, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+#             contours_xy = np.array(contours)
+#             for i in range(len(contours_xy)):
+#                 if len(contours_xy[i]) < 10:
+#                     continue
+#                 x_min, x_max = 0,0
+#                 value = list()
+#                 for j in range(len(contours_xy[i])):
+#                     value.append(contours_xy[i][j][0][0])
+#                     x_min = min(value)
+#                     x_max = max(value)
                     
-                y_min, y_max = 0,0
-                value = list()
-                for j in range(len(contours_xy[i])):
-                        value.append(contours_xy[i][j][0][1])
-                        y_min = min(value)
-                        y_max = max(value)
+#                 y_min, y_max = 0,0
+#                 value = list()
+#                 for j in range(len(contours_xy[i])):
+#                         value.append(contours_xy[i][j][0][1])
+#                         y_min = min(value)
+#                         y_max = max(value)
                         
-                x = x_min
-                y = y_min
-                w = x_max-x_min
-                h = y_max-y_min
+#                 x = x_min
+#                 y = y_min
+#                 w = x_max-x_min
+#                 h = y_max-y_min
                 
-                img_trim = image[y:y+h, x:x+w]
-                cv2.imwrite(f"{image_path}", img_trim)
-        except:
-            return Response("알약이 중앙에 위치하도록 사진을 다시 촬영하여주세요.")
+#                 img_trim = image[y:y+h, x:x+w]
+#                 cv2.imwrite(f"{image_path}", img_trim)
+#         except:
+#             return Response("알약이 중앙에 위치하도록 사진을 다시 촬영하여주세요.")
         
-        try:
-            predict_list = []
-            predict_img = cv2.imread(f'{image_path}')
-            print(predict_img.shape)
-            predict_img = cv2.resize(predict_img, (224, 224), interpolation=cv2.INTER_LINEAR)/255
-            predict_list.append(predict_img)
-            predict_list = np.array(predict_list)
+#         try:
+#             predict_list = []
+#             predict_img = cv2.imread(f'{image_path}')
+#             print(predict_img.shape)
+#             predict_img = cv2.resize(predict_img, (224, 224), interpolation=cv2.INTER_LINEAR)/255
+#             predict_list.append(predict_img)
+#             predict_list = np.array(predict_list)
             
-            model = tf.keras.models.load_model('model')
-            predict = model.predict(predict_list)
-            num = str(np.argmax(predict[0], axis=0))
+#             model = tf.keras.models.load_model('model')
+#             predict = model.predict(predict_list)
+#             num = str(np.argmax(predict[0], axis=0))
             
-            pill = pill.filter(
-                    Q(item_num__exact=pill_dict[num]) # url 약 넘버 정확하게 일치한다면
-                    ).distinct()
-            serializer = InfoPillSerializer(pill, many=True)
+#             pill = pill.filter(
+#                     Q(item_num__exact=pill_dict[num]) # url 약 넘버 정확하게 일치한다면
+#                     ).distinct()
+#             serializer = InfoPillSerializer(pill, many=True)
 
-            content = {
-                '1.알약': serializer.data,
-                '1.확률':  '{:.2f}%'.format(round(predict[0][int(num)]*100, 2))
-            }
+#             content = {
+#                 '1.알약': serializer.data,
+#                 '1.확률':  '{:.2f}%'.format(round(predict[0][int(num)]*100, 2))
+#             }
             
-            return Response(content)
+#             return Response(content)
                 
                 
-        except:
-            return Response("인공지능 모델을 불러오지 못했습니다.")
+#         except:
+#             return Response("인공지능 모델을 불러오지 못했습니다.")
             
         
-    else:
-        return Response("파일을 선택해주세요.")
+#     else:
+#         return Response("파일을 선택해주세요.")
