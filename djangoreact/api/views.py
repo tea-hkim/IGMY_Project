@@ -28,6 +28,8 @@ from django.core.mail.message import EmailMessage
 # from .photo_key import photo_key
 
 '''회원가입'''
+
+
 @method_decorator(csrf_exempt, name='dispatch')
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -47,19 +49,21 @@ def createUser(request):
 
 
 '''로그인'''
+
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login(request):
     if request.method == 'POST':
         serializer = UserLoginSerializer(data=request.data)
-        
+
         if not serializer.is_valid(raise_exception=True):
             return Response({'message': 'Request Body Error.'}, status=status.HTTP_409_CONFLICT)
         if serializer.validated_data['email'] == 'no user':
             return Response({'message': 'no user'}, status=status.HTTP_200_OK)
         if serializer.validated_data['email'] == 'None':
             return Response({'message': 'wrong password'}, status=status.HTTP_200_OK)
-        
+
         response = {
             'message': 'login success',
             'token': serializer.data['token']
@@ -67,6 +71,8 @@ def login(request):
         return Response(response, status=status.HTTP_200_OK)
 
 # 모든 알약 정보
+
+
 @api_view(['GET'])
 def search_all(request):
     pill = InfoPill.objects.all()
@@ -75,13 +81,15 @@ def search_all(request):
     return Response(serializer.data)
 
 # 알약 직접 검색
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def search_direct(request):
     pill = InfoPill.objects.all()
-    n = request.GET.get('n', "") # 약 이름
-    s = request.GET.get('s', "") # 약 모양
-    c_f = request.GET.get('c_f', "") # 약 앞면 색상
+    n = request.GET.get('n', "")  # 약 이름
+    s = request.GET.get('s', "")  # 약 모양
+    c_f = request.GET.get('c_f', "")  # 약 앞면 색상
 
     # 만약 ?n={약이름} 이랑 모양, 앞면 색상으로 검색 시 해당 이름과 모양, 색상이 포함된 값을 반환해줌
     if n and s and c_f:
@@ -89,7 +97,7 @@ def search_direct(request):
             Q(item_name__contains=n) &
             Q(shape__exact=s) &
             Q(color_front__contains=c_f)
-            ).distinct()
+        ).distinct()
 
         serializer = InfoPillSerializer(pill, many=True)
         return Response(serializer.data)
@@ -98,16 +106,16 @@ def search_direct(request):
         pill = pill.filter(
             Q(item_name__contains=n) &
             Q(shape__exact=s)
-            ).distinct()
+        ).distinct()
 
         serializer = InfoPillSerializer(pill, many=True)
         return Response(serializer.data)
-    
+
     elif n and c_f:
         pill = pill.filter(
             Q(item_name__contains=n) &
             Q(color_front__contains=c_f)
-            ).distinct()
+        ).distinct()
 
         serializer = InfoPillSerializer(pill, many=True)
         return Response(serializer.data)
@@ -116,15 +124,15 @@ def search_direct(request):
         pill = pill.filter(
             Q(item_name__exact=s) &
             Q(color_front__contains=c_f)
-            ).distinct()
+        ).distinct()
 
         serializer = InfoPillSerializer(pill, many=True)
         return Response(serializer.data)
-    
+
     elif n:
         pill = pill.filter(
             Q(item_name__contains=n)
-            ).distinct()
+        ).distinct()
 
         serializer = InfoPillSerializer(pill, many=True)
         return Response(serializer.data)
@@ -132,7 +140,7 @@ def search_direct(request):
     elif s:
         pill = pill.filter(
             Q(shape__exact=s)
-            ).distinct()
+        ).distinct()
 
         serializer = InfoPillSerializer(pill, many=True)
         return Response(serializer.data)
@@ -140,7 +148,7 @@ def search_direct(request):
     elif c_f:
         pill = pill.filter(
             Q(color_front__contains=c_f)
-            ).distinct()
+        ).distinct()
 
         serializer = InfoPillSerializer(pill, many=True)
         return Response(serializer.data)
@@ -148,8 +156,6 @@ def search_direct(request):
     else:
         return Response("해당하는 약 정보가 없습니다.")
 
-
-    
 
 '''카카오(OAuth)'''
 
@@ -248,22 +254,24 @@ def pill_detail(request):
     pass
 
 # 유저 즐겨찾기 API
+
+
 @api_view(['GET', 'POST', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def user_pill(request):
-    content = { # get으로 약 정보 확인하기 (지금은 유저로 돌림)
+    content = {  # get으로 약 정보 확인하기 (지금은 유저로 돌림)
         'user': str(request.user.email),
     }
 
-    user_email = request.user # 유저 불러오기
-    pill = InfoPill.objects.all() # 약 정보 데이터 베이스 전부 가져오기
-    pn = request.GET.get('pn', "") # 약 넘버
+    user_email = request.user  # 유저 불러오기
+    pill = InfoPill.objects.all()  # 약 정보 데이터 베이스 전부 가져오기
+    pn = request.GET.get('pn', "")  # 약 넘버
 
     if request.method == 'GET':
         if pn:
             pill = pill.filter(
-                    Q(item_num__exact=pn) # url 약 넘버 정확하게 일치한다면
-                    ).distinct()
+                Q(item_num__exact=pn)  # url 약 넘버 정확하게 일치한다면
+            ).distinct()
             serializer = InfoPillSerializer(pill, many=True)
 
             content = {
@@ -277,32 +285,39 @@ def user_pill(request):
     if request.method == 'POST':
         if pn:
             pill = pill.filter(
-                Q(item_num__exact=pn) # url 약 넘버 정확하게 일치한다면
-                ).distinct()
+                Q(item_num__exact=pn)  # url 약 넘버 정확하게 일치한다면
+            ).distinct()
             serializer = InfoPillSerializer(pill, many=True)
-            pill_num = InfoPill.objects.get(item_num=pn) # 입력한 약 넘버와 일치하는 약 번호 가져오기
+            pill_num = InfoPill.objects.get(
+                item_num=pn)  # 입력한 약 넘버와 일치하는 약 번호 가져오기
 
-            test = UserPill(user_email=user_email, pill_num=pill_num) # UserPill 테이블에 user_email과 pill_num 저장
-            test.save() # 저장 22
+            # UserPill 테이블에 user_email과 pill_num 저장
+            test = UserPill(user_email=user_email, pill_num=pill_num)
+            test.save()  # 저장 22
             return Response(f'{serializer.data}를 성공적으로 즐겨찾기에 추가했습니다.')
         else:
-            return Response('올바른 요청 값이 아닙니다.') # 정확한 약 넘버가 들어오지 않다면!
+            return Response('올바른 요청 값이 아닙니다.')  # 정확한 약 넘버가 들어오지 않다면!
 
     if request.method == 'DELETE':
         if pn:
             pill = pill.filter(
-                Q(item_num__exact=pn) # url 약 넘버 정확하게 일치한다면
-                ).distinct()
+                Q(item_num__exact=pn)  # url 약 넘버 정확하게 일치한다면
+            ).distinct()
             serializer = InfoPillSerializer(pill, many=True)
-            pill_num = InfoPill.objects.get(item_num=pn) # 입력한 약 넘버와 일치하는 약 번호 가져오기
+            pill_num = InfoPill.objects.get(
+                item_num=pn)  # 입력한 약 넘버와 일치하는 약 번호 가져오기
 
             #test = UserPill(user_email=user_email, pill_num=pill_num)
-            UserPill.objects.filter(user_email=user_email, pill_num=pill_num).delete() # UserPill 테이블에서 해당하는(pn) 값 삭제
+            # UserPill 테이블에서 해당하는(pn) 값 삭제
+            UserPill.objects.filter(
+                user_email=user_email, pill_num=pill_num).delete()
             return Response("삭제 성공!")
         else:
             return Response("올바른 삭제 형식을 맞춰주세요.")
 
 # 유저가 즐겨찾기 한 목록 보여주는 API
+
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def user_pill_list(request):
@@ -315,14 +330,17 @@ def user_pill_list(request):
     '''
 
     user_email = request.user.email
-    user_pill = UserPill.objects.filter(user_email=user_email).values_list('pill_num')
+    user_pill = UserPill.objects.filter(
+        user_email=user_email).values_list('pill_num')
     pill = InfoPill.objects.filter(item_num__in=user_pill)
 
     serializer = UserPillListSerializer(pill, many=True)
-    
+
     return Response(serializer.data)
 
 # 로그아웃 API
+
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def logout(request):
@@ -336,13 +354,16 @@ def logout(request):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 # 비밀번호 변경: 이메일 보내주는 함수 (테스트용)
+
+
 def send_email(request):
     subject = "message"
     to = ["igmy1108@gmail.com"]
     from_email = "igmy1108@email.com"
     message = "메시지 테스트"
-    EmailMessage(subject=subject, body=message, to=to, from_email=from_email).send()
-    
+    EmailMessage(subject=subject, body=message,
+                 to=to, from_email=from_email).send()
+
 
 # 사진 검색 API
 # with open('./AI/pill_90.json', 'r') as f:
@@ -364,13 +385,13 @@ def send_email(request):
 #             headers={'x-api-key': f'{photo_key}'},
 #             files={'image_file': open(f'{image_path}', 'rb')},
 #             )
-            
+
 #             response.raise_for_status()
 #             with open(f'{image_path}', 'wb') as f:
 #                 f.write(response.content)
 #         except:
 #             return Response("이미지 형식의 파일을 올려주세요.")
-        
+
 #         try:
 #             img_array = np.fromfile(f"{image_path}", np.uint8)
 #             image = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
@@ -388,24 +409,24 @@ def send_email(request):
 #                     value.append(contours_xy[i][j][0][0])
 #                     x_min = min(value)
 #                     x_max = max(value)
-                    
+
 #                 y_min, y_max = 0,0
 #                 value = list()
 #                 for j in range(len(contours_xy[i])):
 #                         value.append(contours_xy[i][j][0][1])
 #                         y_min = min(value)
 #                         y_max = max(value)
-                        
+
 #                 x = x_min
 #                 y = y_min
 #                 w = x_max-x_min
 #                 h = y_max-y_min
-                
+
 #                 img_trim = image[y:y+h, x:x+w]
 #                 cv2.imwrite(f"{image_path}", img_trim)
 #         except:
 #             return Response("알약이 중앙에 위치하도록 사진을 다시 촬영하여주세요.")
-        
+
 #         try:
 #             predict_list = []
 #             predict_img = cv2.imread(f'{image_path}')
@@ -413,11 +434,11 @@ def send_email(request):
 #             predict_img = cv2.resize(predict_img, (224, 224), interpolation=cv2.INTER_LINEAR)/255
 #             predict_list.append(predict_img)
 #             predict_list = np.array(predict_list)
-            
+
 #             model = tf.keras.models.load_model('model')
 #             predict = model.predict(predict_list)
 #             num = str(np.argmax(predict[0], axis=0))
-            
+
 #             pill = pill.filter(
 #                     Q(item_num__exact=pill_dict[num]) # url 약 넘버 정확하게 일치한다면
 #                     ).distinct()
@@ -427,13 +448,13 @@ def send_email(request):
 #                 '1.알약': serializer.data,
 #                 '1.확률':  '{:.2f}%'.format(round(predict[0][int(num)]*100, 2))
 #             }
-            
+
 #             return Response(content)
-                
-                
+
+
 #         except:
 #             return Response("인공지능 모델을 불러오지 못했습니다.")
-            
-        
+
+
 #     else:
 #         return Response("파일을 선택해주세요.")
