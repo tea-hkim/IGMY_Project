@@ -1,3 +1,5 @@
+from django.conf.urls import include
+from django.forms.models import fields_for_model
 from rest_framework import serializers
 from rest_framework_jwt.settings import api_settings
 from django.contrib.auth import get_user_model, authenticate
@@ -76,3 +78,9 @@ class ImageForm(forms.ModelForm):
     class Meta:
         model = UploadFileModel
         fields = "__all__"
+
+
+class UserPillListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InfoPill
+        fields = ('item_name', 'image', 'sungbun', 'use_method_qesitm',)
