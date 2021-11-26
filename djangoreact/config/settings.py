@@ -220,3 +220,17 @@ environ.Env.read_env()
 SITE_ID = 1
 
 REST_USE_JWT = True
+
+'''gmail을 통해 사용자의 비밀번호 재설정 메일 보내주기 설정'''
+# 메일을 호스트하는 서버
+EMAIL_HOST = 'smtp.gmail.com'
+# gmail과의 통신하는 포트
+EMAIL_PORT = '587'
+# 발신할 이메일
+EMAIL_HOST_USER = 'igmy1108@gmail.com'
+# 발신할 메일의 비밀번호
+EMAIL_HOST_PASSWORD = 'igmy2021!@'
+# TLS 보안 방법
+EMAIL_USE_TLS = True
+# 사이트와 관련한 자동응답을 받을 이메일 주소
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
