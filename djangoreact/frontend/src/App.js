@@ -1,27 +1,30 @@
 import React from 'react';
 import './App.css';
-import { Link, Route, Routes } from 'react-router-dom';
-import MainPage from './components/MainPage';
-import Auth from './auth/Auth';
-import Navigation from './components/Navigation';
+import { Route, Routes } from 'react-router-dom';
+import MainPage from './pages/MainPage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import CameraPage from './pages/CameraPage';
+import FindPwPage from './pages/FindPwPage';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import ScanningPage from './pages/ScanningPage';
+import ScanFailPage from './pages/ScanFailPage';
 
 function App() {
   return (
     <div className="App">
-      <Navigation />
-      <h1>App</h1>
-      <ul>
-        <li>
-          <Link to="/">메인 페이지</Link>
-        </li>
-        <li>
-          <Link to="/login">로그인 페이지</Link>
-        </li>
-      </ul>
+      <Navbar />
       <Routes>
         <Route exact path="/" element={<MainPage />} />
-        <Route path="/login" element={<Auth />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/findPw" element={<FindPwPage />} />
+        <Route path="/camera" element={<CameraPage />} />
+        <Route path="/scanning" element={<ScanningPage />} />
+        <Route path="/scanfail" element={<ScanFailPage />} />
       </Routes>
+      <Footer />
     </div>
   );
 }

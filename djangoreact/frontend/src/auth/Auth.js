@@ -1,72 +1,44 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { emailCheck, passwordCheck } from '../components/checkUserInfo';
-import { login } from '../redux/authSlice';
+import { login, register } from '../redux/authSlice';
 
-const Auth = () => {
+export async function Login({ email, password }) {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const loginURL = 'http://localhost:8000/api/login/';
+  const userData = { email, password };
 
-  const [email, setEamil] = useState('');
-  const [password, setPassword] = useState('');
-  const [autoLogin, setAutoLogin] = useState(false);
+  const response = await axios.post(loginURL, userData);
 
-  const onChange = (event) => {
-    const {
-      target: { name, value },
-    } = event;
-    if (name === 'email') {
-      setEamil(value);
-    } else if (name === 'password') {
-      setPassword(value);
-    }
-  };
+  if (response.success === 'True') {
+    const { token } = response;
+    dispatch(login({ email, password, token }));
+    localStorage.setItem('userToken', token);
+    navigate('/');
+  }
 
-  const onSubmit = (event) => {
-    event.preventDefault();
-    // 이메일, 패스워드 유효성 검사
-    if (email === '' || password === '') {
-      window.alert('아이디와 이메일을 모두 입력해 주세요');
-    } else if (!emailCheck(email)) {
-      window.alert('이메일 형식에 맞지 않습니다');
-    } else if (!passwordCheck(password)) {
-      window.alert('비밀번호 형식에 맞지 않습니다');
-    } else {
-      dispatch(login({ email, password }));
-    }
-  };
+  if (response.message) {
+    throw new Error('로그인에 실패했습니다.');
+  }
 
-  const onChecked = (event) => {
-    if (!event.target.checked) {
-      setAutoLogin(false);
-    } else {
-      setAutoLogin(true);
-    }
-  };
+  throw new Error('서버 통신이 원할하지 않습니다.');
+}
 
-  return (
-    <>
-      <h2>로그인</h2>
-      <button type="button">카카오 계정으로 로그인</button>
-      <div>또는</div>
-      <form onSubmit={onSubmit}>
-        <input name="email" type="text" placeholder="이메일" required value={email} onChange={onChange} />
-        <input name="password" type="password" placeholder="비밀번호" required={password} onChange={onChange} />
-        <div>
-          <input type="checkbox" chekced={autoLogin} onChange={onChecked} />
-          자동로그인
-        </div>
-        <input type="submit" value="로그인" />
-      </form>
-      <div>
-        <div>아직 이게모약 계정이 없으신가요?</div>
-        <div>가입하기</div>
-      </div>
-      <div>
-        <div>혹시 비밀번호를 잊으셨나요?</div>
-        <div>비밀번호 재설정</div>
-      </div>
-    </>
-  );
-};
+export async function Register({ email, password, nickname }) {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const registerURL = 'http://localhost:8000/api/create/';
+  const userData = { email, password, nickname };
 
-export default Auth;
+  const response = await axios.post(registerURL, userData);
+
+  if (response.message === 'ok') {
+    dispatch(register({ email, password, nickname }));
+    navigate('/login');
+  }
+  if (response.message === 'duplicate email') {
+    throw new Error('가입되어 있는 이메일 입니다.');
+  }
+  throw new Error('서버 통신이 원할하지 않습니다.');
+}
