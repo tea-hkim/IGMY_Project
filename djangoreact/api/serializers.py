@@ -9,6 +9,7 @@ JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
 
 User = get_user_model()
 
+
 class UserCreateSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
     username = serializers.CharField(required=True)
@@ -23,6 +24,7 @@ class UserCreateSerializer(serializers.Serializer):
 
         user.save()
         return user
+
 
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.CharField(max_length=64)
@@ -49,17 +51,19 @@ class UserLoginSerializer(serializers.Serializer):
             update_last_login(None, user)
         except User.DoesNotExist:
             raise serializers.ValidationError(
-            'User with given email and password does not exists.'
-        )
+                'User with given email and password does not exists.'
+            )
         return {
             'email': user.email,
             'token': jwt_token,
         }
 
+
 class InfoPillSerializer(serializers.ModelSerializer):
     class Meta:
         model = InfoPill
         exclude = ['id']
+
 
 class UserPillSerializer(serializers.ModelSerializer):
     class Meta:
