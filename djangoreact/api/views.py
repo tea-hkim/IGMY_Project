@@ -247,11 +247,18 @@ def kakao_callback(request):
 #     client_class = OAuth2Client
 
 
-# 알약 상세정보 보여주기
-@api_view(['POST'])
+# 알약 상세정보
+@api_view(['GET'])
 @permission_classes([AllowAny])
 def pill_detail(request):
-    pass
+    pill_data = request.GET.get('pill_id', "")
+
+    if pill_data is None:
+        return Response("해당 품목일련번호가 없습니다.")
+
+    pill = InfoPill.objects.all().filter(item_num=pill_data)
+    serializer = InfoPillSerializer(pill, many=True)
+    return Response(serializer.data)
 
 # 유저 즐겨찾기 API
 
