@@ -11,7 +11,7 @@ const MainPage = () => {
         <br />내 손안의 작은 알약 사전
       </h2>
       <Box className="main_container_box">
-        <Circle className="main_container_box_picture" onClick={() => navigate('/')}>
+        <Circle className="main_container_box_picture" onClick={() => navigate('/camera')}>
           사진 검색
         </Circle>
         <Giyeog className="main_container_box_introduce" onClick={() => navigate('/')}>

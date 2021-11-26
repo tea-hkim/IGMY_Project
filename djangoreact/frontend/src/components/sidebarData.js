@@ -1,7 +1,7 @@
 export const SearchBoxData = [
   {
     title: '사진으로 검색',
-    path: '/',
+    path: '/camera',
     className: 'navMenuList_search',
   },
   {
