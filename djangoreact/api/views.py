@@ -1,3 +1,6 @@
+import os
+from django.core.mail import message
+import requests
 from django.core.checks.messages import Info
 from django.db.models.expressions import RawSQL
 from rest_framework import status
@@ -10,14 +13,13 @@ from .models import User, InfoPill, UserPill
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.db.models import Q
-import os
-import requests
 from django.shortcuts import redirect, reverse
 from json.decoder import JSONDecodeError
 from django.http import JsonResponse
 from allauth.socialaccount.models import SocialAccount
 from django.conf import settings
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from django.core.mail.message import EmailMessage
 
 import numpy as np
 import cv2
@@ -74,19 +76,20 @@ def search_all(request):
 
 # 알약 직접 검색
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def search_direct(request):
     pill = InfoPill.objects.all()
     n = request.GET.get('n', "") # 약 이름
     s = request.GET.get('s', "") # 약 모양
     c_f = request.GET.get('c_f', "") # 약 앞면 색상
     c_b = request.GET.get('c_b', "") # 약 뒷면 색상
-    # ?q= {약이름}으로 검색 시 해당 단어가 포함하면 반환해줌
+    # ?n= {약이름}으로 검색 시 해당 단어가 포함하면 반환해줌
     if n:
         pill = pill.filter(
-            Q(item_name__icontains=n) &
-            Q(shape__icontains=s) &
-            Q(color_front__icontains=c_f) &
-            Q(color_back__icontains=c_b)
+            Q(item_name__contains=n) &
+            Q(shape__contains=s) &
+            Q(color_front__contains=c_f) &
+            Q(color_back__contains=c_b)
             ).distinct()
 
         serializer = InfoPillSerializer(pill, many=True)
@@ -258,10 +261,17 @@ def logout(request):
         return Response(status=status.HTTP_205_RESET_CONTENT)
     except Exception as e:
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+# 비밀번호 변경: 이메일 보내주는 함수 (테스트용)
+def send_email(request):
+    subject = "message"
+    to = ["igmy1108@gmail.com"]
+    from_email = "igmy1108@email.com"
+    message = "메시지 테스트"
+    EmailMessage(subject=subject, body=message, to=to, from_email=from_email).send()
     
 
 # 사진 검색 API
-
 with open('./AI/pill_90.json', 'r') as f:
     pill_dict = json.load(f)
 
