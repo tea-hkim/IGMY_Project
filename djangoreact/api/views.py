@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from .serializers import ImageForm, UserCreateSerializer, UserLoginSerializer, InfoPillSerializer, UserPillSerializer, UserPillListSerializer
+from .serializers import ImageForm, UserCreateSerializer, UserLoginSerializer, InfoPillSerializer, UserPillSerializer, UserPillListSerializer, PillDetailSerializer
 from .models import User, InfoPill, UserPill
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
@@ -251,13 +251,25 @@ def kakao_callback(request):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def pill_detail(request):
-    pill_data = request.GET.get('pill_id', "")
+    '''
+    약 이름 = item_name
+    사진 링크 = image
+    분류명 = bit
+    성분/함량/단위 = sungbun
+    효능/효과 = efcy_qesitm
+    용법/용량 = use_method_qesitm
+    부작용(이상반응의 부분집합) = se_qesitm
+    사용 시 주의사항 = atpn_qesitm
+    보관 방법 = deposit_method_qesitm
+    '''
 
-    if pill_data is None:
+    pill_id = request.GET.get('pill_id', "")
+
+    if pill_id is None:
         return Response("해당 품목일련번호가 없습니다.")
 
-    pill = InfoPill.objects.all().filter(item_num=pill_data)
-    serializer = InfoPillSerializer(pill, many=True)
+    pill = InfoPill.objects.filter(item_num=pill_id)
+    serializer = PillDetailSerializer(pill, many=True)
     return Response(serializer.data)
 
 # 유저 즐겨찾기 API

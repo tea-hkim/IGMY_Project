@@ -83,4 +83,25 @@ class ImageForm(forms.ModelForm):
 class UserPillListSerializer(serializers.ModelSerializer):
     class Meta:
         model = InfoPill
-        fields = ('item_name', 'image', 'sungbun', 'use_method_qesitm',)
+        fields = (
+            'item_name',
+            'image',
+            'sungbun',
+            'use_method_qesitm',
+        )
+
+
+class PillDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InfoPill
+        fields = (
+            'item_name',
+            'image',
+            'bit',
+            'sungbun',
+            'efcy_qesitm',
+            'use_method_qesitm',
+            'se_qesitm',
+            'atpn_qesitm',
+            'deposit_method_qesitm'
+        )
