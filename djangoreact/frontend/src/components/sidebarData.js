@@ -6,7 +6,7 @@ export const SearchBoxData = [
   },
   {
     title: '알약 직접 검색',
-    path: '/',
+    path: '/direct',
     className: 'navMenuList_search',
   },
 ];

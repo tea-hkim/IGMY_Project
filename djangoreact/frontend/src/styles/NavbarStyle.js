@@ -3,13 +3,13 @@ import { mainPink, palePink } from './color';
 
 export const NavBox = styled.div`
   background-color: ${mainPink};
-  height: 14vh;
+  height: 10vh;
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: relative;
   box-sizing: border-box;
-  padding: 0.625rem 3.125rem;
+  padding: 0.625rem 3.125rem 0.625rem 15%;
   margin-bottom: 4vh;
   box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.3);
   svg {
@@ -19,7 +19,7 @@ export const NavBox = styled.div`
 
 export const MenuBox = styled.nav`
   background-color: white;
-  border: 2px solid ${palePink};
+  border: 1px solid ${palePink};
   width: 20vw;
   height: 100vh;
   display: flex;
@@ -49,7 +49,7 @@ export const MenuBoxContent = styled.ul`
     cursor: pointer;
     display: flex;
     justify-content: start;
-    background-color: skyblue;
+    /* background-color: ${palePink}; */
   }
   h3 {
     width: 100%;
