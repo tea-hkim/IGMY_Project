@@ -1,13 +1,17 @@
+from django.conf.urls import include
+from django.forms.models import fields_for_model
 from rest_framework import serializers
 from rest_framework_jwt.settings import api_settings
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.models import update_last_login
-from .models import User, InfoPill
+from .models import UploadFileModel, User, InfoPill, UserPill
+from django import forms
 
 JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
 JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
 
 User = get_user_model()
+
 
 class UserCreateSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
@@ -24,6 +28,7 @@ class UserCreateSerializer(serializers.Serializer):
         user.save()
         return user
 
+
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.CharField(max_length=64)
     password = serializers.CharField(max_length=128, write_only=True)
@@ -32,8 +37,13 @@ class UserLoginSerializer(serializers.Serializer):
     def validate(self, data):
         email = data.get('email', None)
         password = data.get('password', None)
+        valid_user = User.objects.filter(email=email).first()
         user = authenticate(email=email, password=password)
 
+        if valid_user is None:
+            return {
+                'email': 'no user'
+            }
         if user is None:
             return {
                 'email': 'None'
@@ -44,14 +54,54 @@ class UserLoginSerializer(serializers.Serializer):
             update_last_login(None, user)
         except User.DoesNotExist:
             raise serializers.ValidationError(
-            'User with given email and password does not exists.'
-        )
+                'User with given email and password does not exists.'
+            )
         return {
             'email': user.email,
             'token': jwt_token,
         }
 
+
 class InfoPillSerializer(serializers.ModelSerializer):
     class Meta:
         model = InfoPill
         exclude = ['id']
+
+
+class UserPillSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserPill
+        exclude = ['id']
+
+
+class ImageForm(forms.ModelForm):
+    class Meta:
+        model = UploadFileModel
+        fields = "__all__"
+
+
+class UserPillListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InfoPill
+        fields = (
+            'item_name',
+            'image',
+            'sungbun',
+            'use_method_qesitm',
+        )
+
+
+class PillDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InfoPill
+        fields = (
+            'item_name',
+            'image',
+            'bit',
+            'sungbun',
+            'efcy_qesitm',
+            'use_method_qesitm',
+            'se_qesitm',
+            'atpn_qesitm',
+            'deposit_method_qesitm'
+        )
