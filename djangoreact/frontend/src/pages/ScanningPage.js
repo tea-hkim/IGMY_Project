@@ -12,7 +12,7 @@ const ScanningPage = () => {
       </ScanContainer>
       <ButtonContainer>
         <button id="switch" type="button" onClick={() => navigate('/camera')}>
-          다시 촬영
+          다시 찍기
         </button>
         <button id="takePhoto" type="button" onClick={() => navigate('/')}>
           알약 확인
