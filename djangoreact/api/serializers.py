@@ -4,13 +4,14 @@ from rest_framework import serializers
 from rest_framework_jwt.settings import api_settings
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.models import update_last_login
-from .models import UploadFileModel, User, InfoPill, UserPill
+from .models import *
 from django import forms
 
 JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
 JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
 
 User = get_user_model()
+
 
 class UserCreateSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
@@ -26,6 +27,7 @@ class UserCreateSerializer(serializers.Serializer):
 
         user.save()
         return user
+
 
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.CharField(max_length=64)
@@ -52,29 +54,62 @@ class UserLoginSerializer(serializers.Serializer):
             update_last_login(None, user)
         except User.DoesNotExist:
             raise serializers.ValidationError(
-            'User with given email and password does not exists.'
-        )
+                'User with given email and password does not exists.'
+            )
         return {
             'email': user.email,
             'token': jwt_token,
         }
+
 
 class InfoPillSerializer(serializers.ModelSerializer):
     class Meta:
         model = InfoPill
         exclude = ['id']
 
+class InfoPillSerializer2(serializers.ModelSerializer):
+    class Meta:
+        model = InfoPill
+        fields = ('item_name', 'image', 'use_method_qesitm', 'sungbun')
+
 class UserPillSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserPill
         exclude = ['id']
-        
+
+
 class ImageForm(forms.ModelForm):
     class Meta:
         model = UploadFileModel
         fields = "__all__"
 
+class SearchHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SearchHistory
+        exclude= ['id']
+
 class UserPillListSerializer(serializers.ModelSerializer):
     class Meta:
         model = InfoPill
-        fields = ('item_name', 'image', 'sungbun', 'use_method_qesitm',)
+        fields = (
+            'item_name',
+            'image',
+            'sungbun',
+            'use_method_qesitm',
+        )
+
+
+class PillDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InfoPill
+        fields = (
+            'item_name',
+            'image',
+            'bit',
+            'sungbun',
+            'efcy_qesitm',
+            'use_method_qesitm',
+            'se_qesitm',
+            'atpn_qesitm',
+            'deposit_method_qesitm'
+        )
