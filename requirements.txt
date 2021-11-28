@@ -23,6 +23,7 @@ gast==0.4.0
 google-auth==2.3.3
 google-auth-oauthlib==0.4.6
 google-pasta==0.2.0
+greenlet==1.1.2
 grpcio==1.42.0
 h5py==3.6.0
 idna==3.3
@@ -40,13 +41,14 @@ psycopg2-binary==2.9.2
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycparser==2.21
-PyJWT==2.3.0
+PyJWT==1.7.1
 python3-openid==3.2.0
 pytz==2021.3
 requests==2.26.0
 requests-oauthlib==1.3.0
 rsa==4.8
 six==1.16.0
+SQLAlchemy==1.4.27
 sqlparse==0.4.2
 tensorboard==2.7.0
 tensorboard-data-server==0.6.1
@@ -55,7 +57,7 @@ tensorflow==2.7.0
 tensorflow-estimator==2.7.0
 tensorflow-io-gcs-filesystem==0.22.0
 termcolor==1.1.0
-typing-extensions==4.0.0
+typing_extensions==4.0.0
 urllib3==1.26.7
 Werkzeug==2.0.2
 wrapt==1.13.3

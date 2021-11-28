@@ -20,6 +20,19 @@ from allauth.socialaccount.models import SocialAccount
 from django.conf import settings
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from django.core.mail.message import EmailMessage
+from sqlalchemy import create_engine
+from sqlalchemy.sql import text
+
+user = settings.DATABASES['default']['USER']
+password = settings.DATABASES['default']['PASSWORD']
+host = settings.DATABASES['default']['HOST']
+port = settings.DATABASES['default']['PORT']
+name = settings.DATABASES['default']['NAME']
+
+url = 'postgresql+psycopg2://{}:{}@{}:{}/{}'
+url = url.format(user, password, host, port, name)
+
+engine = create_engine(url)
 
 # import numpy as np
 # import cv2
@@ -78,75 +91,38 @@ def search_all(request):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def search_direct(request):
-    pill = InfoPill.objects.all()
-    n = request.GET.get('n', "") # 약 이름
-    s = request.GET.get('s', "") # 약 모양
-    c_f = request.GET.get('c_f', "") # 약 앞면 색상
+    name = request.GET.get('n') # 약 이름
+    shape = request.GET.get('s') # 약 모양
+    color_front = request.GET.get('c_f') # 약 앞면 색상
 
     # 만약 ?n={약이름} 이랑 모양, 앞면 색상으로 검색 시 해당 이름과 모양, 색상이 포함된 값을 반환해줌
-    if n and s and c_f:
-        pill = pill.filter(
-            Q(item_name__contains=n) &
-            Q(shape__exact=s) &
-            Q(color_front__contains=c_f)
-            ).distinct()
+    query_all = ""
+    
+    shape_query = ""
+    if shape:
+        shape_query = f"shape = '{shape}' AND "
+        query_all += shape_query
 
-        serializer = InfoPillSerializer(pill, many=True)
-        return Response(serializer.data)
+    name_query = ""
+    if name:
+        name = "%{}%".format(name)
+        name_query = f"item_name LIKE '{name}' AND "
+        query_all += name_query
 
-    elif n and s:
-        pill = pill.filter(
-            Q(item_name__contains=n) &
-            Q(shape__exact=s)
-            ).distinct()
+    color_front_query = ""
+    if color_front:
+        color_front = "%{}%".format(color_front)
+        color_front_query = f"color_front LIKE '{color_front}' AND "
+        query_all += color_front_query
 
+    if not query_all == "":
+        query_all = query_all[:-4]
+        query_all ="SELECT * FROM api_infopill WHERE " + query_all
+        pill=engine.execute(text(query_all))
         serializer = InfoPillSerializer(pill, many=True)
         return Response(serializer.data)
     
-    elif n and c_f:
-        pill = pill.filter(
-            Q(item_name__contains=n) &
-            Q(color_front__contains=c_f)
-            ).distinct()
-
-        serializer = InfoPillSerializer(pill, many=True)
-        return Response(serializer.data)
-
-    elif s and c_f:
-        pill = pill.filter(
-            Q(item_name__exact=s) &
-            Q(color_front__contains=c_f)
-            ).distinct()
-
-        serializer = InfoPillSerializer(pill, many=True)
-        return Response(serializer.data)
-    
-    elif n:
-        pill = pill.filter(
-            Q(item_name__contains=n)
-            ).distinct()
-
-        serializer = InfoPillSerializer(pill, many=True)
-        return Response(serializer.data)
-
-    elif s:
-        pill = pill.filter(
-            Q(shape__exact=s)
-            ).distinct()
-
-        serializer = InfoPillSerializer(pill, many=True)
-        return Response(serializer.data)
-
-    elif c_f:
-        pill = pill.filter(
-            Q(color_front__contains=c_f)
-            ).distinct()
-
-        serializer = InfoPillSerializer(pill, many=True)
-        return Response(serializer.data)
-
-    else:
-        return Response("해당하는 약 정보가 없습니다.")
+    return Response([])
 
 
     
