@@ -1,3 +1,5 @@
+from django.conf.urls import include
+from django.forms.models import fields_for_model
 from rest_framework import serializers
 from rest_framework_jwt.settings import api_settings
 from django.contrib.auth import get_user_model, authenticate
@@ -9,6 +11,7 @@ JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
 JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
 
 User = get_user_model()
+
 
 class UserCreateSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
@@ -24,6 +27,7 @@ class UserCreateSerializer(serializers.Serializer):
 
         user.save()
         return user
+
 
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.CharField(max_length=64)
@@ -50,12 +54,13 @@ class UserLoginSerializer(serializers.Serializer):
             update_last_login(None, user)
         except User.DoesNotExist:
             raise serializers.ValidationError(
-            'User with given email and password does not exists.'
-        )
+                'User with given email and password does not exists.'
+            )
         return {
             'email': user.email,
             'token': jwt_token,
         }
+
 
 class InfoPillSerializer(serializers.ModelSerializer):
     class Meta:
@@ -71,7 +76,8 @@ class UserPillSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserPill
         exclude = ['id']
-        
+
+
 class ImageForm(forms.ModelForm):
     class Meta:
         model = UploadFileModel
@@ -81,3 +87,29 @@ class SearchHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = SearchHistory
         exclude= ['id']
+
+class UserPillListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InfoPill
+        fields = (
+            'item_name',
+            'image',
+            'sungbun',
+            'use_method_qesitm',
+        )
+
+
+class PillDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InfoPill
+        fields = (
+            'item_name',
+            'image',
+            'bit',
+            'sungbun',
+            'efcy_qesitm',
+            'use_method_qesitm',
+            'se_qesitm',
+            'atpn_qesitm',
+            'deposit_method_qesitm'
+        )
