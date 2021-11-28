@@ -8,8 +8,8 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from .serializers import ImageForm, UserCreateSerializer, UserLoginSerializer, InfoPillSerializer
-from .models import User, InfoPill, UserPill
+from .serializers import *
+from .models import *
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.db.models import Q
@@ -20,6 +20,7 @@ from allauth.socialaccount.models import SocialAccount
 from django.conf import settings
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from django.core.mail.message import EmailMessage
+from datetime import datetime, timedelta, date
 
 import numpy as np
 import cv2
@@ -364,3 +365,34 @@ def result_photo(request):
         
     else:
         return Response("파일을 선택해주세요.")
+
+
+# 검색 기록
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def search_history(request):
+    user_email = str(request.user.email)
+    data = SearchHistory.objects.filter(user_email=user_email).all().count()
+    if data == 0:
+        return Response("최근 검색 기록이 없습니다.")
+
+    old_history = SearchHistory.objects.filter(Q(user_email=user_email) & Q(create_at=date.today() - timedelta(days=7))).all().count()
+
+    # 일주일 지난 기록이 있는 경우
+    if old_history > 0:
+        SearchHistory.objects.filter(Q(user_email=user_email) & Q(create_at=date.today() - timedelta(days=7))).all().delete()
+
+        history_pill_list = SearchHistory.objects.filter(user_email=user_email).all().values_list('pill_num').order_by('id')[:9]
+        pills = InfoPill.objects.filter(item_num__in=history_pill_list)
+
+        serializer = InfoPillSerializer2(pills, many=True)
+
+        return Response(serializer.data)
+    # 일주일이 지난 기록이 없는 경우
+    history_pill_list = SearchHistory.objects.filter(user_email=user_email).all().values_list('pill_num').  order_by('id')[:9]
+    pills = InfoPill.objects.filter(item_num__in=history_pill_list)
+
+    serializer = InfoPillSerializer2(pills, many=True)
+
+    return Response(serializer.data)
+

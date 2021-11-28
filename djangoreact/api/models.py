@@ -112,6 +112,8 @@ class InfoPill(models.Model):
     sungbun = models.CharField(
         max_length=100,
     )
+    def __str__(self):
+        return self.item_num
 
 # 유저 즐겨찾기 모델
 class UserPill(models.Model):
@@ -121,3 +123,10 @@ class UserPill(models.Model):
 class UploadFileModel(models.Model):
     files = models.FileField(upload_to="images", null=True)
     upload_at = models.DateTimeField(auto_now=True)
+
+
+# 검색 기록 모델
+class SearchHistory(models.Model):
+    user_email = models.ForeignKey(User, to_field='email', db_column='user_email', on_delete=models.CASCADE)
+    pill_num = models.ForeignKey(InfoPill, to_field='item_num', db_column='pill_num', on_delete=models.CASCADE)
+    create_at = models.DateField(auto_now_add=True) 

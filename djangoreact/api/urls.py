@@ -23,4 +23,5 @@ urlpatterns = [
     #      name='kakao_login_todjango'),
     #path("/pill-detail/<string:pill-id>", views.pill_detail),
     path('result-photo/', views.result_photo),
+    path('search-history/', views.search_history)
 ]

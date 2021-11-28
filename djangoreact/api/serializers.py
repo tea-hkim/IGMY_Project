@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework_jwt.settings import api_settings
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.models import update_last_login
-from .models import UploadFileModel, User, InfoPill, UserPill
+from .models import *
 from django import forms
 
 JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
@@ -62,6 +62,11 @@ class InfoPillSerializer(serializers.ModelSerializer):
         model = InfoPill
         exclude = ['id']
 
+class InfoPillSerializer2(serializers.ModelSerializer):
+    class Meta:
+        model = InfoPill
+        fields = ('item_name', 'image', 'use_method_qesitm', 'sungbun')
+
 class UserPillSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserPill
@@ -71,3 +76,8 @@ class ImageForm(forms.ModelForm):
     class Meta:
         model = UploadFileModel
         fields = "__all__"
+
+class SearchHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SearchHistory
+        exclude= ['id']
