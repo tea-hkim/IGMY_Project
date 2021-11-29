@@ -489,7 +489,7 @@ def search_history(request):
         history_pill_list = SearchHistory.objects.filter(user_email=user_email).all().values_list('pill_num').order_by('id')[:9]
         pills = InfoPill.objects.filter(item_num__in=history_pill_list)
 
-        serializer = InfoPillSerializer2(pills, many=True)
+        serializer = UserPillListSerializer(pills, many=True)
 
         return Response(serializer.data)
     # 일주일이 지난 기록이 없는 경우
@@ -501,7 +501,7 @@ def search_history(request):
     )
     pills = InfoPill.objects.filter(item_num__in=history_pill_list)
 
-    serializer = InfoPillSerializer2(pills, many=True)
+    serializer = UserPillListSerializer(pills, many=True)
 
     return Response(serializer.data)
 

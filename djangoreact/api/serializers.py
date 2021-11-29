@@ -67,10 +67,6 @@ class InfoPillSerializer(serializers.ModelSerializer):
         model = InfoPill
         exclude = ['id']
 
-class InfoPillSerializer2(serializers.ModelSerializer):
-    class Meta:
-        model = InfoPill
-        fields = ('item_name', 'image', 'use_method_qesitm', 'sungbun')
 
 class UserPillSerializer(serializers.ModelSerializer):
     class Meta:
