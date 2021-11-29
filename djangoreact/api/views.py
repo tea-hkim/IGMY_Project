@@ -254,7 +254,7 @@ def pill_detail(request):
 
     pill = InfoPill.objects.filter(item_num=pill_id)
     # 로그인 한 유저가 없는 경우
-    if request.user is None:
+    if request.user.is_anonymous:
         serializer = PillDetailSerializer(pill, many=True)
 
         return Response(serializer.data)
@@ -599,3 +599,19 @@ def search_history(request):
 
 #     else:
 #         return Response("파일을 선택해주세요.")
+
+
+#로그인 유지를 위한 토큰 유효성 검사 api
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def check_token(request):
+    print('user:', request.user)
+    if request.user.is_authenticated:
+        result = {
+            'username': str(request.user),
+            'email': str(request.user.email),
+            'token': str(request.META['HTTP_AUTHORIZATION']).split(' ')[1]
+        }
+        return Response(result)
+    
+    return Response("토큰이 유효하지 않습니다.")
