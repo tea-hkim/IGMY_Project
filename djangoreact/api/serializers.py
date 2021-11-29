@@ -1,15 +1,14 @@
 from django.conf.urls import include
 from django.forms.models import fields_for_model
 from rest_framework import serializers
-from rest_framework_jwt.settings import api_settings
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
+from rest_framework_simplejwt.serializers import TokenRefreshSerializer, TokenObtainPairSerializer
+from rest_framework_simplejwt.state import token_backend
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.models import update_last_login
 from .models import *
 from django import forms
 
-JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
-JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
 
 User = get_user_model()
 
@@ -29,35 +28,6 @@ class UserCreateSerializer(serializers.Serializer):
 
         user.save()
         return user
-
-
-class UserLoginSerializer(serializers.Serializer):
-    email = serializers.CharField(max_length=64)
-    password = serializers.CharField(max_length=128, write_only=True)
-    token = serializers.CharField(max_length=255, read_only=True)
-
-    def validate(self, data):
-        email = data.get("email", None)
-        password = data.get("password", None)
-        valid_user = User.objects.filter(email=email).first()
-        user = authenticate(email=email, password=password)
-
-        if valid_user is None:
-            return {"email": "no user"}
-        if user is None:
-            return {"email": "None"}
-        try:
-            payload = JWT_PAYLOAD_HANDLER(user)
-            jwt_token = JWT_ENCODE_HANDLER(payload)
-            update_last_login(None, user)
-        except User.DoesNotExist:
-            raise serializers.ValidationError(
-                "User with given email and password does not exists."
-            )
-        return {
-            "email": user.email,
-            "token": jwt_token,
-        }
 
 
 class InfoPillSerializer(serializers.ModelSerializer):
@@ -117,19 +87,25 @@ class PillDetailSerializer(serializers.ModelSerializer):
         )
 
 
-class LogoutSerializer(serializers.Serializer):
-    refresh = serializers.CharField()
+# 페이로드 확장 클래스
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
 
-    default_error_messages = {"bad_token": ("Token is expired or invalid")}
+        token['email']=user.email #확장
+        return token
 
+# 토큰 refresh 커스터마이징
+class MyTokenRefreshSerializer(TokenRefreshSerializer):
     def validate(self, attrs):
-        self.token = attrs["refresh"]
-
-        return attrs
-
-    def save(self, **kwargs):
-        try:
-            RefreshToken(self.token).blacklist()
-
-        except TokenError:
-            self.fail("bad_token")
+        data = super(MyTokenRefreshSerializer, self).validate(attrs)
+        decoded_payload = token_backend.decode(data['access'], verify=True)
+        print('payload: ', decoded_payload)
+        user_uid = decoded_payload['user_id']
+        email = decoded_payload['email']
+        # add filter query
+        data.update({
+            'email': email,
+            })
+        return data
