@@ -3,9 +3,9 @@ from django.core.mail import message
 import requests
 from django.core.checks.messages import Info
 from django.db.models.expressions import RawSQL
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenViewBase, TokenObtainPairView
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .serializers import *
@@ -20,6 +20,7 @@ from allauth.socialaccount.models import SocialAccount
 from django.conf import settings
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from django.core.mail.message import EmailMessage
+from django.contrib import auth
 from datetime import datetime, timedelta, date
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
@@ -66,28 +67,6 @@ def createUser(request):
     else:
         # return jsonify("result : true")
         pass
-
-
-"""로그인"""
-
-
-@api_view(["POST"])
-@permission_classes([AllowAny])
-def login(request):
-    if request.method == "POST":
-        serializer = UserLoginSerializer(data=request.data)
-
-        if not serializer.is_valid(raise_exception=True):
-            return Response(
-                {"message": "Request Body Error."}, status=status.HTTP_409_CONFLICT
-            )
-        if serializer.validated_data["email"] == "no user":
-            return Response({"message": "no user"}, status=status.HTTP_200_OK)
-        if serializer.validated_data["email"] == "None":
-            return Response({"message": "wrong password"}, status=status.HTTP_200_OK)
-            
-        response = {"message": "login success", "token": serializer.data["token"]}
-        return Response(response, status=status.HTTP_200_OK)
 
 
 # 모든 알약 정보
@@ -350,26 +329,6 @@ def user_pill_list(request):
     return Response(serializer.data)
 
 
-# 로그아웃 API
-
-
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
-# def logout(request):
-#     try:
-#         refresh_token = request.data["refresh_token"]
-#         token = RefreshToken(refresh_token)
-#         token.blacklist()
-
-#         return Response(status=status.HTTP_205_RESET_CONTENT)
-#     except Exception as e:
-#         return Response(status=status.HTTP_400_BAD_REQUEST)
-def logout(request):
-    if request.user:
-        token = request.data["refresh_token"]
-        token.blacklist()
-        return Response("Successful Logout", status=status.HTTP_204_NO_CONTENT)
-
 
 # 비밀번호 변경: 이메일 보내주는 함수 (테스트용)
 
@@ -380,6 +339,9 @@ def send_email(request):
     from_email = "igmy1108@email.com"
     message = "메시지 테스트"
     EmailMessage(subject=subject, body=message, to=to, from_email=from_email).send()
+
+
+# 준 왓 이즈 디스?
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -607,16 +569,23 @@ def search_history(request):
 
 
 #로그인 유지를 위한 토큰 유효성 검사 api
-@api_view(["GET"])
-@permission_classes([AllowAny])
-def check_token(request):
-    print('user:', request.user)
-    if request.user.is_authenticated:
-        result = {
-            'username': str(request.user),
-            'email': str(request.user.email),
-            'token': str(request.META['HTTP_AUTHORIZATION']).split(' ')[1]
-        }
-        return Response(result)
+# @api_view(["GET"])
+# @permission_classes([AllowAny])
+# def check_token(request):
+#     print('user:', request.user)
+#     if request.user.is_authenticated:
+#         result = {
+#             'username': str(request.user),
+#             'email': str(request.user.email),
+#             'token': str(request.META['HTTP_AUTHORIZATION']).split(' ')[1]
+#         }
+#         return Response(result)
     
-    return Response("토큰이 유효하지 않습니다.")
+#     return Response("토큰이 유효하지 않습니다.")
+
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
+class MyTokenRefreshView(TokenViewBase):
+    serializer_class = MyTokenRefreshSerializer

@@ -7,17 +7,11 @@ app_name = "api"
 
 urlpatterns = [
     path('create/', views.createUser),
-    path('login/', views.login),
     path('search-all/', views.search_all),
     path('search-direct/', views.search_direct),
     path('user-pill/', views.user_pill),
     path('user-pill-list/', views.user_pill_list),
     path('send_email/', views.send_email),  # 구글 이메일 보내기 테스트용
-    # 로그아웃 url api/rest-auth/logout
-    url(r'^rest-auth/', include('rest_auth.urls')),
-    path('logout/', views.logout),
-
-    url(r'^rest-auth/', include('rest_auth.urls')),
     path("pill-detail/", views.pill_detail),
     #path('result-photo/', views.result_photo),
 
@@ -29,6 +23,8 @@ urlpatterns = [
     #path("/pill-detail/<string:pill-id>", views.pill_detail),
     path('result-photo/', views.result_photo),
     path('search-history/', views.search_history),
-    path('token/', views.check_token)
-
+    # 로그인 api
+    path('token/', views.MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    # 토큰 refresh api
+    path('token/refresh/', views.MyTokenRefreshView.as_view(), name='token_refresh'),
 ]
