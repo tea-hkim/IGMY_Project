@@ -3,13 +3,13 @@ import { mainPink, palePink } from './color';
 
 export const NavBox = styled.div`
   background-color: ${mainPink};
-  height: 10vh;
+  height: 13vh;
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: relative;
   box-sizing: border-box;
-  padding: 0.625rem 3.125rem 0.625rem 15%;
+  padding: 0.625rem 3.125rem;
   margin-bottom: 4vh;
   box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.3);
   svg {
@@ -49,7 +49,6 @@ export const MenuBoxContent = styled.ul`
     cursor: pointer;
     display: flex;
     justify-content: start;
-    /* background-color: ${palePink}; */
   }
   h3 {
     width: 100%;

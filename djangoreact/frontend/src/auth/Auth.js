@@ -9,20 +9,18 @@ export async function Login({ email, password }) {
   const loginURL = 'http://localhost:8000/api/login/';
   const userData = { email, password };
 
-  const response = await axios.post(loginURL, userData);
+  const { data } = await axios.post(loginURL, userData);
 
-  if (response.success === 'True') {
-    const { token } = response;
+  if (data.message === 'login success') {
+    const { token } = data;
     dispatch(login({ email, password, token }));
     localStorage.setItem('userToken', token);
     navigate('/');
+  } else if (data.message === 'no user') {
+    alert('아이디가 잘못되었습니다');
+  } else if (data.message === 'wrong password') {
+    alert('패스워드가 틀렸습니다');
   }
-
-  if (response.message) {
-    throw new Error('로그인에 실패했습니다.');
-  }
-
-  throw new Error('서버 통신이 원할하지 않습니다.');
 }
 
 export async function Register({ email, password, nickname }) {
