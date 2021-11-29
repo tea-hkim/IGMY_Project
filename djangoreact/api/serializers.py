@@ -56,6 +56,7 @@ class UserLoginSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 'User with given email and password does not exists.'
             )
+        # token = Token.objects.create(user=valid_user)
         return {
             'email': user.email,
             'token': jwt_token,

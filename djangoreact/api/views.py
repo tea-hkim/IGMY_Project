@@ -85,7 +85,7 @@ def login(request):
             return Response({"message": "no user"}, status=status.HTTP_200_OK)
         if serializer.validated_data["email"] == "None":
             return Response({"message": "wrong password"}, status=status.HTTP_200_OK)
-
+            
         response = {"message": "login success", "token": serializer.data["token"]}
         return Response(response, status=status.HTTP_200_OK)
 
@@ -355,15 +355,20 @@ def user_pill_list(request):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def logout(request):
-    try:
-        refresh_token = request.data["refresh_token"]
-        token = RefreshToken(refresh_token)
-        token.blacklist()
+# def logout(request):
+#     try:
+#         refresh_token = request.data["refresh_token"]
+#         token = RefreshToken(refresh_token)
+#         token.blacklist()
 
-        return Response(status=status.HTTP_205_RESET_CONTENT)
-    except Exception as e:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+#         return Response(status=status.HTTP_205_RESET_CONTENT)
+#     except Exception as e:
+#         return Response(status=status.HTTP_400_BAD_REQUEST)
+def logout(request):
+    if request.user:
+        token = request.data["refresh_token"]
+        token.blacklist()
+        return Response("Successful Logout", status=status.HTTP_204_NO_CONTENT)
 
 
 # 비밀번호 변경: 이메일 보내주는 함수 (테스트용)
