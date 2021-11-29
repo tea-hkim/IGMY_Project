@@ -62,7 +62,7 @@ def createUser(request):
         ):
             serializer.save()
             return Response({"message": "ok"}, status=status.HTTP_201_CREATED)
-        return Response({"message": "duplicate email"}, status=status.HTTP_409_CONFLICT)
+        return Response({"message": "duplicate email"}, status=status.HTTP_200_OK)
     else:
         # return jsonify("result : true")
         pass
