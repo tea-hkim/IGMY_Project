@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import * as siIcons from 'react-icons/si';
+import InputWithLabel from '../auth/InputWithLabel';
+import AuthButton from '../auth/AuthButton';
+import { login } from '../redux/authSlice';
 import {
   AuthContainer,
   AuthTitle,
   LineBox,
   Or,
   Line,
-  Button,
   LoginForm,
   AuthFooterBox,
   AuthFooterContent,
@@ -16,11 +20,12 @@ import {
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [email, setEamil] = useState('');
   const [password, setPassword] = useState('');
   const [autoLogin, setAutoLogin] = useState(false);
 
-  const onChange = (event) => {
+  const handleChange = (event) => {
     const {
       target: { name, value },
     } = event;
@@ -31,12 +36,30 @@ const LoginPage = () => {
     }
   };
 
-  const onSubmit = (event) => {
+  const handelSubmit = async (event) => {
+    const loginURL = 'http://localhost:8000/api/login/';
+    const userData = { email, password };
     event.preventDefault();
+
+    const { data } = await axios.post(loginURL, userData);
+    if (data.message === 'login success') {
+      const { token } = data;
+      dispatch(login({ email, password, token }));
+      // 자동 로그인 시 유저의 토큰을 로컬 스토리지에 저장
+      if (autoLogin) {
+        localStorage.setItem('userToken', token);
+      }
+      sessionStorage.setItem('userToken', token);
+      navigate('/');
+    } else if (data.message === 'no user') {
+      alert('아이디가 잘못되었습니다');
+    } else if (data.message === 'wrong password') {
+      alert('패스워드가 틀렸습니다');
+    }
   };
 
-  const onChecked = (event) => {
-    if (!event.target.checked) {
+  const handleChecked = ({ target }) => {
+    if (!target.checked) {
       setAutoLogin(false);
     } else {
       setAutoLogin(true);
@@ -63,32 +86,38 @@ const LoginPage = () => {
   return (
     <AuthContainer>
       <AuthTitle>로그인</AuthTitle>
-      <div className="kakaoLoginBox">
-        <Button type="button" kakao>
-          <siIcons.SiKakaotalk size="30px" />
-          <span>카카오 계정으로 로그인</span>
-        </Button>
-        <LineBox>
-          <Or> 또는 </Or>
-          <Line />
-        </LineBox>
-      </div>
-      <LoginForm onSubmit={onSubmit}>
-        <div className="emailBox">
-          <h3 className="registerTitle">이메일</h3>
-          <input name="email" type="text" placeholder="이메일" required value={email} onChange={onChange} />
-        </div>
-        <div className="passwordBox">
-          <h3 className="registerTitle">비밀번호</h3>
-          <input name="password" type="password" placeholder="비밀번호" required value={password} onChange={onChange} />
-        </div>
+      <AuthButton type="button" kakao>
+        <siIcons.SiKakaotalk size="30px" />
+        <span>카카오 계정으로 로그인</span>
+      </AuthButton>
+      <LineBox>
+        <Or> 또는 </Or>
+        <Line />
+      </LineBox>
+      <LoginForm onSubmit={handelSubmit}>
+        <InputWithLabel
+          label="이메일"
+          name="email"
+          type="text"
+          placeholder="이메일"
+          value={email}
+          onChange={handleChange}
+        />
+        <InputWithLabel
+          label="비밀번호"
+          name="password"
+          type="password"
+          placeholder="비밀번호"
+          value={password}
+          onChange={handleChange}
+        />
         <ValidMessage>{userValid}</ValidMessage>
-        <Button className={isActive ? 'activeBtn' : 'unactiveBtn'} type="submit" value="로그인" disabled={!isActive}>
+        <AuthButton className={isActive ? 'activeBtn' : 'unactiveBtn'} type="submit" disabled={!isActive}>
           로그인
-        </Button>
+        </AuthButton>
       </LoginForm>
       <div className="autoLoginBox">
-        <input type="checkbox" chekced={autoLogin} onChange={onChecked} />
+        <input type="checkbox" checked={autoLogin} onChange={handleChecked} />
         자동로그인
       </div>
       <AuthFooterBox>

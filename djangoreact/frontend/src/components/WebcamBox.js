@@ -1,7 +1,8 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
 import Webcam from 'react-webcam';
+import { MdCameraswitch } from 'react-icons/md';
+import { ContainerWrap, WebcamContainer, SwitchButton, ButtonStyle } from '../styles/WebcamBoxStyle';
 
 const Webcamera = () => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const Webcamera = () => {
       height: webcamRef.current.video.clientHeight,
     });
     setImgSrc(imageSrc);
+    console.log(imageSrc);
   };
 
   const switchCamera = () => {
@@ -54,51 +56,29 @@ const Webcamera = () => {
         )}
       </WebcamContainer>
       {imgSrc ? (
-        <ButtonContainer>
+        <ButtonStyle>
           <button type="button" onClick={resetCamera}>
             다시 찍기
           </button>
+
           <button type="button" onClick={submitCamera}>
             선택 완료
           </button>
-        </ButtonContainer>
+        </ButtonStyle>
       ) : (
-        <ButtonContainer>
-          <button id="switch" type="button" onClick={switchCamera}>
-            앞뒤 전환
-          </button>
-          <button id="takePhoto" type="button" onClick={captureCamera}>
-            사진 촬영
-          </button>
-        </ButtonContainer>
+        <>
+          <SwitchButton>
+            <MdCameraswitch size="2rem" onClick={switchCamera} />
+          </SwitchButton>
+          <ButtonStyle>
+            <button id="takePhoto" type="button" onClick={captureCamera}>
+              사진 촬영
+            </button>
+          </ButtonStyle>
+        </>
       )}
     </ContainerWrap>
   );
 };
 
 export default Webcamera;
-
-const ContainerWrap = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin: 0 auto;
-  width: 30vw;
-`;
-
-const WebcamContainer = styled.div`
-  video {
-    width: 100%;
-  }
-  border: 0.4rem solid #b4a2eb;
-  border-radius: 0.4rem;
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  margin: 1rem auto;
-
-  > button + button {
-    margin-left: 1rem;
-  }
-`;

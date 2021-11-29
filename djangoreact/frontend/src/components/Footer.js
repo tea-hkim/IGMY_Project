@@ -2,50 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 
 const Footer = () => {
-  const FooterBox = styled.div`
-    display: flex;
-    box-sizing: border-box;
-    padding: 3vh 0 0;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 25vh;
-    margin-top: 10vh;
-    background-color: #fafafa;
-  `;
-  const ExplanateBox = styled.div`
-    width: 70%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    font-size: 0.625rem;
-    nav {
-      ul {
-        display: flex;
-        justify-content: start;
-        align-items: flex-start;
-        width: 100%;
-        list-style: none;
-        padding: 0;
-        margin: 10px 0;
-        font-size: 0.625rem;
-        font-weight: 700;
-        li {
-          margin-right: 0.625rem;
-          cursor: pointer;
-        }
-      }
-    }
-    div {
-      margin-bottom: 0.625rem;
-      span {
-        margin-right: 1rem;
-      }
-    }
-    #copyright {
-      font-weight: 800;
-    }
-  `;
   return (
     <FooterBox className="footer_box">
       <ExplanateBox className="footer_explanation">
@@ -75,3 +31,48 @@ const Footer = () => {
 };
 
 export default Footer;
+
+const FooterBox = styled.div`
+  display: flex;
+  box-sizing: border-box;
+  padding: 5vh 0 0;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 25vh;
+  margin-top: 10vh;
+  background-color: #fafafa;
+`;
+const ExplanateBox = styled.div`
+  width: 70%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.625rem;
+  nav {
+    ul {
+      display: flex;
+      justify-content: start;
+      align-items: flex-start;
+      width: 100%;
+      list-style: none;
+      padding: 0;
+      margin: 10px 0;
+      font-size: 0.625rem;
+      font-weight: 700;
+      li {
+        margin-right: 0.625rem;
+        cursor: pointer;
+      }
+    }
+  }
+  div {
+    margin-bottom: 0.625rem;
+    span {
+      margin-right: 1rem;
+    }
+  }
+  #copyright {
+    font-weight: 800;
+  }
+`;

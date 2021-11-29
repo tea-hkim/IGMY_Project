@@ -11,6 +11,7 @@ import Footer from './components/Footer';
 import ScanningPage from './pages/ScanningPage';
 import ScanFailPage from './pages/ScanFailPage';
 import PillBoxPage from './pages/PillBoxPage';
+import DirectSearchPage from './pages/DirectSearchPage';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="/scanning" element={<ScanningPage />} />
         <Route path="/scanfail" element={<ScanFailPage />} />
         <Route path="/pillbox" element={<PillBoxPage />} />
+        <Route path="/direct" element={<DirectSearchPage />} />
       </Routes>
       <Footer />
     </div>

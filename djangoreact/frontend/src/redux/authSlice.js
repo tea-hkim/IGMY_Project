@@ -9,19 +9,22 @@ export const authSlice = createSlice({
     token: '',
   },
   reducers: {
+    initializeInput: (state) => {
+      state = {
+        email: '',
+        password: '',
+        nickname: '',
+        token: '',
+      };
+      return state;
+    },
     login: (state, action) => {
-      const newState = state;
-      newState.email = action.payload.email;
-      newState.password = action.payload.password;
-      newState.token = action.payload.token;
-      state = newState;
+      const { email, password, token } = action.payload;
+      state = { email, password, token };
     },
     register: (state, action) => {
-      const newState = state;
-      newState.email = action.payload.email;
-      newState.password = action.payload.password;
-      newState.nickname = action.payload.nickname;
-      state = newState;
+      const { email, password, nickname } = action.payload;
+      state = { email, password, nickname };
     },
   },
 });

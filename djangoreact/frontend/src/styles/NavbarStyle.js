@@ -3,7 +3,7 @@ import { mainPink, palePink } from './color';
 
 export const NavBox = styled.div`
   background-color: ${mainPink};
-  height: 14vh;
+  height: 13vh;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -19,7 +19,7 @@ export const NavBox = styled.div`
 
 export const MenuBox = styled.nav`
   background-color: white;
-  border: 2px solid ${palePink};
+  border: 1px solid ${palePink};
   width: 20vw;
   height: 100vh;
   display: flex;
@@ -49,7 +49,6 @@ export const MenuBoxContent = styled.ul`
     cursor: pointer;
     display: flex;
     justify-content: start;
-    background-color: skyblue;
   }
   h3 {
     width: 100%;

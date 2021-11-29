@@ -7,7 +7,7 @@ const MainPage = () => {
   return (
     <MainContainer className="main_container">
       <h2 className="main_container_title">
-        간편하고 쉬운
+        간편하고 손 쉬운
         <br />내 손안의 작은 알약 사전
       </h2>
       <Box className="main_container_box">
@@ -20,7 +20,7 @@ const MainPage = () => {
         <Square className="main_container_box_rectangle" onClick={() => navigate('/')}>
           {' '}
         </Square>
-        <Circle className="main_container_box_search" onClick={() => navigate('/')}>
+        <Circle className="main_container_box_search" onClick={() => navigate('/direct')}>
           직접 검색
         </Circle>
       </Box>
