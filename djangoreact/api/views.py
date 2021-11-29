@@ -275,15 +275,22 @@ def pill_detail(request):
         serializer = PillDetailSerializer(pill, many=True)
 
         return Response(serializer.data)
+    else:
     # 로그인 한 유저가 있는 경우: 검색 기록 추가
-    user_email = request.user
-    pill_num = InfoPill.objects.get(item_num=pill_id)
-    new_search_history = SearchHistory(user_email=user_email, pill_num=pill_num)
-    new_search_history.save() 
+        user_email = request.user
+        old_search_history = SearchHistory.objects.filter(Q(user_email=user_email) & Q(pill_num=pill_id)).first()
+        # 같은 알약 기록이 이미 있는 경우
+        if old_search_history is not None:
+            serializer = PillDetailSerializer(pill, many=True)
+            return Response(serializer.data)
+        # 같은 알약 기록이 없는 경우
+        pill_num = InfoPill.objects.get(item_num=pill_id)
+        new_search_history = SearchHistory(user_email=user_email, pill_num=pill_num)
+        new_search_history.save() 
 
-    serializer = PillDetailSerializer(pill, many=True)
+        serializer = PillDetailSerializer(pill, many=True)
 
-    return Response(serializer.data)
+        return Response(serializer.data)
 
 # 유저 즐겨찾기 API
 
@@ -497,11 +504,11 @@ def search_history(request):
     if data == 0:
         return Response("최근 검색 기록이 없습니다.")
 
-    old_history = SearchHistory.objects.filter(Q(user_email=user_email) & Q(create_at=date.today() - timedelta(days=7))).all().count()
+    old_history = SearchHistory.objects.filter(Q(user_email=user_email) & Q(create_at__lte=date.today()-timedelta(days=7))).all().count()
 
     # 일주일 지난 기록이 있는 경우
     if old_history > 0:
-        SearchHistory.objects.filter(Q(user_email=user_email) & Q(create_at=date.today() - timedelta(days=7))).all().delete()
+        SearchHistory.objects.filter(Q(user_email=user_email) & Q(create_at__lte=date.today()-timedelta(days=7))).all().delete()
 
         history_pill_list = SearchHistory.objects.filter(user_email=user_email).all().values_list('pill_num').order_by('id')[:9]
         pills = InfoPill.objects.filter(item_num__in=history_pill_list)
