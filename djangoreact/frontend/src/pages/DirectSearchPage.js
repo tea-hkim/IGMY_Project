@@ -138,7 +138,7 @@ function DirectSearchPage() {
           </button>
         </ButtonBox>
       </SeachBox>
-      <div>{pillData.length !== 0 ? <h4>총 pillData.length 건의 검색 결과가 있습니다</h4> : null}</div>
+      <div>{pillData.length !== 0 ? <h4>총 {pillData.length} 건의 검색 결과가 있습니다</h4> : null}</div>
       {DirectSearchResult(pillData)}
     </SearchPage>
   );
@@ -231,7 +231,7 @@ const ShapeColorBox = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 80%;
+  width: 85%;
   div {
     display: flex;
     justify-content: center;
@@ -257,6 +257,7 @@ const SearchPage = styled.div`
 const SelectBox = styled.div`
   display: flex;
   flex-direction: column;
+  cursor: pointer;
   div {
     border-radius: 50%;
     width: 20px;
