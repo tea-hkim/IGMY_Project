@@ -3,7 +3,7 @@ from django.core.mail import message
 import requests
 from django.core.checks.messages import Info
 from django.db.models.expressions import RawSQL
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view, permission_classes
@@ -20,6 +20,7 @@ from allauth.socialaccount.models import SocialAccount
 from django.conf import settings
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from django.core.mail.message import EmailMessage
+from django.contrib import auth
 from datetime import datetime, timedelta, date
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
@@ -349,14 +350,15 @@ def user_pill_list(request):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def logout(request):
-    try:
+    if request.user:
+        # serializer = LogoutSerializer(data=request.data)
+        # serializer.is_valid(raise_exception=True)
+        # serializer.save()
+
         refresh_token = request.data["refresh_token"]
         token = RefreshToken(refresh_token)
         token.blacklist()
-
-        return Response(status=status.HTTP_205_RESET_CONTENT)
-    except Exception as e:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response("Successful Logout", status=status.HTTP_204_NO_CONTENT)
 
 
 # 비밀번호 변경: 이메일 보내주는 함수 (테스트용)
@@ -368,6 +370,9 @@ def send_email(request):
     from_email = "igmy1108@email.com"
     message = "메시지 테스트"
     EmailMessage(subject=subject, body=message, to=to, from_email=from_email).send()
+
+
+# 준 왓 이즈 디스?
 
 
 @method_decorator(csrf_exempt, name="dispatch")
