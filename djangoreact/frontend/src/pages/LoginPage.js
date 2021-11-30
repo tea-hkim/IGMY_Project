@@ -6,6 +6,7 @@ import * as siIcons from 'react-icons/si';
 import InputWithLabel from '../auth/InputWithLabel';
 import AuthButton from '../auth/AuthButton';
 import { login } from '../redux/authSlice';
+import { emailCheck } from '../auth/checkUserInfo';
 import {
   AuthContainer,
   AuthTitle,
@@ -21,9 +22,10 @@ import {
 const LoginPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [email, setEamil] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEamil] = useState(null);
+  const [password, setPassword] = useState(null);
   const [autoLogin, setAutoLogin] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (event) => {
     const {
@@ -36,10 +38,23 @@ const LoginPage = () => {
     }
   };
 
+  //  이메일, 패스워드 유효성 검사
+  let isActive = false;
+  if (email !== null && password !== null) {
+    isActive = true;
+  } else {
+    isActive = false;
+  }
+
   const handelSubmit = async (event) => {
+    event.preventDefault();
     const loginURL = 'http://localhost:8000/api/login/';
     const userData = { email, password };
-    event.preventDefault();
+
+    if (!emailCheck(email)) {
+      setErrorMessage('잘못된 이메일 형식입니다');
+      return;
+    }
 
     const { data } = await axios.post(loginURL, userData);
     if (data.message === 'login success') {
@@ -74,15 +89,6 @@ const LoginPage = () => {
     navigate('/findPw');
   };
 
-  // 이메일, 패스워드 유효성 검사
-  let userValid = '';
-  let isActive = false;
-  if (email === '' || password === '') {
-    userValid = '빈 칸을 모두 채워주세요';
-  } else {
-    isActive = true;
-  }
-
   return (
     <AuthContainer>
       <AuthTitle>로그인</AuthTitle>
@@ -111,7 +117,7 @@ const LoginPage = () => {
           value={password}
           onChange={handleChange}
         />
-        <ValidMessage>{userValid}</ValidMessage>
+        <ValidMessage>{errorMessage}</ValidMessage>
         <AuthButton className={isActive ? 'activeBtn' : 'unactiveBtn'} type="submit" disabled={!isActive}>
           로그인
         </AuthButton>
