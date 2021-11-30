@@ -9,7 +9,6 @@ from django.contrib.auth.models import update_last_login
 from .models import *
 from django import forms
 
-
 User = get_user_model()
 
 
@@ -87,25 +86,31 @@ class PillDetailSerializer(serializers.ModelSerializer):
         )
 
 
-# 페이로드 확장 클래스
+# 토큰 obtain 커스터마이징
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    # 페이로드 확장
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
 
         token['email']=user.email #확장
+        token['username'] = user.username
         return token
+
+
+    
 
 # 토큰 refresh 커스터마이징
 class MyTokenRefreshSerializer(TokenRefreshSerializer):
     def validate(self, attrs):
         data = super(MyTokenRefreshSerializer, self).validate(attrs)
         decoded_payload = token_backend.decode(data['access'], verify=True)
-        print('payload: ', decoded_payload)
         user_uid = decoded_payload['user_id']
         email = decoded_payload['email']
+        username = decoded_payload['username']
         # add filter query
         data.update({
             'email': email,
+            'username': username,
             })
         return data
