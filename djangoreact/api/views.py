@@ -25,7 +25,6 @@ from datetime import datetime, timedelta, date
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
 
-
 user = settings.DATABASES["default"]["USER"]
 password = settings.DATABASES["default"]["PASSWORD"]
 host = settings.DATABASES["default"]["HOST"]
@@ -42,6 +41,7 @@ engine = create_engine(url)
 # import json
 # import tensorflow as tf
 # from .photo_key import photo_key
+
 
 """회원가입"""
 
@@ -237,9 +237,11 @@ def pill_detail(request):
 
         return Response(serializer.data)
     else:
-    # 로그인 한 유저가 있는 경우: 검색 기록 추가
+        # 로그인 한 유저가 있는 경우: 검색 기록 추가
         user_email = request.user
-        old_search_history = SearchHistory.objects.filter(Q(user_email=user_email) & Q(pill_num=pill_id)).first()
+        old_search_history = SearchHistory.objects.filter(
+            Q(user_email=user_email) & Q(pill_num=pill_id)
+        ).first()
         # 같은 알약 기록이 이미 있는 경우
         if old_search_history is not None:
             serializer = PillDetailSerializer(pill, many=True)
@@ -247,7 +249,7 @@ def pill_detail(request):
         # 같은 알약 기록이 없는 경우
         pill_num = InfoPill.objects.get(item_num=pill_id)
         new_search_history = SearchHistory(user_email=user_email, pill_num=pill_num)
-        new_search_history.save() 
+        new_search_history.save()
 
         serializer = PillDetailSerializer(pill, many=True)
 
@@ -326,7 +328,6 @@ def user_pill_list(request):
     serializer = UserPillListSerializer(pill, many=True)
 
     return Response(serializer.data)
-
 
 
 # 비밀번호 변경: 이메일 보내주는 함수 (테스트용)
@@ -446,13 +447,28 @@ def search_history(request):
     if data == 0:
         return Response({"message" : "최근 검색 기록이 없습니다."})
 
-    old_history = SearchHistory.objects.filter(Q(user_email=user_email) & Q(create_at__lte=date.today()-timedelta(days=7))).all().count()
+    old_history = (
+        SearchHistory.objects.filter(
+            Q(user_email=user_email)
+            & Q(create_at__lte=date.today() - timedelta(days=7))
+        )
+        .all()
+        .count()
+    )
 
     # 일주일 지난 기록이 있는 경우
     if old_history > 0:
-        SearchHistory.objects.filter(Q(user_email=user_email) & Q(create_at__lte=date.today()-timedelta(days=7))).all().delete()
+        SearchHistory.objects.filter(
+            Q(user_email=user_email)
+            & Q(create_at__lte=date.today() - timedelta(days=7))
+        ).all().delete()
 
-        history_pill_list = SearchHistory.objects.filter(user_email=user_email).all().values_list('pill_num').order_by('id')[:9]
+        history_pill_list = (
+            SearchHistory.objects.filter(user_email=user_email)
+            .all()
+            .values_list("pill_num")
+            .order_by("id")[:9]
+        )
         pills = InfoPill.objects.filter(item_num__in=history_pill_list)
 
         serializer = UserPillListSerializer(pills, many=True)
@@ -567,7 +583,7 @@ def search_history(request):
 #         return Response("파일을 선택해주세요.")
 
 
-#로그인 유지를 위한 토큰 유효성 검사 api
+# 로그인 유지를 위한 토큰 유효성 검사 api
 # @api_view(["GET"])
 # @permission_classes([AllowAny])
 # def check_token(request):
@@ -579,12 +595,13 @@ def search_history(request):
 #             'token': str(request.META['HTTP_AUTHORIZATION']).split(' ')[1]
 #         }
 #         return Response(result)
-    
+
 #     return Response("토큰이 유효하지 않습니다.")
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
+
 
 class MyTokenRefreshView(TokenViewBase):
     serializer_class = MyTokenRefreshSerializer
