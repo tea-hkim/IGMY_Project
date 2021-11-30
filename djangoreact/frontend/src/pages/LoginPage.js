@@ -2,21 +2,19 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import * as siIcons from 'react-icons/si';
 import InputWithLabel from '../auth/InputWithLabel';
 import AuthButton from '../auth/AuthButton';
 import { login } from '../redux/authSlice';
-import { emailCheck } from '../auth/checkUserInfo';
 import {
   AuthContainer,
   AuthTitle,
+  KakaoBox,
   LineBox,
   Or,
   Line,
   LoginForm,
   AuthFooterBox,
   AuthFooterContent,
-  ValidMessage,
 } from '../styles/AuthStyle';
 
 const LoginPage = () => {
@@ -25,7 +23,6 @@ const LoginPage = () => {
   const [email, setEamil] = useState(null);
   const [password, setPassword] = useState(null);
   const [autoLogin, setAutoLogin] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (event) => {
     const {
@@ -38,7 +35,6 @@ const LoginPage = () => {
     }
   };
 
-  //  이메일, 패스워드 유효성 검사
   let isActive = false;
   if (email !== null && password !== null) {
     isActive = true;
@@ -48,28 +44,19 @@ const LoginPage = () => {
 
   const handelSubmit = async (event) => {
     event.preventDefault();
-    const loginURL = 'http://localhost:8000/api/login/';
+    const loginURL = 'http://localhost:8000/api/token/';
     const userData = { email, password };
 
-    if (!emailCheck(email)) {
-      setErrorMessage('잘못된 이메일 형식입니다');
-      return;
-    }
-
-    const { data } = await axios.post(loginURL, userData);
-    if (data.message === 'login success') {
-      const { token } = data;
-      dispatch(login({ email, password, token }));
-      // 자동 로그인 시 유저의 토큰을 로컬 스토리지에 저장
+    try {
+      const { data } = await axios.post(loginURL, userData);
+      const { username, access, refresh } = data;
+      dispatch(login({ username, access }));
       if (autoLogin) {
-        localStorage.setItem('userToken', token);
+        localStorage.setItem('refresh', refresh);
       }
-      sessionStorage.setItem('userToken', token);
       navigate('/');
-    } else if (data.message === 'no user') {
-      alert('아이디가 잘못되었습니다');
-    } else if (data.message === 'wrong password') {
-      alert('패스워드가 틀렸습니다');
+    } catch (error) {
+      alert('아이디 또는 패스워드가 잘못되었습니다');
     }
   };
 
@@ -92,10 +79,9 @@ const LoginPage = () => {
   return (
     <AuthContainer>
       <AuthTitle>로그인</AuthTitle>
-      <AuthButton type="button" kakao>
-        <siIcons.SiKakaotalk size="30px" />
-        <span>카카오 계정으로 로그인</span>
-      </AuthButton>
+      <KakaoBox className="kakaoButton">
+        <img src="images/카카오 버튼 PNG.png" alt="카카오버튼" style={{ width: '100%' }} />
+      </KakaoBox>
       <LineBox>
         <Or> 또는 </Or>
         <Line />
@@ -117,7 +103,6 @@ const LoginPage = () => {
           value={password}
           onChange={handleChange}
         />
-        <ValidMessage>{errorMessage}</ValidMessage>
         <AuthButton className={isActive ? 'activeBtn' : 'unactiveBtn'} type="submit" disabled={!isActive}>
           로그인
         </AuthButton>

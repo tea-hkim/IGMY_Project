@@ -23,7 +23,7 @@ const RegisterPage = () => {
   const [email, setEamil] = useState(null);
   const [password, setPassword] = useState(null);
   const [confirmPw, setConfirmPw] = useState(null);
-  const [nickName, setNickName] = useState(null);
+  const [userName, setNickName] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const handleChange = (event) => {
     const {
@@ -35,13 +35,13 @@ const RegisterPage = () => {
       setPassword(value);
     } else if (name === 'confirmPw') {
       setConfirmPw(value);
-    } else if (name === 'nickName') {
+    } else if (name === 'userName') {
       setNickName(value);
     }
   };
   //  이메일, 패스워드 유효성 검사
   let isActive = false;
-  if (email !== null && password !== null && confirmPw !== null && nickName !== null) {
+  if (email !== null && password !== null && confirmPw !== null && userName !== null) {
     isActive = true;
   } else {
     isActive = false;
@@ -50,10 +50,10 @@ const RegisterPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const registerURL = 'http://localhost:8000/api/sign-up/';
-    const username = nickName;
+    const username = userName;
     const userData = { email, password, username };
 
-    if (email === null || password === null || confirmPw === null || nickName === null) {
+    if (email === null || password === null || confirmPw === null || userName === null) {
       setErrorMessage('빈 칸을 모두 채워주세요');
       return;
     }
@@ -117,13 +117,13 @@ const RegisterPage = () => {
           onChange={handleChange}
         />
         <InputWithLabel
-          label="닉네임"
-          name="nickName"
+          label="이름"
+          name="userName"
           type="text"
-          placeholder="별명(2 ~ 15자)"
+          placeholder="이름(2 ~ 15자)"
           maxLength="15"
           required
-          value={nickName}
+          value={userName}
           onChange={handleChange}
         />
         <ValidMessage>{errorMessage}</ValidMessage>
