@@ -1,7 +1,12 @@
 from django.db import models
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import (
+    BaseUserManager,
+    AbstractBaseUser,
+    PermissionsMixin,
+)
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from rest_framework.authtoken.models import Token
 
 
 class UserManager(BaseUserManager):
@@ -9,7 +14,7 @@ class UserManager(BaseUserManager):
 
     def _create_user(self, email, password, **extra_fields):
         if not email:
-            raise ValueError('The given email must be set')
+            raise ValueError("The given email must be set")
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
@@ -17,18 +22,18 @@ class UserManager(BaseUserManager):
         return user
 
     def create_user(self, email, password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', False)
-        extra_fields.setdefault('is_superuser', False)
+        extra_fields.setdefault("is_staff", False)
+        extra_fields.setdefault("is_superuser", False)
         return self._create_user(email, password, **extra_fields)
 
     def create_superuser(self, email, password, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
 
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError('Superuser must have is_staff=True.')
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError('Superuser must have is_superuser=True.')
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError("Superuser must have is_staff=True.")
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError("Superuser must have is_superuser=True.")
 
         return self.create_user(email, password, **extra_fields)
 
@@ -37,39 +42,36 @@ class User(AbstractBaseUser, PermissionsMixin):
     """
     customized User
     """
+
     email = models.EmailField(
-        verbose_name=_('email id'),
-        max_length=64,
-        unique=True,
-        help_text='EMAIL ID.'
+        verbose_name=_("email id"), max_length=64, unique=True, help_text="EMAIL ID."
     )
     username = models.CharField(
         max_length=30,
     )
     is_staff = models.BooleanField(
-        _('staff status'),
+        _("staff status"),
         default=False,
-        help_text=_(
-            'Designates whether the user can log into this admin site.'),
+        help_text=_("Designates whether the user can log into this admin site."),
     )
     is_active = models.BooleanField(
-        _('active'),
+        _("active"),
         default=True,
         help_text=_(
-            'Designates whether this user should be treated as active. '
-            'Unselect this instead of deleting accounts.'
+            "Designates whether this user should be treated as active. "
+            "Unselect this instead of deleting accounts."
         ),
     )
-    date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+    date_joined = models.DateTimeField(_("date joined"), default=timezone.now)
 
     objects = UserManager()
 
-    EMAIL_FIELD = 'email'
-    USERNAME_FIELD = 'email'
+    EMAIL_FIELD = "email"
+    USERNAME_FIELD = "email"
 
     class Meta:
-        verbose_name = _('user')
-        verbose_name_plural = _('users')
+        verbose_name = _("user")
+        verbose_name_plural = _("users")
 
     def __str__(self):
         return self.username
@@ -115,16 +117,33 @@ class InfoPill(models.Model):
     se_qesitm = models.TextField()  # 부작용(이상반응의 부분집합)
     deposit_method_qesitm = models.TextField()  # 보관 방법
 
+    def __str__(self):
+        return self.item_num
+
+
 # 유저 즐겨찾기 모델
 
 
 class UserPill(models.Model):
     user_email = models.ForeignKey(
-        User, to_field='email', db_column='user_email', on_delete=models.CASCADE)
+        User, to_field="email", db_column="user_email", on_delete=models.CASCADE
+    )
     pill_num = models.ForeignKey(
-        InfoPill, to_field='item_num', db_column='pill_num', on_delete=models.CASCADE)
+        InfoPill, to_field="item_num", db_column="pill_num", on_delete=models.CASCADE
+    )
 
 
 class UploadFileModel(models.Model):
     files = models.FileField(upload_to="images", null=True)
     upload_at = models.DateTimeField(auto_now=True)
+
+
+# 검색 기록 모델
+class SearchHistory(models.Model):
+    user_email = models.ForeignKey(
+        User, to_field="email", db_column="user_email", on_delete=models.CASCADE
+    )
+    pill_num = models.ForeignKey(
+        InfoPill, to_field="item_num", db_column="pill_num", on_delete=models.CASCADE
+    )
+    create_at = models.DateField(auto_now_add=True)
