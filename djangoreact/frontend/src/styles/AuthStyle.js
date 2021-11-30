@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { kakaoColor, mainPink, palePink, warningSign } from './color';
+import { mainPink, palePink, warningSign } from './color';
 
 const loginWidth = '80%';
 const loginheight = '2rem';
@@ -20,13 +20,13 @@ export const AuthContainer = styled.div`
 export const AuthTitle = styled.h1`
   text-align: start;
   font-size: 2.2rem;
-  width: 80%;
+  width: ${loginWidth};
   margin: ${marginBottom} auto;
 `;
 
 export const LineBox = styled.div`
   position: relative;
-  width: 80%;
+  width: ${loginWidth};
   margin: 0 auto ${marginBottom};
   display: flex;
   justify-content: center;
@@ -59,9 +59,6 @@ export const Button = styled.button`
   font-size: 20px;
   cursor: pointer;
   background-color: ${(props) => {
-    if (props.kakao) {
-      return kakaoColor;
-    }
     if (props.className === 'unactiveBtn') {
       return 'lightgrey';
     }
@@ -74,6 +71,11 @@ export const Button = styled.button`
     padding: 0;
     margin: 0;
   }
+`;
+
+export const KakaoBox = styled.div`
+  width: ${loginWidth};
+  margin: 0 auto;
 `;
 
 export const LoginForm = styled.form`

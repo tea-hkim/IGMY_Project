@@ -40,3 +40,8 @@ export async function Register({ email, password, nickname }) {
   }
   throw new Error('서버 통신이 원할하지 않습니다.');
 }
+
+export const Logout = () => {
+  localStorage.clear();
+  dispatch(initializeInput());
+};

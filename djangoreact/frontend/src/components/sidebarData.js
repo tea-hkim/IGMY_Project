@@ -28,3 +28,16 @@ export const PillBoxData = [
     className: 'navMenuList_pillbox',
   },
 ];
+
+export const AuthBoxData = [
+  {
+    title: '회원가입',
+    path: '/register',
+    className: 'navMenuList_authbox',
+  },
+  {
+    title: '로그인',
+    path: '/login',
+    className: 'navMenuList_authbox',
+  },
+];
