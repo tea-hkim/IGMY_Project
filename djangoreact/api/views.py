@@ -230,7 +230,6 @@ def pill_detail(request):
     사용 시 주의사항 = atpn_qesitm
     보관 방법 = deposit_method_qesitm
     """
-
     pill_id = request.GET.get("pill_id", "")
 
     if pill_id is None:
@@ -451,7 +450,7 @@ def search_history(request):
     user_email = str(request.user.email)
     data = SearchHistory.objects.filter(user_email=user_email).all().count()
     if data == 0:
-        return Response("최근 검색 기록이 없습니다.")
+        return Response({"message" : "최근 검색 기록이 없습니다."})
 
     old_history = (
         SearchHistory.objects.filter(
