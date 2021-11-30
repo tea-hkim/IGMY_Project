@@ -9,6 +9,7 @@ from django.contrib.auth.models import update_last_login
 from .models import *
 from django import forms
 
+
 User = get_user_model()
 
 
@@ -94,8 +95,19 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
 
         token['email']=user.email #확장
-        token['username'] = user.username
+        token['username'] = user.username #확장
         return token
+    
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        refresh = self.get_token(self.user)
+
+        data['refresh'] = str(refresh)
+        data['access'] = str(refresh.access_token)
+        data['username'] = str(self.user.username)
+
+        return data
 
 
     
