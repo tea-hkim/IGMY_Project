@@ -1,4 +1,5 @@
-import React, { axios, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import {
   InfoStyle,
@@ -26,29 +27,44 @@ const WebcamInfo = () => {
 
 const CameraPage = () => {
   const navigate = useNavigate();
-  const [file, setFile] = useState(null);
-  const [imgSrc, setImgSrc] = useState(null);
+  const [file, setFile] = useState();
+  const [imgSrc, setImgSrc] = useState();
+  const [isLoading, setLoading] = useState(false);
 
   const submitImg = async () => {
+    const URL = 'http://127.0.0.1:8000/api/result-photo/';
     const formData = new FormData();
-    formData.append('files', file);
-    formData.append('enctype', 'multipart/form-data');
+    formData.append('files', file[0]);
+
+    // 로딩중..
+    setLoading(true);
 
     try {
-      const response = axios.post(formData, 'localhost:8000/api/result-photo/', {
-        header: {
+      console.log('file', file[0]);
+      const response = await axios.post(URL, formData, {
+        headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-      console.log(response.data);
-      navigate('/scanning');
+      console.log(response);
+
+      // 로딩끝!
+      setLoading(false);
+
+      navigate('/scan-success', {
+        state: {
+          pillName: response.data['1.알약'][0].item_name,
+          pillImg: response.data['1.알약'][0].image,
+          probability: response.data['1.확률'],
+        },
+      });
     } catch (err) {
       console.log(err);
     }
   };
 
   const resetImg = () => {
-    setImgSrc(null);
+    setImgSrc();
   };
 
   useEffect(() => {
@@ -63,39 +79,44 @@ const CameraPage = () => {
     <>
       <WebcamInfo />
       {/* 컴포넌트 구분선 */}
-      <ContainerWrap>
-        <WebcamContainer>
+      {!isLoading ? (
+        <ContainerWrap>
+          <WebcamContainer>
+            {!imgSrc ? (
+              <>
+                <InputLabel htmlFor="files">
+                  <PreviewImgStyle src="images/이게모약로고.png" alt="알약사진" />
+                </InputLabel>
+                <input
+                  id="files"
+                  name="files"
+                  type="file"
+                  // capture="camera"
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  onChange={(e) => setFile(e.target.files)}
+                />
+              </>
+            ) : (
+              <PreviewImgStyle src={imgSrc} alt="알약사진" />
+            )}
+          </WebcamContainer>
           {!imgSrc ? (
-            <>
-              <InputLabel htmlFor="input-file">
-                <PreviewImgStyle src="images/이게모약로고.png" alt="알약사진" />
-              </InputLabel>
-              <input
-                id="input-file"
-                type="file"
-                capture="camera"
-                accept="image/*"
-                style={{ display: 'none' }}
-                onChange={(e) => setFile(e.target.files)}
-              />
-            </>
+            <div> </div>
           ) : (
-            <PreviewImgStyle src={imgSrc} alt="알약사진" />
+            <ButtonStyle>
+              <button type="button" onClick={resetImg}>
+                다시 찍기
+              </button>
+              <button type="button" onClick={submitImg}>
+                선택 완료
+              </button>
+            </ButtonStyle>
           )}
-        </WebcamContainer>
-        {!imgSrc ? (
-          <div> </div>
-        ) : (
-          <ButtonStyle>
-            <button type="button" onClick={resetImg}>
-              다시 찍기
-            </button>
-            <button type="button" onClick={submitImg}>
-              선택 완료
-            </button>
-          </ButtonStyle>
-        )}
-      </ContainerWrap>
+        </ContainerWrap>
+      ) : (
+        <img src="images/loading.gif" alt="로딩중" style={{ margin: '0 auto', width: '100vw' }} />
+      )}
     </>
   );
 };

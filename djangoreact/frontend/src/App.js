@@ -8,7 +8,7 @@ import CameraPage from './pages/CameraPage';
 import FindPwPage from './pages/FindPwPage';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import ScanningPage from './pages/ScanningPage';
+import ScanSuccessPage from './pages/ScanSuccessPage';
 import ScanFailPage from './pages/ScanFailPage';
 import PillBoxPage from './pages/PillBoxPage';
 import DirectSearchPage from './pages/DirectSearchPage';
@@ -23,8 +23,8 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/findPw" element={<FindPwPage />} />
         <Route path="/camera" element={<CameraPage />} />
-        <Route path="/scanning" element={<ScanningPage />} />
-        <Route path="/scanfail" element={<ScanFailPage />} />
+        <Route path="/scan-success" element={<ScanSuccessPage />} />
+        <Route path="/scan-sail" element={<ScanFailPage />} />
         <Route path="/pillbox" element={<PillBoxPage />} />
         <Route path="/direct" element={<DirectSearchPage />} />
       </Routes>

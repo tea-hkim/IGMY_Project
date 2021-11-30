@@ -42,10 +42,11 @@ export const ButtonStyle = styled.div`
   margin: 1rem auto;
 
   > button + button {
-    margin-left: 0.5rem;
+    margin-left: 1rem;
   }
 
   button {
+    padding: 0.5rem 0.5rem;
     border-radius: 7px;
     background-color: #b2acfa;
     font-size: 1.2rem;
