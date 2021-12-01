@@ -4,8 +4,7 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState: {
     email: '',
-    password: '',
-    nickname: '',
+    username: '',
     token: '',
     logged: false,
   },
@@ -33,4 +32,4 @@ export const authSlice = createSlice({
   },
 });
 
-export const { login, register } = authSlice.actions;
+export const { login, register, initializeInput } = authSlice.actions;

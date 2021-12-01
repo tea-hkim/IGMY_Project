@@ -14,12 +14,12 @@ export const SearchBoxData = [
 export const PillBoxData = [
   {
     title: '최근 검색한 알약',
-    path: '/',
+    path: '/pillbox',
     className: 'navMenuList_pillbox',
   },
   {
     title: '알약 즐겨찾기',
-    path: '/',
+    path: '/pillbox',
     className: 'navMenuList_pillbox',
   },
   {

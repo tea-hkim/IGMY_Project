@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
 import './App.css';
 import { Route, Routes } from 'react-router-dom';
+import { login } from './redux/authSlice';
 import MainPage from './pages/MainPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -14,6 +17,30 @@ import PillBoxPage from './pages/PillBoxPage';
 import DirectSearchPage from './pages/DirectSearchPage';
 
 function App() {
+  const dispatch = useDispatch();
+
+  const initializeUser = async () => {
+    const REFRESH_URL = 'http://localhost:8000/api/token/refresh/';
+    const formData = new FormData();
+    const refreshToken = localStorage.getItem('refresh');
+
+    if (!refreshToken) return;
+
+    formData.append('refresh', refreshToken);
+
+    try {
+      const { data } = await axios.post(REFRESH_URL, formData);
+      const { access, username } = data;
+      dispatch(login({ username, access }));
+    } catch (error) {
+      localStorage.removeItem('refresh');
+    }
+  };
+
+  useEffect(() => {
+    initializeUser();
+  }, []);
+
   return (
     <div className="App">
       <Navbar />
