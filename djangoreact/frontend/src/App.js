@@ -12,6 +12,7 @@ import ScanSuccessPage from './pages/ScanSuccessPage';
 import ScanFailPage from './pages/ScanFailPage';
 import PillBoxPage from './pages/PillBoxPage';
 import DirectSearchPage from './pages/DirectSearchPage';
+import PillDetailPage from './pages/PillDetailPage';
 
 function App() {
   return (
@@ -23,10 +24,11 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/findPw" element={<FindPwPage />} />
         <Route path="/camera" element={<CameraPage />} />
-        <Route path="/scan-success" element={<ScanSuccessPage />} />
-        <Route path="/scan-sail" element={<ScanFailPage />} />
+        <Route path="/scansuccess" element={<ScanSuccessPage />} />
+        <Route path="/scanfail" element={<ScanFailPage />} />
         <Route path="/pillbox" element={<PillBoxPage />} />
         <Route path="/direct" element={<DirectSearchPage />} />
+        <Route path="/pilldetail" element={<PillDetailPage />} />
       </Routes>
       <Footer />
     </div>

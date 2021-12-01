@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router';
 
-const PillinfoPage = () => {
+const PillDetailPage = () => {
   const location = useLocation();
   const [pillName, setPillName] = useState();
   const [pillImg, setPillImg] = useState();
@@ -45,4 +45,4 @@ const PillinfoPage = () => {
   );
 };
 
-export default PillinfoPage;
+export default PillDetailPage;

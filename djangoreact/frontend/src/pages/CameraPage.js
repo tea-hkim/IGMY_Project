@@ -51,11 +51,14 @@ const CameraPage = () => {
       // 로딩끝!
       setLoading(false);
 
-      navigate('/scan-success', {
+      alert(response.data);
+
+      navigate('/scansuccess', {
         state: {
-          pillName: response.data['1.알약'][0].item_name,
-          pillImg: response.data['1.알약'][0].image,
-          probability: response.data['1.확률'],
+          probability: response.data['1.확률'], // 인공지능 확률
+          pillName: response.data['1.알약'][0].item_name, // 약 이름
+          pillNum: response.data['1.알약'][0].item_num, // 일련번호
+          pillImg: response.data['1.알약'][0].image, // 약 사진
         },
       });
     } catch (err) {

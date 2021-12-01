@@ -101,3 +101,37 @@ export const InfoButton = styled.button`
     opacity: 0.6;
   }
 `;
+
+export const InfoContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  width: 70vw;
+`;
+
+export const FailInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 1rem auto;
+  width: 100%;
+  border: 0.5rem solid #b4a2eb;
+  border-radius: 0.5rem;
+
+  > h1 {
+    font-size: 1rem;
+    margin: 0.5rem auto;
+    text-align: center;
+  }
+
+  > p {
+    font-size: 0.6rem;
+    margin: 0.2rem auto;
+    text-align: center;
+  }
+
+  > img {
+    width: 60%;
+    height: 60%;
+    margin: 1rem auto;
+  }
+`;
