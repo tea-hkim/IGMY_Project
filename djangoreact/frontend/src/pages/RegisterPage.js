@@ -3,9 +3,9 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import InputWithLabel from '../auth/InputWithLabel';
-import { emailCheck, passwordCheck } from '../auth/checkUserInfo';
 import { register } from '../redux/authSlice';
 import AuthButton from '../auth/AuthButton';
+import { emailCheck, passwordCheck } from '../auth/checkUserInfo';
 import {
   AuthContainer,
   AuthTitle,
@@ -20,11 +20,11 @@ import {
 const RegisterPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [email, setEamil] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPw, setConfirmPw] = useState('');
-  const [nickName, setNickName] = useState('');
-
+  const [email, setEamil] = useState(null);
+  const [password, setPassword] = useState(null);
+  const [confirmPw, setConfirmPw] = useState(null);
+  const [userName, setNickName] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
   const handleChange = (event) => {
     const {
       target: { name, value },
@@ -35,26 +35,41 @@ const RegisterPage = () => {
       setPassword(value);
     } else if (name === 'confirmPw') {
       setConfirmPw(value);
-    } else if (name === 'nickName') {
+    } else if (name === 'userName') {
       setNickName(value);
     }
   };
-
-  // 이메일, 패스워드 유효성 검사
-  let userValid = '';
+  //  이메일, 패스워드 유효성 검사
   let isActive = false;
-
-  if (email === '' || password === '' || nickName === '') {
-    userValid = '빈 칸을 모두 채워주세요';
-  } else {
+  if (email !== null && password !== null && confirmPw !== null && userName !== null) {
     isActive = true;
+  } else {
+    isActive = false;
   }
 
   const handleSubmit = async (event) => {
-    const registerURL = 'http://localhost:8000/api/create/';
-    const username = nickName;
-    const userData = { email, password, username };
     event.preventDefault();
+    const registerURL = 'http://localhost:8000/api/sign-up/';
+    const username = userName;
+    const userData = { email, password, username };
+
+    if (email === null || password === null || confirmPw === null || userName === null) {
+      setErrorMessage('빈 칸을 모두 채워주세요');
+      return;
+    }
+    if (!emailCheck(email)) {
+      setErrorMessage('잘못된 이메일 형식입니다');
+      return;
+    }
+    if (!passwordCheck(password)) {
+      setErrorMessage('비밀번호는 영문 숫자를 포함하여 8자리 이상이어야 합니다');
+      return;
+    }
+    if (password !== confirmPw) {
+      setErrorMessage('비밀번호가 일치하지 않습니다');
+      return;
+    }
+    setErrorMessage('');
 
     const { data } = await axios.post(registerURL, userData);
     console.log(data);
@@ -84,7 +99,6 @@ const RegisterPage = () => {
           value={email}
           onChange={handleChange}
         />
-        <ValidMessage>{emailCheck(email) ? '' : '이메일 형식에 맞지 않습니다'}</ValidMessage>
         <InputWithLabel
           label="비밀번호"
           name="password"
@@ -94,9 +108,6 @@ const RegisterPage = () => {
           value={password}
           onChange={handleChange}
         />
-        <ValidMessage>
-          {passwordCheck(password) ? '' : '비밀번호는 영문 숫자를 포함하여 8자리 이상이어야 합니다'}
-        </ValidMessage>
         <InputWithLabel
           name="confirmPw"
           type="password"
@@ -105,18 +116,17 @@ const RegisterPage = () => {
           value={confirmPw}
           onChange={handleChange}
         />
-        <ValidMessage>{password === confirmPw ? '' : '비밀번호가 일치하지 않습니다.'}</ValidMessage>
         <InputWithLabel
-          label="닉네임"
-          name="nickName"
+          label="이름"
+          name="userName"
           type="text"
-          placeholder="별명(2 ~ 15자)"
+          placeholder="이름(2 ~ 15자)"
           maxLength="15"
           required
-          value={nickName}
+          value={userName}
           onChange={handleChange}
         />
-        <ValidMessage>{userValid}</ValidMessage>
+        <ValidMessage>{errorMessage}</ValidMessage>
         <AuthButton className={isActive ? 'activeBtn' : 'unactiveBtn'} type="submit" disabled={!isActive}>
           회원가입
         </AuthButton>
