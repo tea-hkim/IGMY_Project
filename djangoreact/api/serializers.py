@@ -17,7 +17,6 @@ class UserCreateSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
     username = serializers.CharField(required=True)
     password = serializers.CharField(required=True)
-    token = serializers.CharField(max_length=255, read_only=True)
 
     def create(self, validated_data):
         user = User.objects.create(
@@ -28,6 +27,7 @@ class UserCreateSerializer(serializers.Serializer):
 
         user.save()
         return user
+
 
 
 class InfoPillSerializer(serializers.ModelSerializer):
@@ -84,28 +84,62 @@ class PillDetailSerializer(serializers.ModelSerializer):
             "se_qesitm",
             "atpn_qesitm",
             "deposit_method_qesitm",
+            "intrc_qesitm"
         )
 
 
-# 페이로드 확장 클래스
+# 토큰 obtain 커스터마이징
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    # 페이로드 확장
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
 
         token['email']=user.email #확장
+        token['username'] = user.username #확장
         return token
+    
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        refresh = self.get_token(self.user)
+
+        data['refresh'] = str(refresh)
+        data['access'] = str(refresh.access_token)
+        data['username'] = str(self.user.username)
+
+        return data
+
 
 # 토큰 refresh 커스터마이징
 class MyTokenRefreshSerializer(TokenRefreshSerializer):
     def validate(self, attrs):
         data = super(MyTokenRefreshSerializer, self).validate(attrs)
         decoded_payload = token_backend.decode(data['access'], verify=True)
-        print('payload: ', decoded_payload)
         user_uid = decoded_payload['user_id']
         email = decoded_payload['email']
+        username = decoded_payload['username']
         # add filter query
         data.update({
             'email': email,
+            'username': username,
             })
         return data
+
+
+class RefreshTokenSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+
+    default_error_messages = {
+        'bad_token': 'Token is invalid or expired'
+    }
+
+    def validate(self, attrs):
+        self.token = attrs['refresh']
+        return attrs
+
+    def save(self, **kwargs):
+        try:
+            RefreshToken(self.token).blacklist()
+        except TokenError:
+            self.fail('bad_token')
