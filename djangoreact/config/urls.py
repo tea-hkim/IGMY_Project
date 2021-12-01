@@ -19,5 +19,4 @@ urlpatterns = [
      path('password_reset_complete/', auth_views.PasswordResetCompleteView.as_view(),
           name="password_reset_complete"),
      # 토큰 발급, 리프레쉬 api
-
 ]

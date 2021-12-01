@@ -84,6 +84,7 @@ class PillDetailSerializer(serializers.ModelSerializer):
             "se_qesitm",
             "atpn_qesitm",
             "deposit_method_qesitm",
+            "intrc_qesitm"
         )
 
 
@@ -109,8 +110,6 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         return data
 
-
-    
 
 # 토큰 refresh 커스터마이징
 class MyTokenRefreshSerializer(TokenRefreshSerializer):

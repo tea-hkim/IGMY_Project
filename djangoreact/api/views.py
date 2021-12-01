@@ -620,4 +620,4 @@ class LogoutView(GenericAPIView):
         sz = self.get_serializer(data=request.data)
         sz.is_valid(raise_exception=True)
         sz.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response("로그아웃 성공", status=status.HTTP_204_NO_CONTENT)
