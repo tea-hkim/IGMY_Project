@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import DirectSearchResult from '../components/DirectSearchResult';
-import { PillShapeData, PillColorData } from '../components/pillData';
+import { PillShapeData, PillColorData } from '../helper/pillData';
 import { palePink, mainPink } from '../styles/color';
 
 function DirectSearchPage() {
