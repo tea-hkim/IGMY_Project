@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import {
+  LogoStyle,
   InfoStyle,
   ContainerWrap,
   WebcamContainer,
@@ -9,21 +10,6 @@ import {
   PreviewImgStyle,
   InputLabel,
 } from '../styles/CameraPageStyle';
-
-const WebcamInfo = () => {
-  return (
-    <InfoStyle>
-      <p>
-        옆의 사진과 같이
-        <br />
-        중앙에 약의 모양이 가득 채워지고
-        <br />
-        각인이 잘 보일 수 있도록 촬영해주세요!
-      </p>
-      <img src="images/알약샘플.png" alt="알약샘플" />
-    </InfoStyle>
-  );
-};
 
 const CameraPage = () => {
   const navigate = useNavigate();
@@ -80,46 +66,63 @@ const CameraPage = () => {
 
   return (
     <>
-      <WebcamInfo />
+      <InfoStyle>
+        {!isLoading ? (
+          <>
+            <p>
+              옆의 사진과 같이
+              <br />
+              중앙에 약의 모양이 가득 채워지고
+              <br />
+              각인이 잘 보일 수 있도록 촬영해주세요!
+            </p>
+            <img src="images/알약샘플.png" alt="알약샘플" />
+          </>
+        ) : (
+          <p className="scanning">인공지능이 알약을 스캔하는 중입니다...</p>
+        )}
+      </InfoStyle>
       {/* 컴포넌트 구분선 */}
-      {!isLoading ? (
-        <ContainerWrap>
-          <WebcamContainer>
+      <ContainerWrap>
+        {!isLoading ? (
+          <>
+            <WebcamContainer>
+              {!imgSrc ? (
+                <>
+                  <InputLabel htmlFor="files">
+                    <PreviewImgStyle src="images/이게모약로고.png" alt="알약사진" />
+                  </InputLabel>
+                  <input
+                    id="files"
+                    name="files"
+                    type="file"
+                    // capture="camera"
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                    onChange={(e) => setFile(e.target.files)}
+                  />
+                </>
+              ) : (
+                <PreviewImgStyle src={imgSrc} alt="알약사진" />
+              )}
+            </WebcamContainer>
             {!imgSrc ? (
-              <>
-                <InputLabel htmlFor="files">
-                  <PreviewImgStyle src="images/이게모약로고.png" alt="알약사진" />
-                </InputLabel>
-                <input
-                  id="files"
-                  name="files"
-                  type="file"
-                  // capture="camera"
-                  accept="image/*"
-                  style={{ display: 'none' }}
-                  onChange={(e) => setFile(e.target.files)}
-                />
-              </>
+              <div> </div>
             ) : (
-              <PreviewImgStyle src={imgSrc} alt="알약사진" />
+              <ButtonStyle>
+                <button type="button" onClick={resetImg}>
+                  다시 찍기
+                </button>
+                <button type="button" onClick={submitImg}>
+                  선택 완료
+                </button>
+              </ButtonStyle>
             )}
-          </WebcamContainer>
-          {!imgSrc ? (
-            <div> </div>
-          ) : (
-            <ButtonStyle>
-              <button type="button" onClick={resetImg}>
-                다시 찍기
-              </button>
-              <button type="button" onClick={submitImg}>
-                선택 완료
-              </button>
-            </ButtonStyle>
-          )}
-        </ContainerWrap>
-      ) : (
-        <img src="images/loading.gif" alt="로딩중" style={{ margin: '0 auto', width: '100vw' }} />
-      )}
+          </>
+        ) : (
+          <LogoStyle src="images/loading.gif" alt="로딩중" />
+        )}
+      </ContainerWrap>
     </>
   );
 };

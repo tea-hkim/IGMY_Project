@@ -9,8 +9,8 @@ export const modalStyles = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '100%',
-    height: '50%',
+    width: '80%',
+    height: '60%',
     borderRadius: '10px',
   },
 };
@@ -36,7 +36,7 @@ export const ScanBox1 = styled.div`
   display: flex;
   flex-direction: row;
   margin: 0 auto;
-  width: 80vw;
+  width: 50vw; //모바일 80vw
   height: 36%;
   border: 0.3rem solid #b4a2eb;
   background-color: #b2acfa;
@@ -51,12 +51,12 @@ export const ScanBox2 = styled.div`
   display: flex;
   flex-direction: row;
   margin: 0 auto;
-  width: 76vw;
+  width: 46vw; //모바일 75vw
   height: 32%;
   border: 0.3rem solid #b4a2eb;
   background-color: #dee2e6;
   border-radius: 0.5rem;
-  visibility: ${(props) => (props.hundred ? 'hidden' : 'visible')};
+  visibility: ${(props) => (!props.hundred ? 'hidden' : 'visible')};
 
   & + div {
     margin-top: 0.5rem;
@@ -69,6 +69,10 @@ export const ScanImgStyle = styled.img`
   padding: 0.2rem;
   border-radius: 0.5rem;
   background-color: white;
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 export const ScanInfoStyle = styled.div`
@@ -91,12 +95,16 @@ export const ScanInfoStyle = styled.div`
 export const InfoButton = styled.button`
   margin: 1rem auto 0 auto;
   padding: 0.2rem;
-  width: 7rem;
-  background-color: #b4a2eb;
-  border-radius: 0.2rem;
-  color: white;
+  width: 8rem;
+  background-color: white;
+  border: 2px solid #b4a2eb;
+  border-radius: 0.5rem;
+  color: black;
 
   &:hover {
+    color: white;
+    background-color: #b4a2eb;
+    font-weight: bold;
     cursor: pointer;
     opacity: 0.6;
   }
