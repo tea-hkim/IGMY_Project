@@ -28,6 +28,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.sql import text
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework.generics import GenericAPIView
+from django.contrib.auth.views import PasswordResetView
+
 
 user = settings.DATABASES["default"]["USER"]
 password = settings.DATABASES["default"]["PASSWORD"]
@@ -611,7 +613,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 class MyTokenRefreshView(TokenViewBase):
     serializer_class = MyTokenRefreshSerializer
 
-# refresh 토큰을 죽여버려서 로그아웃 시키는 api
+# refresh 토큰을 blacklist로 올리는 api
 class LogoutView(GenericAPIView):
     serializer_class = RefreshTokenSerializer
     permission_classes = (permissions.IsAuthenticated,)
@@ -621,3 +623,4 @@ class LogoutView(GenericAPIView):
         sz.is_valid(raise_exception=True)
         sz.save()
         return Response("로그아웃 성공", status=status.HTTP_204_NO_CONTENT)
+
