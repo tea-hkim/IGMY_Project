@@ -1,42 +1,43 @@
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { login, register } from '../redux/authSlice';
+import { login, initializeInput } from '../redux/authSlice';
 
-export async function Login({ email, password }) {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const loginURL = 'http://localhost:8000/api/login/';
-  const userData = { email, password };
+// const ACCESS_EXPIRY_TIME = 5 * 60 * 1000;
+const REFRESH_URL = 'http://localhost:8000/api/token/refresh/';
+const dispatch = useDispatch();
 
-  const { data } = await axios.post(loginURL, userData);
+export const Logout = () => {
+  localStorage.removeItem('refresh');
+  dispatch(initializeInput());
+};
 
-  if (data.message === 'login success') {
-    const { token } = data;
-    dispatch(login({ email, password, token }));
-    localStorage.setItem('userToken', token);
-    navigate('/');
-  } else if (data.message === 'no user') {
-    alert('아이디가 잘못되었습니다');
-  } else if (data.message === 'wrong password') {
-    alert('패스워드가 틀렸습니다');
+export const initializeUser = async () => {
+  const formData = new FormData();
+  const refreshToken = localStorage.getItem('refresh');
+
+  if (!refreshToken) return;
+
+  formData.append('refresh', refreshToken);
+
+  try {
+    const { data } = await axios.post(REFRESH_URL, formData);
+    const { access, username } = data;
+    dispatch(login({ username, access }));
+  } catch (error) {
+    localStorage.removeItem('refresh');
   }
-}
+};
 
-export async function Register({ email, password, nickname }) {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const registerURL = 'http://localhost:8000/api/create/';
-  const userData = { email, password, nickname };
+export const onSilentRefresh = () => {
+  const formData = new FormData();
+  const refreshToken = sessionStorage.getItem('refresh');
 
-  const response = await axios.post(registerURL, userData);
-
-  if (response.message === 'ok') {
-    dispatch(register({ email, password, nickname }));
-    navigate('/login');
+  if (!refreshToken) return;
+  try {
+    const { data } = axios.post(REFRESH_URL, formData);
+    const { access, username } = data;
+    dispatch(login({ username, access }));
+  } catch (error) {
+    sessionStorage.removeItem('refresh');
   }
-  if (response.message === 'duplicate email') {
-    throw new Error('가입되어 있는 이메일 입니다.');
-  }
-  throw new Error('서버 통신이 원할하지 않습니다.');
-}
+};
