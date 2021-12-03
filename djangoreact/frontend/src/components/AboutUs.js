@@ -76,6 +76,9 @@ const Card = styled.div`
       display: flex;
       flex-direction: column;
       align-items: center;
+      h2 {
+        margin: 0;
+      }
       h4 {
         font-size: 1.2rem;
         color: rgba(0, 0, 0, 0.5);
