@@ -42,10 +42,10 @@ class InfoPillSerializer2(serializers.ModelSerializer):
         fields = ("item_name", "image", "use_method_qesitm", "sungbun")
 
 
-class UserPillSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserPill
-        exclude = ["id"]
+# class UserPillSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = UserPill
+#         exclude = ["id"]
 
 
 class ImageForm(forms.ModelForm):
@@ -54,10 +54,10 @@ class ImageForm(forms.ModelForm):
         fields = "__all__"
 
 
-class SearchHistorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SearchHistory
-        exclude = ["id"]
+# class SearchHistorySerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = SearchHistory
+#         exclude = ["id"]
 
 
 class UserPillListSerializer(serializers.ModelSerializer):

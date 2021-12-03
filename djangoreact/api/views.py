@@ -438,7 +438,7 @@ def result_photo(request):
         return Response("파일을 선택해주세요.")
 
 
-# 검색 기록
+# # 검색 기록
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def search_history(request):

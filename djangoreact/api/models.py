@@ -107,7 +107,7 @@ class InfoPill(models.Model):
         max_length=30,
     )  # 전문일반구분
     sungbun = models.CharField(
-        max_length=100,
+        max_length=200,
     )  # 성분/함량/단위
     efcy_qesitm = models.TextField()  # 효능/효과
     use_method_qesitm = models.TextField()  # 용법/용량(하루 복용량)

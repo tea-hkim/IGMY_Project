@@ -101,7 +101,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "elice",
+        "NAME": "team6",
         "USER": "postgres",
         "PASSWORD": "postgres",
         "HOST": "elice-kdt-2nd-team6.koreacentral.cloudapp.azure.com",
