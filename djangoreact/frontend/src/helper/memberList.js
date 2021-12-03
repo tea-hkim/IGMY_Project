@@ -37,7 +37,7 @@ export const memberList = [
     mbti: 'INTJ',
     url: 'cnt.taehokim@gmail.com',
     email: 'cnt.taehokim@gmail.com',
-    comment: '문과생 간호사, 개발자가 되다! 융합형 인재는 혹시 나?',
+    comment: '문과생 간호사, 개발자가 되다! "융합형 인재"는 혹시... 나?',
   },
   {
     id: 5,

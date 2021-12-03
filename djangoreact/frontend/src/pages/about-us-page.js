@@ -43,7 +43,7 @@ const PageContainer = styled.div`
     margin-bottom: 1.25rem;
   }
   h2 {
-    margin-bottom: 0.625rem;
+    margin-bottom: 1.25rem;
   }
 `;
 const BoxContainer = styled.div`
