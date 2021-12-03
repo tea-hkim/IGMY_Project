@@ -29,7 +29,18 @@ export const authSlice = createSlice({
       state = { email, username };
       return state;
     },
+    resetpassword: (state, action) => {
+      const { email } = action.payload;
+      state = { email };
+      return state;
+    },
+    resetpasswordconfirm: (state, action) => {
+      // eslint-disable-next-line camelcase
+      const { uid, token, new_password } = action.payload;
+      state = { uid, token, new_password };
+      return state;
+    },
   },
 });
 
-export const { login, register, initializeInput } = authSlice.actions;
+export const { login, register, initializeInput, resetpassword, resetpasswordconfirm } = authSlice.actions;
