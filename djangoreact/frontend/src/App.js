@@ -15,6 +15,7 @@ import ScanSuccessPage from './pages/ScanSuccessPage';
 import ScanFailPage from './pages/ScanFailPage';
 import PillBoxPage from './pages/PillBoxPage';
 import DirectSearchPage from './pages/DirectSearchPage';
+import AboutUsPage from './pages/about-us-page';
 
 function App() {
   const dispatch = useDispatch();
@@ -54,6 +55,7 @@ function App() {
         <Route path="/scan-sail" element={<ScanFailPage />} />
         <Route path="/pillbox" element={<PillBoxPage />} />
         <Route path="/direct" element={<DirectSearchPage />} />
+        <Route path="/about-us" element={<AboutUsPage />} />
       </Routes>
       <Footer />
     </div>
