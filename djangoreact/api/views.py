@@ -543,15 +543,13 @@ GOOGLE_CALLBACK_URI = BASE_URL + 'api/login/google/callback/'
 def get_tokens_for_user(user):
     refreshToken = RefreshToken.for_user(user)
     accessToken = refreshToken.access_token
-
-    return str(refresh), str(accessToken)
+    return (refreshToken, accessToken)
 
 
 '''
 kakao
 수정본 업로드 예정
 '''
-
 
 '''google'''
 
@@ -601,6 +599,7 @@ def google_callback(request):
     # 구글에서 refresh_token은 처음 회원가입시에만 발급된다.
 
     '''[발급된 Access Token을 이용해서 Email 값을 Google에게 요청]'''
+
     email_req = requests.get(
         f"https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={access_token}")
     email_req_json = email_req.json()  # json형태로 프로필 값 가져오기
