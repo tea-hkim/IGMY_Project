@@ -3,10 +3,12 @@ from django.core.mail import message
 import requests
 from django.core.checks.messages import Info
 from django.db.models.expressions import RawSQL
-from rest_framework import status, permissions
+from rest_framework import status, permissions, generics
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenViewBase, TokenObtainPairView
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .serializers import *
 from .models import *
@@ -24,6 +26,8 @@ from django.contrib import auth
 from datetime import datetime, timedelta, date
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from rest_framework.generics import GenericAPIView
 
 user = settings.DATABASES["default"]["USER"]
 password = settings.DATABASES["default"]["PASSWORD"]
@@ -36,11 +40,11 @@ url = url.format(user, password, host, port, name)
 
 engine = create_engine(url)
 
-# import numpy as np
-# import cv2
-# import json
-# import tensorflow as tf
-# from .photo_key import photo_key
+import numpy as np
+import cv2
+import json
+import tensorflow as tf
+from .photo_key import photo_key
 
 
 """회원가입"""
@@ -67,6 +71,7 @@ def createUser(request):
     else:
         # return jsonify("result : true")
         pass
+    
 
 
 # 모든 알약 정보
@@ -225,7 +230,6 @@ def pill_detail(request):
     사용 시 주의사항 = atpn_qesitm
     보관 방법 = deposit_method_qesitm
     """
-
     pill_id = request.GET.get("pill_id", "")
 
     if pill_id is None:
@@ -446,7 +450,7 @@ def search_history(request):
     user_email = str(request.user.email)
     data = SearchHistory.objects.filter(user_email=user_email).all().count()
     if data == 0:
-        return Response("최근 검색 기록이 없습니다.")
+        return Response({"message" : "최근 검색 기록이 없습니다."})
 
     old_history = (
         SearchHistory.objects.filter(
@@ -490,98 +494,98 @@ def search_history(request):
 
 
 # 사진 검색 API
-# with open('./AI/pill_90.json', 'r') as f:
-#     pill_dict = json.load(f)
+with open('./AI/pill_90.json', 'r') as f:
+    pill_dict = json.load(f)
 
-# @method_decorator(csrf_exempt, name='dispatch')
-# @api_view(['POST'])
-# @permission_classes([AllowAny])
-# def result_photo(request):
-#     form = ImageForm(request.POST, request.FILES)
-#     pill = InfoPill.objects.all()
-#     if form.is_valid():
-#         image_name = form.save()
-#         image_path = f'{image_name.files}'
-#         try:
-#             response = requests.post(
-#             'https://sdk.photoroom.com/v1/segment',
-#             data={'bg_color': '#000000'},
-#             headers={'x-api-key': f'{photo_key}'},
-#             files={'image_file': open(f'{image_path}', 'rb')},
-#             )
+@method_decorator(csrf_exempt, name='dispatch')
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def result_photo(request):
+    form = ImageForm(request.POST, request.FILES)
+    pill = InfoPill.objects.all()
+    if form.is_valid():
+        image_name = form.save()
+        image_path = f'{image_name.files}'
+        try:
+            response = requests.post(
+            'https://sdk.photoroom.com/v1/segment',
+            data={'bg_color': '#000000'},
+            headers={'x-api-key': f'{photo_key}'},
+            files={'image_file': open(f'{image_path}', 'rb')},
+            )
 
-#             response.raise_for_status()
-#             with open(f'{image_path}', 'wb') as f:
-#                 f.write(response.content)
-#         except:
-#             return Response("이미지 형식의 파일을 올려주세요.")
+            response.raise_for_status()
+            with open(f'{image_path}', 'wb') as f:
+                f.write(response.content)
+        except:
+            return Response("이미지 형식의 파일을 올려주세요.")
 
-#         try:
-#             img_array = np.fromfile(f"{image_path}", np.uint8)
-#             image = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
-#             image_gray = cv2.imdecode(img_array, cv2.IMREAD_GRAYSCALE)
-#             number = np.ones_like(image_gray) * 255
-#             mul = cv2.multiply(image_gray, number)
-#             contours, _ = cv2.findContours(mul, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-#             contours_xy = np.array(contours)
-#             for i in range(len(contours_xy)):
-#                 if len(contours_xy[i]) < 10:
-#                     continue
-#                 x_min, x_max = 0,0
-#                 value = list()
-#                 for j in range(len(contours_xy[i])):
-#                     value.append(contours_xy[i][j][0][0])
-#                     x_min = min(value)
-#                     x_max = max(value)
+        try:
+            img_array = np.fromfile(f"{image_path}", np.uint8)
+            image = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+            image_gray = cv2.imdecode(img_array, cv2.IMREAD_GRAYSCALE)
+            number = np.ones_like(image_gray) * 255
+            mul = cv2.multiply(image_gray, number)
+            contours, _ = cv2.findContours(mul, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            contours_xy = np.array(contours)
+            for i in range(len(contours_xy)):
+                if len(contours_xy[i]) < 10:
+                    continue
+                x_min, x_max = 0,0
+                value = list()
+                for j in range(len(contours_xy[i])):
+                    value.append(contours_xy[i][j][0][0])
+                    x_min = min(value)
+                    x_max = max(value)
 
-#                 y_min, y_max = 0,0
-#                 value = list()
-#                 for j in range(len(contours_xy[i])):
-#                         value.append(contours_xy[i][j][0][1])
-#                         y_min = min(value)
-#                         y_max = max(value)
+                y_min, y_max = 0,0
+                value = list()
+                for j in range(len(contours_xy[i])):
+                        value.append(contours_xy[i][j][0][1])
+                        y_min = min(value)
+                        y_max = max(value)
 
-#                 x = x_min
-#                 y = y_min
-#                 w = x_max-x_min
-#                 h = y_max-y_min
+                x = x_min
+                y = y_min
+                w = x_max-x_min
+                h = y_max-y_min
 
-#                 img_trim = image[y:y+h, x:x+w]
-#                 cv2.imwrite(f"{image_path}", img_trim)
-#         except:
-#             return Response("알약이 중앙에 위치하도록 사진을 다시 촬영하여주세요.")
+                img_trim = image[y:y+h, x:x+w]
+                cv2.imwrite(f"{image_path}", img_trim)
+        except:
+            return Response("알약이 중앙에 위치하도록 사진을 다시 촬영하여주세요.")
 
-#         try:
-#             predict_list = []
-#             predict_img = cv2.imread(f'{image_path}')
-#             print(predict_img.shape)
-#             predict_img = cv2.resize(predict_img, (224, 224), interpolation=cv2.INTER_LINEAR)/255
-#             predict_list.append(predict_img)
-#             predict_list = np.array(predict_list)
+        try:
+            predict_list = []
+            predict_img = cv2.imread(f'{image_path}')
+            print(predict_img.shape)
+            predict_img = cv2.resize(predict_img, (224, 224), interpolation=cv2.INTER_LINEAR)/255
+            predict_list.append(predict_img)
+            predict_list = np.array(predict_list)
 
-#             model = tf.keras.models.load_model('model')
-#             predict = model.predict(predict_list)
-#             num = str(np.argmax(predict[0], axis=0))
+            model = tf.keras.models.load_model('model')
+            predict = model.predict(predict_list)
+            num = str(np.argmax(predict[0], axis=0))
 
-#             pill = pill.filter(
-#                     Q(item_num__exact=pill_dict[num]) # url 약 넘버 정확하게 일치한다면
-#                     ).distinct()
-#             serializer = InfoPillSerializer(pill, many=True)
+            pill = pill.filter(
+                    Q(item_num__exact=pill_dict[num]) # url 약 넘버 정확하게 일치한다면
+                    ).distinct()
+            serializer = InfoPillSerializer(pill, many=True)
 
-#             content = {
-#                 '1.알약': serializer.data,
-#                 '1.확률':  '{:.2f}%'.format(round(predict[0][int(num)]*100, 2))
-#             }
+            content = {
+                '1.알약': serializer.data,
+                '1.확률':  '{:.2f}%'.format(round(predict[0][int(num)]*100, 2))
+            }
 
-#             return Response(content)
-
-
-#         except:
-#             return Response("인공지능 모델을 불러오지 못했습니다.")
+            return Response(content)
 
 
-#     else:
-#         return Response("파일을 선택해주세요.")
+        except:
+            return Response("인공지능 모델을 불러오지 못했습니다.")
+
+
+    else:
+        return Response("파일을 선택해주세요.")
 
 
 # 로그인 유지를 위한 토큰 유효성 검사 api
@@ -606,3 +610,14 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 class MyTokenRefreshView(TokenViewBase):
     serializer_class = MyTokenRefreshSerializer
+
+# refresh 토큰을 죽여버려서 로그아웃 시키는 api
+class LogoutView(GenericAPIView):
+    serializer_class = RefreshTokenSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, *args):
+        sz = self.get_serializer(data=request.data)
+        sz.is_valid(raise_exception=True)
+        sz.save()
+        return Response("로그아웃 성공", status=status.HTTP_204_NO_CONTENT)

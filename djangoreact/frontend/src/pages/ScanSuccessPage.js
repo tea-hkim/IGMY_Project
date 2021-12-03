@@ -20,6 +20,7 @@ const ScanSuccessPage = () => {
   const location = useLocation();
   const [pillName, setPillName] = useState();
   const [pillImg, setPillImg] = useState();
+  const [pillNum, setPillNum] = useState();
   const [probability, setProbability] = useState();
   const [hundred, setHundred] = useState(false);
   const [isOpen1, setOpen1] = useState(false);
@@ -29,11 +30,12 @@ const ScanSuccessPage = () => {
   useEffect(() => {
     setPillName(location.state.pillName);
     setPillImg(location.state.pillImg);
+    setPillNum(location.state.pillNum);
+
     setProbability(location.state.probability);
 
     if (location.state.probability === '100.00%') {
       setHundred(true);
-      console.log(hundred);
     }
   }, [probability]);
 
@@ -50,7 +52,7 @@ const ScanSuccessPage = () => {
             <h1>
               [{pillName}] 일 확률 {probability}
             </h1>
-            <InfoButton type="button" onClick={() => navigate('')}>
+            <InfoButton type="button" onClick={() => navigate('/pilldetail', { state: { pillNum } })}>
               해당 약 정보 확인
             </InfoButton>
           </ScanInfoStyle>
