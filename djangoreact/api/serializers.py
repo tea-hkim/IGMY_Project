@@ -8,6 +8,9 @@ from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.models import update_last_login
 from .models import *
 from django import forms
+from rest_auth.serializers import PasswordResetSerializer
+from django.conf import settings
+from django.contrib.auth.forms import PasswordResetForm
 
 
 User = get_user_model()
@@ -143,3 +146,5 @@ class RefreshTokenSerializer(serializers.Serializer):
             RefreshToken(self.token).blacklist()
         except TokenError:
             self.fail('bad_token')
+
+
