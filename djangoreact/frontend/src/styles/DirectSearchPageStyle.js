@@ -1,6 +1,18 @@
 import styled from 'styled-components';
 import { mainPink, palePink } from './color';
 
+export const SearchPage = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  min-height: 80vh;
+  h1 {
+    width: 60vw;
+    color: white;
+  }
+`;
+
 export const SearchBox = styled.form`
   display: flex;
   flex-direction: column;
@@ -23,10 +35,11 @@ export const NameBox = styled.div`
   justify-content: space-space-evenly;
   align-items: center;
   width: 100%;
-  border: 2px solid ${palePink};
   border-radius: 5px;
   box-sizing: border-box;
   padding: 2vh 5%;
+  background-color: white;
+  margin-top: 20px;
   input {
     width: 80%;
     height: 4vh;
@@ -48,12 +61,12 @@ export const NonNameContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 10px 0;
+  margin-top: 20px;
   width: 100%;
-  border: 2px solid ${palePink};
   border-radius: 5px;
   box-sizing: border-box;
   padding: 2vh 5%;
+  background-color: white;
   > div {
     margin: 10px 0;
   }
@@ -79,33 +92,6 @@ export const ShapeColorBox = styled.div`
   }
 `;
 
-export const ButtonBox = styled.div`
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  width: 100%;
-  margin-top: 10px;
-  button {
-    border: 1px solid ${palePink};
-    border-radius: 5px;
-    background-color: ${mainPink};
-    width: 20%;
-    height: 2.5rem;
-    font-size: 1.25rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 5px 0;
-  }
-`;
-
-export const SearchPage = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
-
 export const SelectBox = styled.div`
   display: flex;
   flex-direction: column;
@@ -116,6 +102,13 @@ export const SelectBox = styled.div`
     }
     return 'white';
   }};
+  color: ${(props) => {
+    if (props.className === 'checked') {
+      return 'white';
+    }
+    return 'black';
+  }};
+
   div {
     border-radius: 50%;
     width: 20px;
@@ -123,5 +116,25 @@ export const SelectBox = styled.div`
     box-sizing: border-box;
     border: 1px solid black;
     background-color: ${(props) => props.id};
+  }
+`;
+
+export const ButtonBox = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+  margin-top: 20px;
+  button {
+    border-radius: 5px;
+    background-color: white;
+    width: 20%;
+    height: 2.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 0;
   }
 `;

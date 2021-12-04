@@ -34,14 +34,13 @@ function DirectSearchPage() {
   };
 
   const handleClick = (event, type) => {
-    const { id, innerText } = event.target;
+    const { id, innerText } = event.currentTarget;
     if (type === 'shape') {
       setShape(id);
     }
     if (type === 'color') {
       setColor(innerText);
     }
-    console.dir(event.target);
   };
 
   const handleReset = () => {
@@ -53,9 +52,7 @@ function DirectSearchPage() {
 
   return (
     <SearchPage className="search_direct">
-      <h3>
-        {pillName} {shape} {color}
-      </h3>
+      <h1>알약 직접 검색</h1>
       <SearchBox className="search_direct_box" onSubmit={onSubmit}>
         <NameBox className="search_name_box">
           <h2>약 이름 검색</h2>
@@ -120,7 +117,7 @@ function DirectSearchPage() {
               return (
                 <SelectBox
                   role="button"
-                  key={item.title}
+                  key={item.color}
                   className={color === item.title ? 'checked' : 'selectbox_shape'}
                   id={item.color}
                   onClick={(e) => {
