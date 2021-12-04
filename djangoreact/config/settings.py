@@ -25,6 +25,8 @@ STATE = "random_string"  # 나중에 url 요청 시 사용되는 값
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-788$x$hv@n*dzud$08r-_-i11kn!e-fv#1$*mlk+%*2-$3!wby"
 
+# SOCIALACCOUNT_PROVIDERS = {} #yet
+
 # Social client key
 KAKAO_REST_API_KEY = "36bab671cc6d302ae5ccc02a2c1aa707"
 SOCIAL_AUTH_GOOGLE_CLIENT_ID = "775963563051-uv8t5d689e6eerchgedpdu2f36bthj45.apps.googleusercontent.com"
@@ -68,8 +70,8 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
 
-    # [개별 서비스의 연결모듈 지원 내용]
-    # "allauth.socialaccount.providers.kakao",
+    # [소셜로그인 개별 서비스의 연결모듈 지원 내용]
+    "allauth.socialaccount.providers.kakao",
     'allauth.socialaccount.providers.google',
 
     # [비밀번호 변경]
@@ -87,6 +89,7 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True            # email 필드 사용 o
 ACCOUNT_USERNAME_REQUIRED = True        # username 필드 사용 o
 # ACCOUNT_EMAIL_VERIFICATION = 'none' # 이메일 유효성 인증 필요 여부
+# SOCIALACCOUNT_AUTO_SIGNUP = True # 기본값
 
 # JWT 환경 설정
 REST_USE_JWT = True

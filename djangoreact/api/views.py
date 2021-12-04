@@ -546,10 +546,118 @@ def get_tokens_for_user(user):
     return (refreshToken, accessToken)
 
 
-'''
-kakao
-수정본 업로드 예정
-'''
+'''kakao'''
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def kakao_login(request):
+    code = request.GET['code']
+
+    KAKAO_CLIENT_ID = getattr(settings, 'KAKAO_REST_API_KEY')
+    REDIRECT_URI = KAKAO_CALLBACK_URI
+
+    # request로 받은 code로 access_token 받아오기
+    access_token_request_uri = 'https://kauth.kakao.com/oauth/token?grant_type=authorization_code&'
+    access_token_request_uri += 'client_id=' + KAKAO_CLIENT_ID
+    access_token_request_uri += '&code=' + code
+    access_token_request_uri += '&redirect_uri=' + REDIRECT_URI
+
+    access_token_request_uri_data = requests.get(access_token_request_uri)
+    json_data = access_token_request_uri_data.json()  # json 형태로 데이터 저장
+
+    # return JsonResponse(json_data)  # test : 나오는거 확인
+    '''
+    {"access_token": "jvq74u6OYP6Mn25Lv8JEYEYR8WdOoNkiTz2byQo9cpgAAAF9hOb1Zg", "token_type": "bearer", "refresh_token": "zo1f4aBxvQTFrPAyu1nvbxHs_Hnyexu2tmlijgo9cpgAAAF9hOb1ZQ", "expires_in": 21599, "scope": "account_email profile_image talk_message profile_nickname", "refresh_token_expires_in": 5183999}
+    '''
+
+    access_token = json_data['access_token']  # 액세스 토큰 꺼내와서 저장
+    refresh_token = json_data['refresh_token']
+
+    # Authorization(인가코드) : header로 꼭 설정해야함 (카카오는 인가코드 기반으로 토큰을 요청, 받음)
+    headers = {
+        'Authorization': f"{access_token}",
+    }
+
+    # return JsonResponse(headers)  # test : 인가코드 확인
+    '''
+    {"Authorization": "IU_uv_tub7D1cVQZsYqShPH75-S47f7Fh0OXtgopyNkAAAF9hOYfUQ"}
+    '''
+
+    # Authorization(프론트에서 받은 토큰)을 이용해서 회원의 정보를 확인하기 위한 카카오 API 주소
+    user_profile_info_uri = 'https://kapi.kakao.com/v2/user/me'
+    # API를 요청하여 회원의 정보를 user_profile_info에 저장
+    user_profile_info = requests.get(user_profile_info_uri, headers=headers)
+
+    json_data = user_profile_info.json()  # 회원 정보를 json형태로 불러옴
+
+    return JsonResponse(user_profile_info)  # test : 확인
+
+    '''
+    {
+        "id": 2003367790,
+        "connected_at": "2021-11-23T00:48:16Z",
+        "properties": {"nickname": "\uac15\uc11d\uc601", "profile_image": "http://k.kakaocdn.net/dn/b5NyPn/btrkz4wgIhn/zA3lMIXWu1cSlh7qeAsLKk/img_640x640.jpg", "thumbnail_image": "http://k.kakaocdn.net/dn/b5NyPn/btrkz4wgIhn/zA3lMIXWu1cSlh7qeAsLKk/img_110x110.jpg"},
+        "kakao_account": {
+            "profile_nickname_needs_agreement": false,
+            "profile_image_needs_agreement": false,
+            "profile": {
+                "nickname": "\uac15\uc11d\uc601",
+                "thumbnail_image_url": "http://k.kakaocdn.net/dn/cGnCMx/btrmKlB3UyN/0WKCOQ8p30n6CzoxqpT9lK/img_110x110.jpg",
+                "profile_image_url": "http://k.kakaocdn.net/dn/cGnCMx/btrmKlB3UyN/0WKCOQ8p30n6CzoxqpT9lK/img_640x640.jpg",
+                "is_default_image": false
+            },
+            "has_email": true,
+            "email_needs_agreement": false,
+            "is_email_valid": true,
+            "is_email_verified": true,
+            "email": "sy7434@naver.com"
+        }
+    }
+    '''
+
+    # 이메일과 닉네임 데이터 가져옴
+    email = json_data['kakao_account']['email']
+    nickname = json_data['kakao_account']['profile']['nickname']
+    # nickname = json_data['properties']['nickname'] # 둘다 상관 없다. (같은 말)
+
+    return HttpResponse(email)  # test : 확인
+
+    '''기존에 소셜로그인을 했는지 확인'''
+    # 데이터베이스에 이미 저장되어있는 회원이면, user에 회원 저장
+    # if User.objects.filter(
+
+    # )
+
+    # # 해당 디비에 이미 유저가 존재하면
+    # if User.objects.filter(email=email).exists():
+    #     user = User.objects.get(email=email)
+    #     # user.date_joined = timezone.now() #로그인 한 시각을 업데이트해줌
+    #     # user.save()
+
+    # # 회원가입인 경우
+    # else:
+    #     user = User.objects.create(
+    #         email=email,
+    #         username=nickname
+    #     )
+    #     user.save()
+
+    # user_data = User.objects.filter(email=email).all()
+
+    # return HttpResponse(user_data) # test :
+
+    # # 토큰 발행
+    # payload = JWT_PAYLOAD_HANDLER(user)
+    # jwt_token = JWT_ENCODE_HANDLER(payload)
+
+    # response = {
+    #     'success': True,
+    #     'token': jwt_token
+    # }
+
+    # return Response(response, status=200)
+
 
 '''google'''
 
@@ -586,12 +694,12 @@ def google_callback(request):
         f"https://oauth2.googleapis.com/token?client_id={client_id}&client_secret={client_secret}&code={code}&grant_type=authorization_code&redirect_uri={GOOGLE_CALLBACK_URI}&state={state}")
     token_req_json = token_req.json()  # 구글 이용해서 토큰 발급
 
+    # return JsonResponse(token_req_json)  # test : 토큰 발급 확인
+
     error = token_req_json.get("error")
 
     if error is not None:
         raise JSONDecodeError(error)
-
-    # return JsonResponse(token_req_json)  # test : 토큰 발급 확인
 
     access_token = token_req_json.get("access_token")
 
@@ -604,7 +712,7 @@ def google_callback(request):
         f"https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={access_token}")
     email_req_json = email_req.json()  # json형태로 프로필 값 가져오기
 
-    # return JsonResponse(email_req.json()) # test : 둘이 같은 말
+    # return JsonResponse(email_req_json)  # test : 둘이 같은 말
     # return HttpResponse(email_req)
     '''
     {"issued_to": "775963563051-uv8t5d689e6eerchgedpdu2f36bthj45.apps.googleusercontent.com", "audience": "775963563051-uv8t5d689e6eerchgedpdu2f36bthj45.apps.googleusercontent.com",
@@ -675,6 +783,7 @@ def google_callback(request):
             status=200,
         )
 
+    # .save()해줘야 함
     except User.DoesNotExist:
         data = {'access_token': access_token, 'code': code}
         accept = requests.post(
@@ -707,7 +816,6 @@ class GoogleLogin(SocialLoginView):
     adapter_class = google_view.GoogleOAuth2Adapter
     callback_url = GOOGLE_CALLBACK_URI
     client_class = OAuth2Client
-    # serializer_class = SocialLoginSerializer
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
