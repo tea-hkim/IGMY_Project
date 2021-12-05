@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useEffect } from 'react';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
@@ -65,5 +66,24 @@ function App() {
     </div>
   );
 }
+=======
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import ResetPassword from './containers/ResetPassword';
+import ResetPasswordConfirm from './containers/ResetPasswordConfirm';
+import { Provider } from 'react-redux';
+import store from './store';
+
+const App = () => (
+    <Provider store={store}>
+        <Router>
+            <Routes>
+                <Route exact path='/reset-password' element={<ResetPassword/>} />
+                <Route exact path='/password/reset/confirm/:uid/:token' element={<ResetPasswordConfirm/>} />
+            </Routes>
+        </Router>
+    </Provider>
+);
+>>>>>>> 8de3da5dbf2b7f277c7576a777a3213105be8edc
 
 export default App;

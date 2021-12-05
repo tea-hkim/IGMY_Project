@@ -8,11 +8,15 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "axios": "^0.24.0",
+<<<<<<< HEAD
     "expo-camera": "^12.0.3",
     "prop-types": "^15.7.2",
+=======
+>>>>>>> 8de3da5dbf2b7f277c7576a777a3213105be8edc
     "react": "^17.0.2",
     "react-art": "^17.0.2",
     "react-dom": "^17.0.2",
+<<<<<<< HEAD
     "react-icons": "^4.3.1",
     "react-modal": "^3.14.4",
     "react-native": "^0.66.3",
@@ -24,6 +28,14 @@
     "react-scripts": "^4.0.3",
     "react-webcam": "^6.0.0",
     "styled-components": "^5.3.3",
+=======
+    "react-redux": "^7.2.6",
+    "react-router-dom": "^6.0.2",
+    "react-scripts": "4.0.3",
+    "redux": "^4.1.2",
+    "redux-devtools-extension": "^2.13.9",
+    "redux-thunk": "^2.4.1",
+>>>>>>> 8de3da5dbf2b7f277c7576a777a3213105be8edc
     "web-vitals": "^1.0.1"
   },
   "scripts": {
