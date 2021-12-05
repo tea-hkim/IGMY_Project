@@ -1,0 +1,34 @@
+@font-face {
+  font-family: 'Elice_bold';
+  src: url('./styles/font/EliceDigitalBaeum_Bold.ttf');
+}
+
+@font-face {
+  font-family: 'Elice_regular';
+  src: url('./styles/font/EliceDigitalBaeum_Regular.ttf');
+}
+
+@font-face {
+  font-family: 'Kyobo_handwriting';
+  src: url('./styles/font/Kyobo\ Handwriting\ 2019.ttf');
+}
+
+@font-face {
+  font-family: 'Gmarket_light';
+  src: url('./styles/font/GmarketSansTTFLight.ttf');
+}
+
+@font-face {
+  font-family: 'Gmarket_Medium';
+  src: url('./styles/font/GmarketSansTTFMedium.ttf');
+}
+
+@font-face {
+  font-family: 'Gmarket_bold';
+  src: url('./styles/font/GmarketSansTTFBold.ttf');
+}
+
+.App {
+  background-color: #b2acfa;
+  font-family: 'Gmarket_Medium';
+}
