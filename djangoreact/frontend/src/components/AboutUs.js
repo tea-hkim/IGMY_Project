@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 
 export const AboutUs = ({ engName, name, position, mbti, url, email, blog, comment }) => {
-  const frontImg = `images/ar/${name}.png`;
-  const backImg = `images/ar/${name}표정.png`;
+  const frontImg = `ar이모지/${name}.png`;
+  const backImg = `ar이모지/${name}표정.png`;
 
   const handleClick = (event) => {
     const elem = event.currentTarget;
@@ -57,6 +57,7 @@ const Card = styled.div`
     border-radius: 0.313rem;
     background-color: white;
     box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.4);
+    font-family: 'Gmarket_Medium';
     h4 {
       font-size: 20px;
       color: rgba(0, 0, 0, 0.7);
@@ -73,6 +74,7 @@ const Card = styled.div`
     display: flex;
     justify-content: flex-start;
     .back_header {
+      font-family: 'Gmarket_Medium';
       display: flex;
       flex-direction: column;
       align-items: center;
