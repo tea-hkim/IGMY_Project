@@ -48,7 +48,6 @@ export const Line = styled.div`
 export const Button = styled.button`
   display: flex;
   justify-content: space-evenly;
-  box-sizing: border-box;
   width: ${loginWidth};
   margin: 0 auto 1.25rem;
   padding: 0.313rem;
@@ -85,7 +84,6 @@ export const LoginForm = styled.form`
     margin: ${marginBottom} auto;
     width: ${loginWidth};
     > input {
-      box-sizing: border-box;
       padding: 0.625rem;
       width: 100%;
       border: 0.125rem solid ${palePink};

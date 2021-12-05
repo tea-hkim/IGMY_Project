@@ -51,7 +51,6 @@ const Card = styled.div`
   transform-style: preserve-3d;
   position: relative;
   .front {
-    box-sizing: border-box;
     padding: 0.625rem 1.875rem;
     transform: rotateY(0deg);
     border-radius: 0.313rem;
@@ -65,7 +64,6 @@ const Card = styled.div`
     }
   }
   .back {
-    box-sizing: border-box;
     padding: 0.625rem 1.875rem;
     transform: rotateY(180deg);
     background-color: #faf78e;

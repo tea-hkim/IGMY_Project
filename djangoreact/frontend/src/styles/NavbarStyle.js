@@ -8,7 +8,6 @@ export const NavBox = styled.div`
   justify-content: space-between;
   align-items: center;
   position: relative;
-  box-sizing: border-box;
   padding: 0.625rem 3.125rem;
   margin-bottom: 4vh;
   box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.3);
@@ -33,7 +32,6 @@ export const MenuBoxContent = styled.ul`
   display: flex;
   flex-direction: column;
   align-items: start;
-  box-sizing: border-box;
   margin: 0;
   padding: 0.938rem;
   width: 100%;
@@ -52,7 +50,6 @@ export const MenuBoxContent = styled.ul`
   }
   h3 {
     width: 100%;
-    box-sizing: border-box;
     padding-bottom: 10px;
     font-size: 1.563rem;
     border-bottom: 3px solid ${mainPink};
@@ -85,7 +82,6 @@ export const ContentBox = styled.div`
 
 export const MainLogo = styled.div`
   h2 {
-    box-sizing: border-box;
     color: white;
     padding: 1.25em;
     font-size: 2rem;

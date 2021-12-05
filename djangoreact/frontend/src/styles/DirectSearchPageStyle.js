@@ -36,7 +36,6 @@ export const NameBox = styled.div`
   align-items: center;
   width: 100%;
   border-radius: 5px;
-  box-sizing: border-box;
   padding: 2vh 5%;
   background-color: white;
   margin-top: 20px;
@@ -64,7 +63,6 @@ export const NonNameContainer = styled.div`
   margin-top: 20px;
   width: 100%;
   border-radius: 5px;
-  box-sizing: border-box;
   padding: 2vh 5%;
   background-color: white;
   > div {
@@ -113,7 +111,6 @@ export const SelectBox = styled.div`
     border-radius: 50%;
     width: 20px;
     height: 20px;
-    box-sizing: border-box;
     border: 1px solid black;
     background-color: ${(props) => props.id};
   }

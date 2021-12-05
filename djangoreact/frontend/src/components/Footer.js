@@ -46,7 +46,6 @@ export default Footer;
 
 const FooterBox = styled.div`
   display: flex;
-  box-sizing: border-box;
   padding: 2vh 0;
   margin-top: 5vh;
   justify-content: center;

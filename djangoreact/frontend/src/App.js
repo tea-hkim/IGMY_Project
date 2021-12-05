@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import './App.css';
 import { Route, Routes } from 'react-router-dom';
+import GlobalStyle from './styles/GlobalStyle';
 import { login } from './redux/authSlice';
 import MainPage from './pages/MainPage';
 import LoginPage from './pages/LoginPage';
@@ -46,6 +47,7 @@ function App() {
 
   return (
     <div className="App">
+      <GlobalStyle />
       <Navbar />
       <Routes>
         <Route exact path="/" element={<MainPage />} />
