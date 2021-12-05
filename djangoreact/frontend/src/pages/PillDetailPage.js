@@ -57,7 +57,7 @@ const PillDetailPage = () => {
       const response2 = await axios.get(`http://127.0.0.1:8000/api/user-pill/?pn=${location.state.pillNum}`);
       const CheckPillNum = response2.data[0].item_num;
 
-      if (CheckPillNum === pillNum) {
+      if (CheckPillNum === location.state.pillNumNum) {
         setUserPill(true);
       }
     } catch (err) {
