@@ -1,17 +1,29 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const Footer = () => {
+  const navigation = useNavigate();
+
   return (
     <FooterBox className="footer_box">
       <ExplanateBox className="footer_explanation">
-        <nav className="footer_explanation_navigation">
-          <ul>
-            <li>서비스 기획 의도</li>
-            <li>팀원 소개</li>
-            <li>사용 방법</li>
-          </ul>
-        </nav>
+        <div className="footer_explanation_navigation">
+          <span>서비스 기획 의도</span>
+          <span
+            role="button"
+            tabIndex={0}
+            onClick={() => {
+              navigation('/about-us');
+            }}
+            onKeyDown={() => {
+              navigation('/about-us');
+            }}
+          >
+            팀원 소개
+          </span>
+          <span>사용 방법</span>
+        </div>
         <div id="team_info">
           <span>팀명 : 머슴러닝</span>
           <span>이메일 : igmy1108@gmail.com</span>
@@ -35,12 +47,12 @@ export default Footer;
 const FooterBox = styled.div`
   display: flex;
   box-sizing: border-box;
-  padding: 5vh 0 0;
+  padding: 2vh 0;
+  margin-top: 5vh;
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 25vh;
-  margin-top: 10vh;
+  height: 100%;
   background-color: #fafafa;
 `;
 const ExplanateBox = styled.div`
@@ -49,8 +61,7 @@ const ExplanateBox = styled.div`
   display: flex;
   flex-direction: column;
   font-size: 0.625rem;
-  nav {
-    ul {
+  .footer_explanation_navigation {
       display: flex;
       justify-content: start;
       align-items: flex-start;
@@ -60,7 +71,7 @@ const ExplanateBox = styled.div`
       margin: 10px 0;
       font-size: 0.625rem;
       font-weight: 700;
-      li {
+      span {
         margin-right: 0.625rem;
         cursor: pointer;
       }
