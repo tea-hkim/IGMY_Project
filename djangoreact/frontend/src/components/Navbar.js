@@ -37,12 +37,12 @@ const Navbar = () => {
             <li className="navTogle">
               <grIcons.GrFormClose onClick={showSidebar} size="3.125rem" />
             </li>
-            {logged ? (
+            {logged && (
               <div>
                 <h2>{username}님</h2>
                 <span>건강한 하루를 응원합니다</span>
               </div>
-            ) : null}
+            )}
           </div>
           <h3>알약 검색</h3>
           <ContentBox className="nav_menu_list_search">
@@ -56,7 +56,7 @@ const Navbar = () => {
               );
             })}
           </ContentBox>
-          {logged ? <h2>내 알약상자</h2> : null}
+          {logged && <h2>내 알약상자</h2>}
           <ContentBox className="nav_menu_list_Auth">
             {logged
               ? PillBoxData.map((item) => {

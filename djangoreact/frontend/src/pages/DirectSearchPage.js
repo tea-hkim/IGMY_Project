@@ -1,7 +1,8 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DirectSearchResult from '../components/DirectSearchResult';
 import { PillShapeData, PillColorData } from '../helper/pillData';
+import Loader from '../components/loader';
 import {
   SearchBox,
   NameBox,
@@ -16,20 +17,27 @@ function DirectSearchPage() {
   const [pillName, setPillName] = useState('');
   const [shape, setShape] = useState('');
   const [color, setColor] = useState('');
-  const [pillData, setPillData] = useState([]);
 
-  async function directSearch() {
-    const url = `http://localhost:8000/api/search-direct/?n=${pillName}&s=${shape}&c=${color}&`;
+  const [target, setTarget] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [pillList, setPillList] = useState(null);
+
+  const directSearch = async () => {
+    setIsLoaded(true);
+    const url = `http://localhost:8000/api/search-direct/?n=${pillName}&s=${shape !== '선택안함' ? shape : ''}&c_f=${
+      color !== '선택안함' ? color : ''
+    }&`;
     const response = await axios.get(url);
-    setPillData(response.data);
-  }
+    setPillList(response.data);
+    setIsLoaded(false);
+  };
 
-  const onSubmit = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     directSearch();
   };
 
-  const onChange = (event) => {
+  const handleChange = (event) => {
     setPillName(event.target.value);
   };
 
@@ -47,16 +55,41 @@ function DirectSearchPage() {
     setPillName('');
     setShape('');
     setColor('');
-    setPillData([]);
+    setPillList(null);
   };
+
+  const printMoreItem = async () => {
+    setIsLoaded(true);
+    setIsLoaded(false);
+  };
+
+  const onIntersect = ([entry], observer) => {
+    if (entry.isIntersecting && !isLoaded) {
+      observer.unobserve(entry.target);
+      printMoreItem();
+      observer.observe(entry.target);
+    }
+  };
+
+  useEffect(() => {
+    let observer;
+    if (target) {
+      observer = new IntersectionObserver(onIntersect, {
+        threshold: 0.4,
+      });
+      observer.observe(target);
+      console.log(target);
+    }
+    return () => observer && observer.disconnect();
+  }, [target]);
 
   return (
     <SearchPage className="search_direct">
       <h1>알약 직접 검색</h1>
-      <SearchBox className="search_direct_box" onSubmit={onSubmit}>
+      <SearchBox className="search_direct_box" onSubmit={handleSubmit}>
         <NameBox className="search_name_box">
           <h2>약 이름 검색</h2>
-          <input name="searchName" type="text" onChange={onChange} value={pillName} />
+          <input name="searchName" type="text" onChange={handleChange} value={pillName} />
         </NameBox>
         <NonNameContainer className="search_another_box">
           <h2>약 모양 검색</h2>
@@ -140,12 +173,21 @@ function DirectSearchPage() {
             검색
           </button>
           <button type="button" className="reset_button" onClick={handleReset}>
-            선택 초기화
+            초기화
           </button>
         </ButtonBox>
       </SearchBox>
-      <div>{pillData.length !== 0 ? <h4>총 {pillData.length} 건의 검색 결과가 있습니다</h4> : null}</div>
-      {DirectSearchResult(pillData)}
+      <div>
+        {pillList && (
+          <h4>
+            [{pillName}-{shape}-{color}]으로 {pillList.length} 건의 검색 결과가 있습니다
+          </h4>
+        )}
+      </div>
+      {pillList && <DirectSearchResult pillList={pillList} />}
+      <div ref={setTarget} className="target_element">
+        {isLoaded && <Loader />}
+      </div>
     </SearchPage>
   );
 }

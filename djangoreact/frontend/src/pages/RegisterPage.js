@@ -72,7 +72,6 @@ const RegisterPage = () => {
     setErrorMessage('');
 
     const { data } = await axios.post(registerURL, userData);
-    console.log(data);
     if (data.message === 'ok') {
       dispatch(register({ email, password, username }));
       alert('회원가입이 완료되었습니다. 로그인해주세요!');
