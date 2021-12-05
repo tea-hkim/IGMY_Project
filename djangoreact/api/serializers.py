@@ -31,6 +31,9 @@ class UserCreateSerializer(serializers.Serializer):
         user.save()
         return user
 
+# class UserSerializer(serializers.ModelSerializer):
+#     class Meta:
+
 
 class InfoPillSerializer(serializers.ModelSerializer):
     class Meta:

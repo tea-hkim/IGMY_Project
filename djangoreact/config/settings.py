@@ -108,6 +108,10 @@ SIMPLE_JWT = {
     'JTI_CLAIM': 'jti',
 }
 
+# JWT_AUTH = {
+
+# }
+
 # SOCIALACCOUNT_PROVIDERS = {
 #     'google': {
 #         'SCOPE': [

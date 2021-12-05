@@ -1,5 +1,6 @@
 import os
 import requests
+import json
 from .serializers import *
 from .models import *
 from django.core.mail import message
@@ -74,9 +75,6 @@ def createUser(request):
             serializer.save()
             return Response({"message": "ok"}, status=status.HTTP_201_CREATED)
         return Response({"message": "duplicate email"}, status=status.HTTP_200_OK)
-    else:
-        # return jsonify("result : true")
-        pass
 
 
 # 모든 알약 정보
@@ -544,7 +542,8 @@ GOOGLE_CALLBACK_URI = BASE_URL + 'api/login/google/callback/'
 def get_tokens_for_user(user):
     refreshToken = RefreshToken.for_user(user)
     accessToken = refreshToken.access_token
-    return (accessToken, refreshToken)
+    # return (accessToken, refreshToken)
+    return str(accessToken), str(refreshToken)
 
 
 '''kakao'''
@@ -586,11 +585,7 @@ def kakao_callback(request):
     headers = {
         'Authorization': f"Bearer {access_token}",
     }
-
     # return JsonResponse(headers)  # test : 인가코드 확인
-    '''
-    {"Authorization": "Bearer ucaAFsNVvw6QTVdr6qDIxZaUtUOiSURBG3Balgo9c5oAAAF9hqqm1A"}
-    '''
 
     # Authorization(프론트에서 받은 토큰)을 이용해서 회원의 정보를 확인하기 위한 카카오 API 주소
     user_profile_info_uri = 'https://kapi.kakao.com/v2/user/me'
@@ -598,7 +593,6 @@ def kakao_callback(request):
     user_profile_info = requests.get(user_profile_info_uri, headers=headers)
 
     json_data = user_profile_info.json()  # 회원 정보를 json형태로 불러옴
-
     # return JsonResponse(json_data)  # test : 확인
     '''
     {
@@ -629,7 +623,6 @@ def kakao_callback(request):
     # 이메일과 닉네임 데이터 가져옴
     email = json_data['kakao_account']['email']
     nickname = json_data['kakao_account']['profile']['nickname']
-
     # return HttpResponse(nickname)  # test : 확인
 
     '''db에 이미 저장되어있는 회원인지 확인'''
@@ -649,52 +642,30 @@ def kakao_callback(request):
         user_info.save()
         # return HttpResponse("새로운 회원") # test : 확인
 
-    # return HttpResponse(user_info.{field}) # test : 확인
+    # return HttpResponse(user_info.{해당field}) # test : 확인
 
     '''방법1'''
     access_token, refresh_token = get_tokens_for_user(user_info)
-
     # return HttpResponse(f"{access_token} & {refresh_token}")  # test : 확인
-    '''
-    eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjM4Njk1NDA3LCJqdGkiOiIxNmNjZGNmNjU0MDU0ZjIxODFiNDM5MDBiZGYwNDVjMyIsInVzZXJfaWQiOjh9.PHTiHha6HuCX_OL1QN40K1tnDxvE9GpN_02uOYKwdiU 
-    & 
-    eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTYzOTI5OTkwNywianRpIjoiM2I1YmVjMTE3NDIzNDg0NWExMWFmYjNkYTA2ZmU3YWYiLCJ1c2VyX2lkIjo4fQ.hytURuJpGYrmON5hF31pYmBWo9p9J9Enri_WUId--Ao
-    '''
 
     expires_at = (
         timezone.now()
         + getattr(settings, "SIMPLE_JWT", None)["ACCESS_TOKEN_LIFETIME"]
     )
 
-    # user_data = {  # jwt토큰, 이름, 타입 프론트엔드에 전달
-    #     "access_token": access_token,
-    #     "refresh_token": refresh_token,
-    #     "user_email": user_info.email,
-    #     "user_name": user_info.username,
-    # "social_platform": user_info.social_platform,
-    #     "expires_at": expires_at,
-    # }
+    user_data = {  # jwt토큰, 이름, 타입 프론트엔드에 전달
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "user_email": user_info.email,
+        "user_name": user_info.username,
+        "social_platform": user_info.social_platform,
+        "expires_at": expires_at,
+    }
 
     return JsonResponse(
-        {
-            "access_token": access_token,
-            "refresh_token": refresh_token,
-            "user_email": user_info.email,
-            "user_name": user_info.username,
-            "social_platform": user_info.social_platform,
-            "expires_at": expires_at,
-        },
+        user_data,
         status=200,
     )
-
-    JsonResponse(
-        {
-            "access_token": access_token,
-            "user_email": email,
-        },
-        status=200,
-    )
-
     # refresh_token을 저장 및 재업데이트? 재설정? 해주는 코드도 필요하지 않을까?
 
     '''방법2'''
