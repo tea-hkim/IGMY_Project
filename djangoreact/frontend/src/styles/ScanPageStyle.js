@@ -56,7 +56,7 @@ export const ScanBox2 = styled.div`
   border: 0.3rem solid #b4a2eb;
   background-color: #dee2e6;
   border-radius: 0.5rem;
-  visibility: ${(props) => (!props.hundred ? 'hidden' : 'visible')};
+  visibility: ${(props) => (props.hundred ? 'hidden' : 'visible')};
 
   & + div {
     margin-top: 0.5rem;
