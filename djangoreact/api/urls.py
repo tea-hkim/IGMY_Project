@@ -30,7 +30,7 @@ urlpatterns = [
     # path("login/kakao/", views.KakaoLoginView.as_view()),
 
     path("login/kakao/", views.kakao_login, name="kakao_login"),
-    path("login/kakao/callback/", views.kakao_login, name="kakao_callback"),
+    path("login/kakao/callback/", views.kakao_callback, name="kakao_callback"),
     #     path('login/kakao/finish/', views.kakao_login_finish.as_view(),
     #          name='kakao_login_todjango'),
     # OAuth : google api

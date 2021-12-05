@@ -31,6 +31,7 @@ from sqlalchemy.sql import text
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework.generics import GenericAPIView
 from django.contrib.auth.views import PasswordResetView
+from django.utils import timezone
 
 
 user = settings.DATABASES["default"]["USER"]
@@ -543,45 +544,52 @@ GOOGLE_CALLBACK_URI = BASE_URL + 'api/login/google/callback/'
 def get_tokens_for_user(user):
     refreshToken = RefreshToken.for_user(user)
     accessToken = refreshToken.access_token
-    return (refreshToken, accessToken)
+    return (accessToken, refreshToken)
 
 
 '''kakao'''
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 @permission_classes([AllowAny])
 def kakao_login(request):
+    REST_API_KEY = getattr(settings, 'KAKAO_REST_API_KEY')
+    REDIRECT_URI = KAKAO_CALLBACK_URI
+    return redirect(
+        f"https://kauth.kakao.com/oauth/authorize?client_id={REST_API_KEY}&redirect_uri={REDIRECT_URI}&response_type=code"
+    )
+
+
+def kakao_callback(request):
     code = request.GET['code']
 
     KAKAO_CLIENT_ID = getattr(settings, 'KAKAO_REST_API_KEY')
     REDIRECT_URI = KAKAO_CALLBACK_URI
 
     # request로 받은 code로 access_token 받아오기
-    access_token_request_uri = 'https://kauth.kakao.com/oauth/token?grant_type=authorization_code&'
-    access_token_request_uri += 'client_id=' + KAKAO_CLIENT_ID
+    access_token_request_uri = 'https://kauth.kakao.com/oauth/token?grant_type=authorization_code'
+    access_token_request_uri += '&client_id=' + KAKAO_CLIENT_ID
     access_token_request_uri += '&code=' + code
     access_token_request_uri += '&redirect_uri=' + REDIRECT_URI
 
     access_token_request_uri_data = requests.get(access_token_request_uri)
     json_data = access_token_request_uri_data.json()  # json 형태로 데이터 저장
 
-    # return JsonResponse(json_data)  # test : 나오는거 확인
+    # return JsonResponse(json_data)  # test : 확인
     '''
-    {"access_token": "jvq74u6OYP6Mn25Lv8JEYEYR8WdOoNkiTz2byQo9cpgAAAF9hOb1Zg", "token_type": "bearer", "refresh_token": "zo1f4aBxvQTFrPAyu1nvbxHs_Hnyexu2tmlijgo9cpgAAAF9hOb1ZQ", "expires_in": 21599, "scope": "account_email profile_image talk_message profile_nickname", "refresh_token_expires_in": 5183999}
+    {"access_token": "EhBhF9LKxyiVu_qQQ1P7URdtRGRuo4cFixDArgopb9UAAAF9hqkO4A", "token_type": "bearer", "refresh_token": "1DaoZjX9LGVvqNlCUV8T1rV7hjy37IeaD6hw4Qopb9UAAAF9hqkO3g", "expires_in": 21599, "scope": "account_email profile_image talk_message profile_nickname", "refresh_token_expires_in": 5183999}
     '''
-
     access_token = json_data['access_token']  # 액세스 토큰 꺼내와서 저장
     refresh_token = json_data['refresh_token']
 
     # Authorization(인가코드) : header로 꼭 설정해야함 (카카오는 인가코드 기반으로 토큰을 요청, 받음)
     headers = {
-        'Authorization': f"{access_token}",
+        'Authorization': f"Bearer {access_token}",
     }
 
     # return JsonResponse(headers)  # test : 인가코드 확인
     '''
-    {"Authorization": "IU_uv_tub7D1cVQZsYqShPH75-S47f7Fh0OXtgopyNkAAAF9hOYfUQ"}
+    {"Authorization": "Bearer ucaAFsNVvw6QTVdr6qDIxZaUtUOiSURBG3Balgo9c5oAAAF9hqqm1A"}
     '''
 
     # Authorization(프론트에서 받은 토큰)을 이용해서 회원의 정보를 확인하기 위한 카카오 API 주소
@@ -591,63 +599,106 @@ def kakao_login(request):
 
     json_data = user_profile_info.json()  # 회원 정보를 json형태로 불러옴
 
-    return JsonResponse(user_profile_info)  # test : 확인
-
+    # return JsonResponse(json_data)  # test : 확인
     '''
     {
-        "id": 2003367790,
-        "connected_at": "2021-11-23T00:48:16Z",
-        "properties": {"nickname": "\uac15\uc11d\uc601", "profile_image": "http://k.kakaocdn.net/dn/b5NyPn/btrkz4wgIhn/zA3lMIXWu1cSlh7qeAsLKk/img_640x640.jpg", "thumbnail_image": "http://k.kakaocdn.net/dn/b5NyPn/btrkz4wgIhn/zA3lMIXWu1cSlh7qeAsLKk/img_110x110.jpg"},
+        "id": 2003367790, 
+        "connected_at": "2021-11-23T00:48:16Z", 
+        "properties": {
+            "nickname": "\uac15\uc11d\uc601", 
+            "profile_image": "http://k.kakaocdn.net/dn/b5NyPn/btrkz4wgIhn/zA3lMIXWu1cSlh7qeAsLKk/img_640x640.jpg", 
+            "thumbnail_image": "http://k.kakaocdn.net/dn/b5NyPn/btrkz4wgIhn/zA3lMIXWu1cSlh7qeAsLKk/img_110x110.jpg"
+        }, 
         "kakao_account": {
-            "profile_nickname_needs_agreement": false,
-            "profile_image_needs_agreement": false,
+            "profile_nickname_needs_agreement": false, 
+            "profile_image_needs_agreement": false, 
             "profile": {
-                "nickname": "\uac15\uc11d\uc601",
-                "thumbnail_image_url": "http://k.kakaocdn.net/dn/cGnCMx/btrmKlB3UyN/0WKCOQ8p30n6CzoxqpT9lK/img_110x110.jpg",
-                "profile_image_url": "http://k.kakaocdn.net/dn/cGnCMx/btrmKlB3UyN/0WKCOQ8p30n6CzoxqpT9lK/img_640x640.jpg",
+                "nickname": "\uac15\uc11d\uc601", 
+                "thumbnail_image_url": "http://k.kakaocdn.net/dn/cGnCMx/btrmKlB3UyN/0WKCOQ8p30n6CzoxqpT9lK/img_110x110.jpg", 
+                "profile_image_url": "http://k.kakaocdn.net/dn/cGnCMx/btrmKlB3UyN/0WKCOQ8p30n6CzoxqpT9lK/img_640x640.jpg", 
                 "is_default_image": false
-            },
-            "has_email": true,
-            "email_needs_agreement": false,
-            "is_email_valid": true,
-            "is_email_verified": true,
+            }, 
+            "has_email": true, 
+            "email_needs_agreement": false, 
+            "is_email_valid": true, 
+            "is_email_verified": true, 
             "email": "sy7434@naver.com"
         }
     }
     '''
-
     # 이메일과 닉네임 데이터 가져옴
     email = json_data['kakao_account']['email']
     nickname = json_data['kakao_account']['profile']['nickname']
-    # nickname = json_data['properties']['nickname'] # 둘다 상관 없다. (같은 말)
 
-    return HttpResponse(email)  # test : 확인
+    # return HttpResponse(nickname)  # test : 확인
 
-    '''기존에 소셜로그인을 했는지 확인'''
-    # 데이터베이스에 이미 저장되어있는 회원이면, user에 회원 저장
-    # if User.objects.filter(
+    '''db에 이미 저장되어있는 회원인지 확인'''
+    if User.objects.filter(
+        email=email,
+        social_platform="kakao"
+    ).exists():
+        user_info = User.objects.get(email=email)
+        # return HttpResponse("이미 존재하는 회원") # test : 확인
+    else:
+        user_info = User.objects.create(
+            email=email,
+            username=nickname,
+            date_joined=timezone.now(),
+            social_platform="kakao",
+        )
+        user_info.save()
+        # return HttpResponse("새로운 회원") # test : 확인
 
-    # )
+    # return HttpResponse(user_info.{field}) # test : 확인
 
-    # # 해당 디비에 이미 유저가 존재하면
-    # if User.objects.filter(email=email).exists():
-    #     user = User.objects.get(email=email)
-    #     # user.date_joined = timezone.now() #로그인 한 시각을 업데이트해줌
-    #     # user.save()
+    '''방법1'''
+    access_token, refresh_token = get_tokens_for_user(user_info)
 
-    # # 회원가입인 경우
-    # else:
-    #     user = User.objects.create(
-    #         email=email,
-    #         username=nickname
-    #     )
-    #     user.save()
+    # return HttpResponse(f"{access_token} & {refresh_token}")  # test : 확인
+    '''
+    eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjM4Njk1NDA3LCJqdGkiOiIxNmNjZGNmNjU0MDU0ZjIxODFiNDM5MDBiZGYwNDVjMyIsInVzZXJfaWQiOjh9.PHTiHha6HuCX_OL1QN40K1tnDxvE9GpN_02uOYKwdiU 
+    & 
+    eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTYzOTI5OTkwNywianRpIjoiM2I1YmVjMTE3NDIzNDg0NWExMWFmYjNkYTA2ZmU3YWYiLCJ1c2VyX2lkIjo4fQ.hytURuJpGYrmON5hF31pYmBWo9p9J9Enri_WUId--Ao
+    '''
 
-    # user_data = User.objects.filter(email=email).all()
+    expires_at = (
+        timezone.now()
+        + getattr(settings, "SIMPLE_JWT", None)["ACCESS_TOKEN_LIFETIME"]
+    )
 
-    # return HttpResponse(user_data) # test :
+    # user_data = {  # jwt토큰, 이름, 타입 프론트엔드에 전달
+    #     "access_token": access_token,
+    #     "refresh_token": refresh_token,
+    #     "user_email": user_info.email,
+    #     "user_name": user_info.username,
+    # "social_platform": user_info.social_platform,
+    #     "expires_at": expires_at,
+    # }
 
-    # # 토큰 발행
+    return JsonResponse(
+        {
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "user_email": user_info.email,
+            "user_name": user_info.username,
+            "social_platform": user_info.social_platform,
+            "expires_at": expires_at,
+        },
+        status=200,
+    )
+
+    JsonResponse(
+        {
+            "access_token": access_token,
+            "user_email": email,
+        },
+        status=200,
+    )
+
+    # refresh_token을 저장 및 재업데이트? 재설정? 해주는 코드도 필요하지 않을까?
+
+    '''방법2'''
+    # 토큰 발행
     # payload = JWT_PAYLOAD_HANDLER(user)
     # jwt_token = JWT_ENCODE_HANDLER(payload)
 
@@ -677,56 +728,56 @@ def google_callback(request):
     client_id = getattr(settings, "SOCIAL_AUTH_GOOGLE_CLIENT_ID")
     client_secret = getattr(settings, "SOCIAL_AUTH_GOOGLE_SECRET")
     state = request.GET.get('state')
-    code = request.GET.get('code')  # access code가 쿼리스트링에 담긴 상태
+    code = request.GET.get('code')
 
-    """
-    [Access Token Request]
-
-    받은 Code로 Google에 Access Token 요청 (post)
-    GOOGLE_OAUTH2_CLIENT_ID 와 GOOGLE_OAUTH2_CLIENT_SECRET 이 필요
-
-    Google API Server에 응답받은 Code, client_secret, state와 같은 url parameter를 함께 Post 요청을 보낸다. 문제없이 성공하면, access_token을 가져올 수 있다.
-
-    Access Token을 가지고 유저 정보를 가지고 올 수 있는 url로 파라미터에 access token을 담아서 GET요청을 보낸다.
-    """
-    # POST로 구글에 보낸다
     token_req = requests.post(
         f"https://oauth2.googleapis.com/token?client_id={client_id}&client_secret={client_secret}&code={code}&grant_type=authorization_code&redirect_uri={GOOGLE_CALLBACK_URI}&state={state}")
     token_req_json = token_req.json()  # 구글 이용해서 토큰 발급
 
     # return JsonResponse(token_req_json)  # test : 토큰 발급 확인
+    '''
+    {"access_token": "ya29.a0ARrdaM__pStUlEmYcB_Mmf0Pr9Y_8X4WqUWidFGKKm96ow_9hT77n2FD2x_upk1PAL7KT-oi8ys1GcJWnY4odfd0nnlrcIU2dyWB1zUKLl-enNhp-Eni1et9nSHEcOr7b8JQKWnE7A_nO6kGCbMC8YIrYgEA", "expires_in": 3599, "scope": "https://www.googleapis.com/auth/userinfo.email openid", "token_type": "Bearer", "id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjkzNDFhYmM0MDkyYjZmYzAzOGU0MDNjOTEwMjJkZDNlNDQ1MzliNTYiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI3NzU5NjM1NjMwNTEtdXY4dDVkNjg5ZTZlZXJjaGdlZHBkdTJmMzZidGhqNDUuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI3NzU5NjM1NjMwNTEtdXY4dDVkNjg5ZTZlZXJjaGdlZHBkdTJmMzZidGhqNDUuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTI5MDE5MzY3MDAwNjU4NDY1MTIiLCJlbWFpbCI6ImtzZ2UxMTI0QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJhdF9oYXNoIjoiUGs3dnlHTHhncnhOdkkwdHBkc0hEQSIsImlhdCI6MTYzODY0MjM2NywiZXhwIjoxNjM4NjQ1OTY3fQ.S2_rF9FZeELOnDhBoKxQSIeAfN4_VLTmnh9ZAvTYDbrlNSZEqQjN71h-3pM32pXGt2zGfmq_ajZ9EkboK_FXAQKxBqjORDn17bAreDUmb-MTymUqBQFbOq4M4lnmMSXMS2i8qxYqpACun_E_uA06qNqYXE8cYGkfgxDVIkDEk4z5JPwt2ktyiyUTap9VjPG1SJY7GAXU8JRdrsAZmbD20mP2rsCb9z0Y8SEiauJgqvT5wW0CprfnJFE0fjbniBr3swnRgQHCfM4Xp_daf4Jcrbm5NiZTTO_Eq9lPhzBOaf9ZkgXe_3Dmqd9qrvhek-nnmnt_FPukMyHeh8Yw5Udlig"}
+    
+    OR
 
-    error = token_req_json.get("error")
+    {"error": "invalid_scope",
+    "error_description": "AADSTS70011: The provided value for the input parameter 'scope' is not valid. The scope https://foo.microsoft.com/mail.read is not valid.\r\nTrace ID: 255d1aef-8c98-452f-ac51-23d051240864\r\nCorrelation ID: fb3d2015-bc17-4bb9-bb85-30c5cf1aaaa7\r\nTimestamp: 2016-01-09 02:02:12Z",
+    "error_codes": [70011], "timestamp": "2016-01-09 02:02:12Z", "trace_id": "255d1aef-8c98-452f-ac51-23d051240864", "correlation_id": "fb3d2015-bc17-4bb9-bb85-30c5cf1aaaa7"}
+    '''
+
+    error = token_req_json.get("error", None)
 
     if error is not None:
         raise JSONDecodeError(error)
 
-    access_token = token_req_json.get("access_token")
-
-    # return HttpResponse(access_token) # test : 완료
+    access_token = token_req_json.get("access_token")  # access_token만 추출
     # 구글에서 refresh_token은 처음 회원가입시에만 발급된다.
 
     '''[발급된 Access Token을 이용해서 Email 값을 Google에게 요청]'''
-
     email_req = requests.get(
         f"https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={access_token}")
+
+    email_req_status = email_req.status_code  # 제대로 들어가면 200 반환
+    # return HttpResponse(email_req_status)  # test : 200 나오는거 확인
+
+    if email_req_status != 200:
+        return JsonResponse(
+            {'err_msg': 'failed to get email'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
     email_req_json = email_req.json()  # json형태로 프로필 값 가져오기
 
-    # return JsonResponse(email_req_json)  # test : 둘이 같은 말
-    # return HttpResponse(email_req)
+    # return JsonResponse(email_req_json)  # test : 확인
     '''
     {"issued_to": "775963563051-uv8t5d689e6eerchgedpdu2f36bthj45.apps.googleusercontent.com", "audience": "775963563051-uv8t5d689e6eerchgedpdu2f36bthj45.apps.googleusercontent.com",
         "user_id": "112901936700065846512", "scope": "https://www.googleapis.com/auth/userinfo.email openid", "expires_in": 3598, "email": "ksge1124@gmail.com", "verified_email": true, "access_type": "online"}
     '''
 
-    email_req_status = email_req.status_code  # 제대로 들어가면 200 반환
+    email = email_req_json.get('email')  # 그 중 email필드 가져옴 (username필드는? 없나?)
+    # username = email_req_json.get('name')  # ?????
 
-    # return HttpResponse(email_req_status)  # test : 200 나오는거 확인
-
-    if email_req_status != 200:
-        return JsonResponse({'err_msg': 'failed to get email'}, status=status.HTTP_400_BAD_REQUEST)
-
-    email = email_req_json.get('email')  # 그 중 email필드 가져옴
+    # return HttpResponse(email)  # test : ksge1124@gmail.com 나오는거 확인
 
     '''
     [Email, Access Token, Code를 바탕으로 회원가입/로그인 진행]
@@ -742,7 +793,6 @@ def google_callback(request):
         - 회원가입 진행 및 해당 유저의 JWT 발급
         - 그러나 도중에 예기치 못한 오류가 발생하면 에러 메세지와 함께 오류 Status응답
     '''
-
     try:
         user = User.objects.get(email=email)
         social_user = SocialAccount.objects.get(

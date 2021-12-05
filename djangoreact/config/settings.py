@@ -25,8 +25,6 @@ STATE = "random_string"  # 나중에 url 요청 시 사용되는 값
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-788$x$hv@n*dzud$08r-_-i11kn!e-fv#1$*mlk+%*2-$3!wby"
 
-# SOCIALACCOUNT_PROVIDERS = {} #yet
-
 # Social client key
 KAKAO_REST_API_KEY = "36bab671cc6d302ae5ccc02a2c1aa707"
 SOCIAL_AUTH_GOOGLE_CLIENT_ID = "775963563051-uv8t5d689e6eerchgedpdu2f36bthj45.apps.googleusercontent.com"
@@ -57,7 +55,7 @@ INSTALLED_APPS = [
 
     # [djangorestframework-simplejwt]
     "rest_framework_simplejwt",
-    "rest_framework_simplejwt.token_blacklist",  # : blacklist테이블을 만들고 토큰 추가
+    # "rest_framework_simplejwt.token_blacklist",  # : blacklist테이블을 만들고 토큰 추가
 
     # [dj-rest-auth]
     "dj_rest_auth",
@@ -109,6 +107,19 @@ SIMPLE_JWT = {
     'TOKEN_TYPE_CLAIM': 'token_type',
     'JTI_CLAIM': 'jti',
 }
+
+# SOCIALACCOUNT_PROVIDERS = {
+#     'google': {
+#         'SCOPE': [
+#             'profile',
+#             'email',
+#         ],
+#         'AUTH_PARAMS': {
+#             'access_type': 'online',
+#         }
+#     }
+# }
+
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",  # CORS 관련

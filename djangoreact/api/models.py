@@ -64,6 +64,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         ),
     )
     date_joined = models.DateTimeField(_("date joined"), default=timezone.now)
+    social_platform = models.CharField(max_length=20, null=True)
 
     objects = UserManager()
 
