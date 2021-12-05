@@ -22,6 +22,7 @@ function DirectSearchPage() {
     const url = `http://localhost:8000/api/search-direct/?n=${pillName}&s=${shape}&c=${color}&`;
     const response = await axios.get(url);
     setPillData(response.data);
+    console.log(response.data);
   }
 
   const onSubmit = (event) => {
