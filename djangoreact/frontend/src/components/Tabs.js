@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import '../styles/Tabs.css';
+import axios from 'axios';
 
 function Tabs() {
   const [toggleState, setToggleState] = useState(1);
+  const [data, setData] = useState(null);
 
   const toggleTab = (index) => {
     setToggleState(index);
+    axios.get('http://127.0.0.1:8000/api/user-pill-list/').then((response) => {
+      setData(response.data);
+    });
   };
 
   return (
@@ -29,7 +34,7 @@ function Tabs() {
         <div className={toggleState === 2 ? 'content  active-content' : 'content'}>
           <h2>즐겨찾기한 알약을 보여줘유</h2>
           <hr />
-          <p>타이레놀</p>
+          <p>{data && <textarea rows={7} value={JSON.stringify(data, null, 2)} readOnly />}</p>
         </div>
       </div>
     </div>

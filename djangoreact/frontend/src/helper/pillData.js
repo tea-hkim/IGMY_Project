@@ -4,8 +4,8 @@ import * as bsIcons from 'react-icons/bs';
 
 export const PillShapeData = [
   {
-    title: `선택안함`,
-    shape: '',
+    title: '선택안함',
+    shape: '선택안함',
   },
   {
     title: '원형',

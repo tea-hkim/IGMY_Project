@@ -8,14 +8,16 @@ import MainPage from './pages/MainPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import CameraPage from './pages/CameraPage';
-import FindPwPage from './pages/FindPwPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ScanSuccessPage from './pages/ScanSuccessPage';
 import ScanFailPage from './pages/ScanFailPage';
 import PillBoxPage from './pages/PillBoxPage';
 import DirectSearchPage from './pages/DirectSearchPage';
+import AboutUsPage from './pages/about-us-page';
 import PillDetailPage from './pages/PillDetailPage';
+import ResetPasswordConfimPage from './pages/ResetPasswordConfimPage';
 
 function App() {
   const dispatch = useDispatch();
@@ -49,13 +51,15 @@ function App() {
         <Route exact path="/" element={<MainPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/findPw" element={<FindPwPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/password/reset/confirm/:uid/:token" element={<ResetPasswordConfimPage />} />
         <Route path="/camera" element={<CameraPage />} />
         <Route path="/scansuccess" element={<ScanSuccessPage />} />
         <Route path="/scanfail" element={<ScanFailPage />} />
         <Route path="/pillbox" element={<PillBoxPage />} />
         <Route path="/direct" element={<DirectSearchPage />} />
         <Route path="/pilldetail" element={<PillDetailPage />} />
+        <Route path="/about-us" element={<AboutUsPage />} />
       </Routes>
       <Footer />
     </div>
