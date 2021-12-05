@@ -241,7 +241,7 @@ def pill_detail(request):
     # 로그인 한 유저가 없는 경우
     if request.user.is_anonymous:
         serializer = PillDetailSerializer(pill, many=True)
-
+    
         return Response(serializer.data)
     else:
         # 로그인 한 유저가 있는 경우: 검색 기록 추가
