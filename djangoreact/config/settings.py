@@ -27,8 +27,8 @@ SECRET_KEY = "django-insecure-788$x$hv@n*dzud$08r-_-i11kn!e-fv#1$*mlk+%*2-$3!wby
 
 # Social client key
 KAKAO_REST_API_KEY = "36bab671cc6d302ae5ccc02a2c1aa707"
-SOCIAL_AUTH_GOOGLE_CLIENT_ID = "775963563051-uv8t5d689e6eerchgedpdu2f36bthj45.apps.googleusercontent.com"
-SOCIAL_AUTH_GOOGLE_SECRET = "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"
+GOOGLE_CLIENT_ID = "775963563051-uv8t5d689e6eerchgedpdu2f36bthj45.apps.googleusercontent.com"
+GOOGLE_SECRET = "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"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -112,17 +112,17 @@ SIMPLE_JWT = {
 
 # }
 
-# SOCIALACCOUNT_PROVIDERS = {
-#     'google': {
-#         'SCOPE': [
-#             'profile',
-#             'email',
-#         ],
-#         'AUTH_PARAMS': {
-#             'access_type': 'online',
-#         }
-#     }
-# }
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
 
 
 MIDDLEWARE = [
