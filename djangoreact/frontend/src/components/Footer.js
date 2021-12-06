@@ -9,7 +9,18 @@ const Footer = () => {
     <FooterBox className="footer_box">
       <ExplanateBox className="footer_explanation">
         <div className="footer_explanation_navigation">
-          <span>서비스 기획 의도</span>
+          <span
+            role="button"
+            tabIndex={0}
+            onClick={() => {
+              navigation('/about-service');
+            }}
+            onKeyDown={() => {
+              navigation('/about-service');
+            }}
+          >
+            서비스 기획 의도
+          </span>
           <span
             role="button"
             tabIndex={0}
@@ -47,7 +58,6 @@ export default Footer;
 const FooterBox = styled.div`
   display: flex;
   padding: 2vh 0;
-  margin-top: 5vh;
   justify-content: center;
   align-items: center;
   width: 100%;

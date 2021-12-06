@@ -17,6 +17,7 @@ import ScanFailPage from './pages/ScanFailPage';
 import PillBoxPage from './pages/PillBoxPage';
 import DirectSearchPage from './pages/DirectSearchPage';
 import AboutUsPage from './pages/about-us-page';
+import AboutServicePage from './pages/about-service-page';
 import PillDetailPage from './pages/PillDetailPage';
 import ResetPasswordConfimPage from './pages/ResetPasswordConfimPage';
 
@@ -62,6 +63,7 @@ function App() {
         <Route path="/direct" element={<DirectSearchPage />} />
         <Route path="/pilldetail" element={<PillDetailPage />} />
         <Route path="/about-us" element={<AboutUsPage />} />
+        <Route path="/about-service" element={<AboutServicePage />} />
       </Routes>
       <Footer />
     </div>

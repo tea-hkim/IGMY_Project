@@ -9,9 +9,9 @@ function DirectSearchResult({ pillList }) {
   let remaining = [];
   const navigate = useNavigate();
 
-  const handleClick=()=>{
-    navigate('/pilldetail', { state:{ pill.item_num }});
-  }
+  const handleClick = (props) => {
+    navigate('/pilldetail', { state: { props } });
+  };
 
   if (pillList.length > 5) {
     printed = pillList.slice(0, 5);
@@ -20,7 +20,8 @@ function DirectSearchResult({ pillList }) {
     console.log(remaining);
     return (
       <ResultContainer className="search_result_box">
-        {pillList && pillList.map((pill) => <ResultBox pill={pill} key={pill.item_num} onClick={handleClick}/>)}
+        {pillList &&
+          pillList.map((pill) => <ResultBox pill={pill} key={pill.item_num} onClick={handleClick(pill.num)} />)}
       </ResultContainer>
     );
   }
