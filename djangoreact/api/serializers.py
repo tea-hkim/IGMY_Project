@@ -33,7 +33,6 @@ class UserCreateSerializer(serializers.Serializer):
         return user
 
 
-
 class InfoPillSerializer(serializers.ModelSerializer):
     class Meta:
         model = InfoPill
@@ -99,10 +98,10 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
 
-        token['email']=user.email #확장
-        token['username'] = user.username #확장
+        token['email'] = user.email  # 확장
+        token['username'] = user.username  # 확장
         return token
-    
+
     def validate(self, attrs):
         data = super().validate(attrs)
 
@@ -127,7 +126,7 @@ class MyTokenRefreshSerializer(TokenRefreshSerializer):
         data.update({
             'email': email,
             'username': username,
-            })
+        })
         return data
 
 

@@ -1,5 +1,6 @@
 import os
 import requests
+import json
 from .serializers import *
 from .models import *
 from django.core.mail import message
@@ -31,6 +32,7 @@ from sqlalchemy.sql import text
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework.generics import GenericAPIView
 from django.contrib.auth.views import PasswordResetView
+from django.utils import timezone
 
 
 user = settings.DATABASES["default"]["USER"]
@@ -73,9 +75,6 @@ def createUser(request):
             serializer.save()
             return Response({"message": "ok"}, status=status.HTTP_201_CREATED)
         return Response({"message": "duplicate email"}, status=status.HTTP_200_OK)
-    else:
-        # return jsonify("result : true")
-        pass
 
 
 # 모든 알약 정보
@@ -543,109 +542,195 @@ KAKAO_CALLBACK_URI = BASE_URL + "api/login/kakao/callback/"
 GOOGLE_CALLBACK_URI = BASE_URL + 'api/login/google/callback/'
 
 
-def get_tokens_for_user(user):
-    refreshToken = RefreshToken.for_user(user)
+'''kakao'''
+
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def kakao_login(request):
+    KAKAO_REST_API_KEY = getattr(settings, 'KAKAO_REST_API_KEY')
+    REDIRECT_URI = KAKAO_CALLBACK_URI
+    return redirect(
+        f"https://kauth.kakao.com/oauth/authorize?client_id={KAKAO_REST_API_KEY}&redirect_uri={REDIRECT_URI}&response_type=code"
+    )
+
+
+def kakao_callback(request):
+    code = request.GET['code']
+    KAKAO_REST_API_KEY = getattr(settings, 'KAKAO_REST_API_KEY')
+    REDIRECT_URI = KAKAO_CALLBACK_URI
+
+    # 카카오에 요청해서 token data 가져오기
+    request_uri = 'https://kauth.kakao.com/oauth/token?grant_type=authorization_code'
+    request_uri += '&client_id=' + KAKAO_REST_API_KEY
+    request_uri += '&code=' + code
+    request_uri += '&redirect_uri=' + REDIRECT_URI
+
+    token_data = requests.get(request_uri).json()
+
+    access_token = token_data['access_token']
+    refresh_token = token_data['refresh_token']
+
+    # Authorization(인가코드) : header로 꼭 설정해야함 (카카오는 인가코드 기반으로 토큰을 요청, 받음)
+    headers = {
+        'Authorization': f"Bearer {access_token}",
+    }
+
+    # 사용자 정보 json 형식으로 가져오기
+    get_user_info_url = 'https://kapi.kakao.com/v2/user/me'
+    user_info_json = requests.get(get_user_info_url, headers=headers).json()
+
+    # return JsonResponse(user_info_json)  # test : 확인
+    '''
+    {
+        "id": 2003367790, 
+        "connected_at": "2021-11-23T00:48:16Z", 
+        "properties": {
+            "nickname": "\uac15\uc11d\uc601", 
+            "profile_image": "http://k.kakaocdn.net/dn/b5NyPn/btrkz4wgIhn/zA3lMIXWu1cSlh7qeAsLKk/img_640x640.jpg", 
+            "thumbnail_image": "http://k.kakaocdn.net/dn/b5NyPn/btrkz4wgIhn/zA3lMIXWu1cSlh7qeAsLKk/img_110x110.jpg"
+        }, 
+        "kakao_account": {
+            "profile_nickname_needs_agreement": false, 
+            "profile_image_needs_agreement": false, 
+            "profile": {
+                "nickname": "\uac15\uc11d\uc601", 
+                "thumbnail_image_url": "http://k.kakaocdn.net/dn/cGnCMx/btrmKlB3UyN/0WKCOQ8p30n6CzoxqpT9lK/img_110x110.jpg", 
+                "profile_image_url": "http://k.kakaocdn.net/dn/cGnCMx/btrmKlB3UyN/0WKCOQ8p30n6CzoxqpT9lK/img_640x640.jpg", 
+                "is_default_image": false
+            }, 
+            "has_email": true, 
+            "email_needs_agreement": false, 
+            "is_email_valid": true, 
+            "is_email_verified": true, 
+            "email": "sy7434@naver.com"
+        }
+    }
+    '''
+
+    email = user_info_json['kakao_account']['email']
+    nickname = user_info_json['kakao_account']['profile']['nickname']
+    # return HttpResponse(nickname)  # test : 확인 (최종 return에서 utf? 변환하는 과정 필요?)
+
+    '''유저가 db에 존재하는지 확인'''
+    if User.objects.filter(
+        email=email,
+        social_platform="kakao"
+    ).exists():
+        user_info = User.objects.get(email=email)
+        # return HttpResponse("이미 존재하는 회원") # test : 확인
+    else:
+        user_info = User.objects.create(
+            email=email,
+            username=nickname,
+            date_joined=timezone.now(),
+            social_platform="kakao",
+        )
+        user_info.save()
+        # return HttpResponse("새로운 회원") # test : 확인
+    # return HttpResponse(user_info.{각각 field}) # test : 확인
+
+    # 토큰 발급
+    refreshToken = RefreshToken.for_user(user_info)
     accessToken = refreshToken.access_token
-    return (refreshToken, accessToken)
+    # return HttpResponse(f"{access_token} & {refresh_token}")  # test : 확인
+    # 인증 만료 시간
+    expires_at = (
+        timezone.now()
+        + getattr(settings, "SIMPLE_JWT", None)["ACCESS_TOKEN_LIFETIME"]
+    )
+    # return HttpResponse(expires_at) # test : 5분뒤 확인
 
+    user_data = {
+        "access_token": str(access_token),
+        "refresh_token": str(refresh_token),
+        "user_email": user_info.email,
+        "user_name": user_info.username,
+        "social_platform": user_info.social_platform,
+        "expires_at": expires_at,
+    }
 
-'''
-kakao
-수정본 업로드 예정
-'''
+    return JsonResponse(
+        user_data,
+        status=200,
+    )
+    '''
+    [카카오 추가할 것]
+    1. refresh_token을 업데이트해주는 코드?
+    2. 리펙토링) serializer로 표현해보자 (last_login필드 추가)
+    '''
+
 
 '''google'''
 
 
 @api_view(["GET"])
 def google_login(request):
-    '''
-    [google_login 실행]
-    이 함수와 매핑된 url로 들어가면, client_id, redirect uri 등과 같은 정보를 url parameter로 함께 보내 리다이렉트한다. 그러면 구글 로그인 창이 뜨고, 알맞은 아이디, 비밀번호로 진행하면 Callback URI로 Code값이 들어가게 된다.
-    '''
+    GOOGLE_CLIENT_ID = getattr(settings, "GOOGLE_CLIENT_ID")
+    REDIRECT_URI = GOOGLE_CALLBACK_URI
     scope = "https://www.googleapis.com/auth/userinfo.email"
-    client_id = getattr(settings, "SOCIAL_AUTH_GOOGLE_CLIENT_ID")
-    return redirect(f"https://accounts.google.com/o/oauth2/v2/auth?client_id={client_id}&response_type=code&redirect_uri={GOOGLE_CALLBACK_URI}&scope={scope}")
+
+    return redirect(f"https://accounts.google.com/o/oauth2/v2/auth?client_id={GOOGLE_CLIENT_ID}&response_type=code&redirect_uri={REDIRECT_URI}&scope={scope}")
 
 
 def google_callback(request):
-    client_id = getattr(settings, "SOCIAL_AUTH_GOOGLE_CLIENT_ID")
-    client_secret = getattr(settings, "SOCIAL_AUTH_GOOGLE_SECRET")
+    GOOGLE_CLIENT_ID = getattr(settings, "GOOGLE_CLIENT_ID")
+    GOOGLE_SECRET = getattr(settings, "GOOGLE_SECRET")
+    REDIRECT_URI = GOOGLE_CALLBACK_URI
     state = request.GET.get('state')
-    code = request.GET.get('code')  # access code가 쿼리스트링에 담긴 상태
+    code = request.GET.get('code')
 
-    """
-    [Access Token Request]
+    # 구글에 요청해서 token data 가져오기
+    token_data = requests.post(
+        f"https://oauth2.googleapis.com/token?client_id={GOOGLE_CLIENT_ID}&client_secret={GOOGLE_SECRET}&code={code}&grant_type=authorization_code&redirect_uri={REDIRECT_URI}&state={state}").json()
 
-    받은 Code로 Google에 Access Token 요청 (post)
-    GOOGLE_OAUTH2_CLIENT_ID 와 GOOGLE_OAUTH2_CLIENT_SECRET 이 필요
+    # return JsonResponse(token_data)  # test : 토큰 발급 확인
 
-    Google API Server에 응답받은 Code, client_secret, state와 같은 url parameter를 함께 Post 요청을 보낸다. 문제없이 성공하면, access_token을 가져올 수 있다.
-
-    Access Token을 가지고 유저 정보를 가지고 올 수 있는 url로 파라미터에 access token을 담아서 GET요청을 보낸다.
-    """
-    # POST로 구글에 보낸다
-    token_req = requests.post(
-        f"https://oauth2.googleapis.com/token?client_id={client_id}&client_secret={client_secret}&code={code}&grant_type=authorization_code&redirect_uri={GOOGLE_CALLBACK_URI}&state={state}")
-    token_req_json = token_req.json()  # 구글 이용해서 토큰 발급
-
-    error = token_req_json.get("error")
-
+    error = token_data.get("error", None)
     if error is not None:
         raise JSONDecodeError(error)
 
-    # return JsonResponse(token_req_json)  # test : 토큰 발급 확인
+    access_token = token_data.get("access_token")  # refresh_token은 회원가입시에만 발급됨
 
-    access_token = token_req_json.get("access_token")
-
-    # return HttpResponse(access_token) # test : 완료
-    # 구글에서 refresh_token은 처음 회원가입시에만 발급된다.
-
-    '''[발급된 Access Token을 이용해서 Email 값을 Google에게 요청]'''
-
-    email_req = requests.get(
+    # 발급된 Access Token을 이용해서 사용자 정보 json 형식으로 가져오기
+    get_user_info = requests.get(
         f"https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={access_token}")
-    email_req_json = email_req.json()  # json형태로 프로필 값 가져오기
 
-    # return JsonResponse(email_req.json()) # test : 둘이 같은 말
-    # return HttpResponse(email_req)
+    status_code = get_user_info.status_code  # 제대로 들어가면 200 반환
+    # return HttpResponse(status_code)  # test : 200 나오는거 확인
+
+    if status_code != 200:
+        return JsonResponse(
+            {'err_msg': 'failed to get email'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    user_info_json = get_user_info.json()  # json형태로 프로필 값 가져오기
+
+    # return JsonResponse(user_info_json)  # test : 확인
     '''
-    {"issued_to": "775963563051-uv8t5d689e6eerchgedpdu2f36bthj45.apps.googleusercontent.com", "audience": "775963563051-uv8t5d689e6eerchgedpdu2f36bthj45.apps.googleusercontent.com",
-        "user_id": "112901936700065846512", "scope": "https://www.googleapis.com/auth/userinfo.email openid", "expires_in": 3598, "email": "ksge1124@gmail.com", "verified_email": true, "access_type": "online"}
-    '''
-
-    email_req_status = email_req.status_code  # 제대로 들어가면 200 반환
-
-    # return HttpResponse(email_req_status)  # test : 200 나오는거 확인
-
-    if email_req_status != 200:
-        return JsonResponse({'err_msg': 'failed to get email'}, status=status.HTTP_400_BAD_REQUEST)
-
-    email = email_req_json.get('email')  # 그 중 email필드 가져옴
-
-    '''
-    [Email, Access Token, Code를 바탕으로 회원가입/로그인 진행]
-    1. 해당 email과 동일한 Email이 User 테이블에 있는지 확인
-    (결국 SocialAccount테이블도 User테이블을 참조하기 때문에!)
-    2-1. 만약 있다면?(try)
-        - FK로 연결되어있는 SocialAccount 테이블에서 이메일의 유저가 있는지 체크
-        - 없으면 일반 계정이므로, 에러 메세지와 함께 400 리턴
-        - 있지만 다른 Provider로 가입되어 있으면 에러 메세지와 함께 400 리턴
-        - 위 두개에 걸리지 않으면 로그인 진행, 해당 유저의 JWT 발급, 그러나 도중에
-            예기치 못한 오류가 발생하면 에러 메세지와 함께 오류 Status 응답
-    2-2. 없다면 (신규 유저이면)
-        - 회원가입 진행 및 해당 유저의 JWT 발급
-        - 그러나 도중에 예기치 못한 오류가 발생하면 에러 메세지와 함께 오류 Status응답
+    {
+        "issued_to": "775963563051-uv8t5d689e6eerchgedpdu2f36bthj45.apps.googleusercontent.com", 
+        "audience": "775963563051-uv8t5d689e6eerchgedpdu2f36bthj45.apps.googleusercontent.com",
+        "user_id": "112901936700065846512", 
+        "scope": "https://www.googleapis.com/auth/userinfo.email openid", 
+        "expires_in": 3598, 
+        "email": "ksge1124@gmail.com", 
+        "verified_email": true, 
+        "access_type": "online"
+    }
     '''
 
+    # 이메일과 이름 데이터 가져옴 (구글에서는 이름 데이터가 없나,,?)
+    email = user_info_json.get('email')
+    # username = user_info_json.get('??')  # ??
+    # return HttpResponse(email)  # test : 확인
+
+    '''db에 이미 저장되어있는 회원인지 확인'''
     try:
         user = User.objects.get(email=email)
         social_user = SocialAccount.objects.get(
             user=user)  # 소셜로그인으로 회원가입 했는지 여부 확인
-
-        # social_user.last_login = timezone.now()
-        # social_user.save()
-        # expires_at = (timezone.now()+getattr(settings, "SIMPLE_JWT", None)["ACCESS_TOKEN_LIFETIME"])
 
         # 이메일은 있지만 social user가 아님
         if social_user is None:
@@ -710,7 +795,6 @@ class GoogleLogin(SocialLoginView):
     adapter_class = google_view.GoogleOAuth2Adapter
     callback_url = GOOGLE_CALLBACK_URI
     client_class = OAuth2Client
-    # serializer_class = SocialLoginSerializer
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
