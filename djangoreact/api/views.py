@@ -95,6 +95,9 @@ def search_all(request):
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def search_direct(request):
+    page = int(request.Get.get("page", 1))
+    
+
     name = request.GET.get("n")  # 약 이름
     shape = request.GET.get("s")  # 약 모양
     color_front = request.GET.get("c_f")  # 약 앞면 색상
