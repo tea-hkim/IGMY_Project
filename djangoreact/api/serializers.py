@@ -8,6 +8,9 @@ from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.models import update_last_login
 from .models import *
 from django import forms
+from rest_auth.serializers import PasswordResetSerializer
+from django.conf import settings
+from django.contrib.auth.forms import PasswordResetForm
 
 
 User = get_user_model()
@@ -17,7 +20,6 @@ class UserCreateSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
     username = serializers.CharField(required=True)
     password = serializers.CharField(required=True)
-    token = serializers.CharField(max_length=255, read_only=True)
 
     def create(self, validated_data):
         user = User.objects.create(
@@ -28,6 +30,7 @@ class UserCreateSerializer(serializers.Serializer):
 
         user.save()
         return user
+
 
 
 class InfoPillSerializer(serializers.ModelSerializer):
@@ -84,6 +87,7 @@ class PillDetailSerializer(serializers.ModelSerializer):
             "se_qesitm",
             "atpn_qesitm",
             "deposit_method_qesitm",
+            "intrc_qesitm"
         )
 
 
@@ -110,8 +114,6 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         return data
 
 
-    
-
 # 토큰 refresh 커스터마이징
 class MyTokenRefreshSerializer(TokenRefreshSerializer):
     def validate(self, attrs):
@@ -126,3 +128,23 @@ class MyTokenRefreshSerializer(TokenRefreshSerializer):
             'username': username,
             })
         return data
+
+
+class RefreshTokenSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+
+    default_error_messages = {
+        'bad_token': 'Token is invalid or expired'
+    }
+
+    def validate(self, attrs):
+        self.token = attrs['refresh']
+        return attrs
+
+    def save(self, **kwargs):
+        try:
+            RefreshToken(self.token).blacklist()
+        except TokenError:
+            self.fail('bad_token')
+
+

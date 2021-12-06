@@ -3,10 +3,12 @@ from django.core.mail import message
 import requests
 from django.core.checks.messages import Info
 from django.db.models.expressions import RawSQL
-from rest_framework import status, permissions
+from rest_framework import status, permissions, generics
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenViewBase, TokenObtainPairView
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .serializers import *
 from .models import *
@@ -24,6 +26,10 @@ from django.contrib import auth
 from datetime import datetime, timedelta, date
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from rest_framework.generics import GenericAPIView
+from django.contrib.auth.views import PasswordResetView
+
 
 user = settings.DATABASES["default"]["USER"]
 password = settings.DATABASES["default"]["PASSWORD"]
@@ -67,6 +73,7 @@ def createUser(request):
     else:
         # return jsonify("result : true")
         pass
+    
 
 
 # 모든 알약 정보
@@ -605,3 +612,15 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 class MyTokenRefreshView(TokenViewBase):
     serializer_class = MyTokenRefreshSerializer
+
+# refresh 토큰을 blacklist로 올리는 api
+class LogoutView(GenericAPIView):
+    serializer_class = RefreshTokenSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, *args):
+        sz = self.get_serializer(data=request.data)
+        sz.is_valid(raise_exception=True)
+        sz.save()
+        return Response("로그아웃 성공", status=status.HTTP_204_NO_CONTENT)
+
