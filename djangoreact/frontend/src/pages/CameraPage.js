@@ -79,7 +79,7 @@ const CameraPage = () => {
             <img src="images/알약샘플.png" alt="알약샘플" />
           </>
         ) : (
-          <p className="scanning">인공지능이 알약을 스캔하는 중입니다...</p>
+          <p className="scanning">인공지능이 알약을 분석하는 중입니다...</p>
         )}
       </InfoStyle>
       {/* 컴포넌트 구분선 */}

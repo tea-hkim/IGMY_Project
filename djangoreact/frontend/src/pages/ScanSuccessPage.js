@@ -31,13 +31,12 @@ const ScanSuccessPage = () => {
     setPillName(location.state.pillName);
     setPillImg(location.state.pillImg);
     setPillNum(location.state.pillNum);
-
     setProbability(location.state.probability);
 
     if (location.state.probability === '100.00%') {
       setHundred(true);
     }
-  }, [probability]);
+  }, [pillName, pillImg, pillNum, probability]);
 
   return (
     <ContainerWrap>

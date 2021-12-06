@@ -1,15 +1,33 @@
 /* eslint-disable*/
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import axios from 'axios';
 import Modal from 'react-modal';
-import styled from 'styled-components';
+import { AiOutlineStar, AiFillStar } from 'react-icons/ai';
 import { useLocation } from 'react-router';
 import { ScanImgStyle, modalStyles } from '../styles/ScanPageStyle';
+import {
+  PillContainer,
+  PillView1,
+  PillView2,
+  PillName,
+  PillBit,
+  UserPill,
+  PillInfo,
+  PillCategory,
+  PillDetailInfo,
+  DetailButton,
+  MoreDetail,
+} from '../styles/PillDetailPageStyle';
 
 const PillDetailPage = () => {
   Modal.setAppElement('#root');
   const location = useLocation();
+  const { access } = useSelector((state) => state.auth);
   const [isOpen, setOpen] = useState(false);
+  const [isUserPill, setUserPill] = useState(false);
+  const [isMoreDetail, setMoreDetail] = useState(false);
+  const [pillNum, setPillNum] = useState();
   const [pillName, setPillName] = useState();
   const [pillImg, setPillImg] = useState();
   const [pillBit, setPillBit] = useState();
@@ -22,23 +40,60 @@ const PillDetailPage = () => {
   const [pillDeposit, setPillDeposit] = useState();
 
   useEffect(async () => {
+    setPillNum(location.state.pillNum); // 일련번호
+    
     try {
-      const response = await axios.get(`http://127.0.0.1:8000/api/pill-detail/?pill_id=${location.state.pillNum}`);
-      console.log(response.data);
-      setPillName(response.data[0].item_name); // 약 이름
-      setPillImg(response.data[0].image); // 약 사진
-      setPillBit(response.data[0].bit); // 약효 분류
-      setPillSungbun(response.data[0].sungbun); // 성분,함량
-      setPillEfcy(response.data[0].efcy_qesitm); // 효능,효과
-      setPillUse(response.data[0].use_method_qesitm); // 용법,용량
-      setPillSideEffect(response.data[0].se_qesitm); // 이상반응
-      setPillAttention(response.data[0].atpn_qesitm); // 주의사항
-      setPillInteraction(response.data[0].intrc_qesitm); // 상호작용
-      setPillDeposit(response.data[0].deposit_method_qesitm); // 보관방법
+      const response1 = await axios.get(`http://127.0.0.1:8000/api/pill-detail/?pill_id=${location.state.pillNum}`);
+      console.log(response1.data);
+      setPillName(response1.data[0].item_name); // 약 이름
+      setPillImg(response1.data[0].image); // 약 사진
+      setPillBit(response1.data[0].bit); // 약효 분류
+      setPillSungbun(response1.data[0].sungbun); // 성분,함량
+      setPillEfcy(response1.data[0].efcy_qesitm); // 효능,효과
+      setPillUse(response1.data[0].use_method_qesitm); // 용법,용량
+      setPillSideEffect(response1.data[0].se_qesitm); // 이상반응
+      setPillAttention(response1.data[0].atpn_qesitm); // 주의사항
+      setPillInteraction(response1.data[0].intrc_qesitm); // 상호작용
+      setPillDeposit(response1.data[0].deposit_method_qesitm); // 보관방법
+      // const response2 = await axios.get(`http://127.0.0.1:8000/api/user-pill/?pn=${location.state.pillNum}`);
+      // const CheckPillNum = response2.data[0].item_num;
+
+      // if (CheckPillNum === location.state.pillNumNum) {
+      //   setUserPill(true);
+      // }
     } catch (err) {
       console.log(err);
     }
   }, []);
+
+  const handleUserPill = async () => {
+    setUserPill(!isUserPill);
+
+    console.log(localStorage.getItem('jwt'));
+    if (!isUserPill) {
+      try {
+        const response = await axios.post(`http://127.0.0.1:8000/api/user-pill/?pn=${pillNum}`, pillNum, {
+          headers: {
+            Authorization: `Bearer ${access}`,
+          },
+        });
+        console.log(response.data);
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      try {
+        const response = await axios.delete(`http://127.0.0.1:8000/api/user-pill/?pn=${pillNum}`, pillNum, {
+          headers: {
+            Authorization: `Bearer ${access}`,
+          },
+        });
+        console.log(response.data);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
 
   return (
     <PillContainer>
@@ -50,10 +105,15 @@ const PillDetailPage = () => {
         </Modal>
       </PillView1>
       <PillView2>
+        {/* 컴포넌트 구분선 */}
         <PillBit>{pillBit}</PillBit>
+        <UserPill isUserPill={isUserPill} onClick={handleUserPill}>
+          {!isUserPill ? <AiOutlineStar size={20} /> : <AiFillStar size={20} style={{ margin: 'auto 0' }} />}
+          {!isUserPill ? <p>즐겨찾기 등록</p> : <p>즐겨찾기 완료</p>}
+        </UserPill>
         <PillInfo>
           <PillCategory>성분/함량</PillCategory>
-          <PillDetailInfo className="pillBit">{pillSungbun}</PillDetailInfo>
+          <PillDetailInfo className="pillStyle">{pillSungbun}</PillDetailInfo>
         </PillInfo>
         <PillInfo>
           <PillCategory>효능/효과</PillCategory>
@@ -67,98 +127,27 @@ const PillDetailPage = () => {
           <PillCategory>이상반응</PillCategory>
           <PillDetailInfo>{pillSideEffect}</PillDetailInfo>
         </PillInfo>
-        <DetailButton>+더보기</DetailButton>
+        {/* 컴포넌트 구분선 */}
+        <MoreDetail isMoreDetail={isMoreDetail}>
+          <PillInfo>
+            <PillCategory>주의사항</PillCategory>
+            <PillDetailInfo>{pillAttention}</PillDetailInfo>
+          </PillInfo>
+          <PillInfo>
+            <PillCategory>상호작용</PillCategory>
+            <PillDetailInfo>{pillInteraction}</PillDetailInfo>
+          </PillInfo>
+          <PillInfo>
+            <PillCategory>보관방법</PillCategory>
+            <PillDetailInfo className="pillStyle">{pillDeposit}</PillDetailInfo>
+          </PillInfo>
+        </MoreDetail>
+        <DetailButton onClick={() => setMoreDetail(!isMoreDetail)}>
+          {!isMoreDetail ? <p>+ 더보기</p> : <p>간략 보기</p>}
+        </DetailButton>
       </PillView2>
     </PillContainer>
   );
 };
 
 export default PillDetailPage;
-
-const PillContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  margin: 0 auto;
-  width: 90vw;
-`;
-
-const PillView1 = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 40%;
-
-  > img {
-    width: 90%;
-    margin: 1rem auto;
-    border: 3px solid #dee2e6;
-  }
-`;
-
-const PillName = styled.p`
-  font-size: 1.5rem;
-  margin: 3rem auto;
-  padding: 0.5rem 1rem;
-  border: 5px solid #dee2e6;
-  border-radius: 1rem;
-`;
-
-const PillView2 = styled.div`
-  width: 60%;
-  border: 4px solid #dee2e6;
-  border-radius: 0.5rem;
-`;
-
-const PillBit = styled.p`
-  display: inline-block;
-  font-size: 1rem;
-  font-weight: bold;
-  margin: 1rem;
-  padding: 0.5rem 1rem;
-  background-color: #b2acfa;
-  color: white;
-  border-radius: 1rem;
-`;
-
-const PillInfo = styled.div`
-  display: flex;
-  flex-direction: row;
-  width: 99%;
-
-  & + div {
-    margin-top: 1.5rem;
-  }
-
-  .pillBit {
-    margin-top: 0.3rem;
-  }
-`;
-
-const PillCategory = styled.p`
-  font-size: 1.2rem;
-  color: #8b00ff;
-  font-weight: bold;
-  width: 15%;
-  margin: 0.2rem 0 1rem 1.5rem;
-`;
-
-const PillDetailInfo = styled.p`
-  width: 85%;
-  margin: auto 0.5rem;
-`;
-
-const DetailButton = styled.button`
-  margin: 1.2rem;
-  padding: 0.2rem 0.2rem;
-  border: 2px solid #b2acfa;
-  border-radius: 7px;
-  color: #b4a2eb;
-  background-color: white;
-  font-size: 1.2rem;
-  float: right;
-
-  &:hover {
-    background-color: #b4a2eb;
-    color: white;
-    font-weight: 800;
-  }
-`;
