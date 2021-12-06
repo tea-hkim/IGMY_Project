@@ -6,6 +6,7 @@ from .models import *
 from django.core.mail import message
 from django.core.mail.message import EmailMessage
 from django.core.checks.messages import Info
+from django.core.paginator import Paginator
 from django.conf import settings
 from django.db.models.expressions import RawSQL
 from rest_framework import status, permissions, generics
@@ -93,10 +94,7 @@ def search_all(request):
 
 @api_view(["GET"])
 @permission_classes([AllowAny])
-def search_direct(request):
-    page = int(request.Get.get("page", 1))
-    
-
+def search_direct(request):    
     name = request.GET.get("n")  # 약 이름
     shape = request.GET.get("s")  # 약 모양
     color_front = request.GET.get("c_f")  # 약 앞면 색상
@@ -126,7 +124,13 @@ def search_direct(request):
         query_all = "SELECT * FROM api_infopill WHERE " + query_all
         pill = engine.execute(text(query_all))
         serializer = InfoPillSerializer(pill, many=True)
-        return Response(serializer.data)
+        
+        page = int(request.GET.get('page', '1')) # 페이지 params
+        p = Paginator(serializer.data, 10) # 페이지당 10개씩 보여 주기
+        # print(p.page(1).object_list)
+        # print(p.num_pages) # 총 페이지 갯수
+        page_data = {"총 페이지 수": p.num_pages}, {"현재 페이지" : page}, p.page(page).object_list
+        return Response(page_data)
 
     return Response([])
 
@@ -269,7 +273,7 @@ def send_email(request):
     from_email = "igmy1108@email.com"
     message = "메시지 테스트"
     EmailMessage(subject=subject, body=message,
-                 to=to, from_email=from_email).send()
+                to=to, from_email=from_email).send()
 
 
 # 준 왓 이즈 디스?
