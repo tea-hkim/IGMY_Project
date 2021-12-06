@@ -7,11 +7,6 @@ import { useNavigate } from 'react-router-dom';
 function DirectSearchResult({ pillList }) {
   let printed = [];
   let remaining = [];
-  const navigate = useNavigate();
-
-  const handleClick = (props) => {
-    navigate('/pilldetail', { state: { props } });
-  };
 
   if (pillList.length > 5) {
     printed = pillList.slice(0, 5);
@@ -20,14 +15,13 @@ function DirectSearchResult({ pillList }) {
     console.log(remaining);
     return (
       <ResultContainer className="search_result_box">
-        {pillList &&
-          pillList.map((pill) => <ResultBox pill={pill} key={pill.item_num} onClick={handleClick(pill.num)} />)}
+        {pillList && pillList.map((pill) => <ResultBox pill={pill} key={pill.item_num} />)}
       </ResultContainer>
     );
   }
   return (
     <ResultContainer className="search_result_box">
-      {pillList && pillList.map((pill) => <ResultBox pill={pill} key={pill.item_num} onClick={handleClick} />)}
+      {pillList && pillList.map((pill) => <ResultBox pill={pill} key={pill.item_num} />)}
     </ResultContainer>
   );
 }

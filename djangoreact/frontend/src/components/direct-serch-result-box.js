@@ -1,10 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import { palePink } from '../styles/color';
 
 const ResultBox = ({ pill }) => {
+  const navigate = useNavigate();
+  const pillNum = pill.item_num;
+
   return (
-    <PillInfoBox className="pillInfo_Box" id={pill.item_num}>
+    <PillInfoBox
+      className="pillInfo_Box"
+      id={pill.item_num}
+      onClick={() => navigate('/pilldetail', { state: { pillNum } })}
+    >
       <PillImage src={pill.image} alt={pill.item_name} />
       <DecriptionBox className="description_box">
         <div className="description_box_header">
