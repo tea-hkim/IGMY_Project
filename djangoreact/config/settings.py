@@ -1,4 +1,6 @@
 import os
+import json
+import sys
 import environ
 from pathlib import Path
 from datetime import datetime, timedelta
@@ -7,11 +9,26 @@ from datetime import datetime, timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# SECRET KEY 분리 (secrets.json 파일로)
+# ROOT_DIR = os.path.dirname(BASE_DIR)
+# SECRET_BASE_FILE = os.path.join(BASE_DIR, 'secrets.json')
+# secrets = json.loads(open(SECRET_BASE_FILE).read())
+# for key, value in secrets.items():
+#     setattr(sys.modules[__name__], key, value)
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
+STATE = "random_string"  # 나중에 url 요청 시 사용되는 값
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-788$x$hv@n*dzud$08r-_-i11kn!e-fv#1$*mlk+%*2-$3!wby"
+
+# Social client key
+KAKAO_REST_API_KEY = "36bab671cc6d302ae5ccc02a2c1aa707"
+GOOGLE_CLIENT_ID = "775963563051-uv8t5d689e6eerchgedpdu2f36bthj45.apps.googleusercontent.com"
+GOOGLE_SECRET = "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"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -27,32 +44,86 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # Additional Django apps
-    "django.contrib.sites",
-    # CORS 관련
+    # [CORS 관련]
     "corsheaders",
-    # my app
+    # [my app]
     "api",
-    # django-rest-framework
+
+    # [Django-Rest-Framework]
     "rest_framework",
     "rest_framework.authtoken",
-    # djangorestframework-simplejwt
+
+    # [djangorestframework-simplejwt]
     "rest_framework_simplejwt",
-    "rest_framework_simplejwt.token_blacklist",
-    # dj-rest-auth
+    # "rest_framework_simplejwt.token_blacklist",  # : blacklist테이블을 만들고 토큰 추가
+
+    # [dj-rest-auth]
     "dj_rest_auth",
     "dj_rest_auth.registration",
     "rest_auth",
-    # django-allauth
+
+    # [사용자 인증을 위한 기본 모듈] django-allauth
+    "django.contrib.sites",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+
+    # [소셜로그인 개별 서비스의 연결모듈 지원 내용]
     "allauth.socialaccount.providers.kakao",
-    # 'allauth.socialaccount.providers.github',
-    # 'allauth.socialaccount.providers.google',
-    # 비밀번호 변경
+    'allauth.socialaccount.providers.google',
+
+    # [비밀번호 변경]
     "djoser",
 ]
+
+SITE_ID = 1
+
+# [참조하는 모델 지정] api 어플의 User 클래스 사용
+AUTH_USER_MODEL = "api.User"
+
+# Custom User Models
+# https://kgu0724.tistory.com/96
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True            # email 필드 사용 o
+ACCOUNT_USERNAME_REQUIRED = True        # username 필드 사용 o
+# ACCOUNT_EMAIL_VERIFICATION = 'none' # 이메일 유효성 인증 필요 여부
+# SOCIALACCOUNT_AUTO_SIGNUP = True # 기본값
+
+# JWT 환경 설정
+REST_USE_JWT = True
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
+    'AUDIENCE': None,
+    'ISSUER': None,
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
+    'TOKEN_TYPE_CLAIM': 'token_type',
+    'JTI_CLAIM': 'jti',
+}
+
+# JWT_AUTH = {
+
+# }
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",  # CORS 관련
@@ -161,10 +232,11 @@ STATIC_URL = "/static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# drf 설정
+# DRF 설정
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
+    # API에 대한 접근 권한 커스터마이징
     "DEFAULT_PERMISSION_CLASSES": (
         # "rest_framework.permissions.IsAuthenticated",
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
@@ -184,33 +256,10 @@ REST_FRAMEWORK = {
 }
 
 
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
-    "ROTATE_REFRESH_TOKENS": True,
-    "BLACKLIST_AFTER_ROTATION": True,
-    'ALGORITHM': 'HS256',
-    'SIGNING_KEY': SECRET_KEY,
-    'VERIFYING_KEY': None,
-    'AUDIENCE': None,
-    'ISSUER': None,
-    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
-    'TOKEN_TYPE_CLAIM': 'token_type',
-    'JTI_CLAIM': 'jti',
-}
-
-# api 어플의 User 클래스 사용
-AUTH_USER_MODEL = "api.User"
-
-
 # Initialise environment variables
 env = environ.Env()
 environ.Env.read_env()
 
-SITE_ID = 1
-
-REST_USE_JWT = True
 
 """gmail을 통해 사용자의 비밀번호 재설정 메일 보내주기 설정"""
 # 메일을 호스트하는 서버

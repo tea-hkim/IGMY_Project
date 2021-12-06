@@ -52,7 +52,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(
         _("staff status"),
         default=False,
-        help_text=_("Designates whether the user can log into this admin site."),
+        help_text=_(
+            "Designates whether the user can log into this admin site."),
     )
     is_active = models.BooleanField(
         _("active"),
@@ -63,6 +64,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         ),
     )
     date_joined = models.DateTimeField(_("date joined"), default=timezone.now)
+    social_platform = models.CharField(max_length=20, null=True)
 
     objects = UserManager()
 
@@ -147,5 +149,3 @@ class SearchHistory(models.Model):
         InfoPill, to_field="item_num", db_column="pill_num", on_delete=models.CASCADE
     )
     create_at = models.DateField(auto_now_add=True)
-
-
