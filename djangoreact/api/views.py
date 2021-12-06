@@ -26,7 +26,7 @@ from django.shortcuts import redirect, reverse
 from json.decoder import JSONDecodeError
 from django.http import JsonResponse, HttpResponse
 from django.contrib import auth
-from datetime import datetime, timedelta, date
+from datetime import timedelta
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
@@ -155,25 +155,18 @@ def pill_detail(request):
         serializer = PillDetailSerializer(pill, many=True)
 
         return Response(serializer.data)
-    else:
-        # 로그인 한 유저가 있는 경우: 검색 기록 추가
-        user_email = request.user
-        old_search_history = SearchHistory.objects.filter(
-            Q(user_email=user_email) & Q(pill_num=pill_id)
-        ).first()
-        # 같은 알약 기록이 이미 있는 경우
-        if old_search_history is not None:
-            serializer = PillDetailSerializer(pill, many=True)
-            return Response(serializer.data)
-        # 같은 알약 기록이 없는 경우
-        pill_num = InfoPill.objects.get(item_num=pill_id)
-        new_search_history = SearchHistory(
-            user_email=user_email, pill_num=pill_num)
-        new_search_history.save()
-
+    # 로그인 한 유저가 있는 경우: 검색 기록 추가
+    user_email = request.user
+    old_search_history = SearchHistory.objects.filter(user_email=user_email, pill_num=pill_id).first()
+    # 같은 알약 기록이 이미 있는 경우
+    if old_search_history is not None:
         serializer = PillDetailSerializer(pill, many=True)
-
         return Response(serializer.data)
+    # 같은 알약 기록이 없는 경우
+    pill_num = InfoPill.objects.get(item_num=pill_id)
+    SearchHistory.objects.create(user_email=user_email, pill_num=pill_num)
+    serializer = PillDetailSerializer(pill, many=True)
+    return Response(serializer.data)
 
 
 # 유저 즐겨찾기 API
@@ -373,29 +366,28 @@ def result_photo(request):
 def search_history(request):
     user_email = str(request.user.email)
     data = SearchHistory.objects.filter(user_email=user_email).all().count()
+    search_history_max_days = 7
+    max_days_ago = timezone.now() - timedelta(days=search_history_max_days)
 
     if data == 0:
         return Response({"message": "최근 검색 기록이 없습니다."})
 
     old_history = (
         SearchHistory.objects.filter(
-            Q(user_email=user_email)
-            & Q(create_at__lte=date.today() - timedelta(days=7))
-        )
-        .all()
-        .count()
-    )
+            user_email=user_email, 
+            create_at__lte=max_days_ago)
+    ).count()
+
 
     # 일주일 지난 기록이 있는 경우
     if old_history > 0:
         SearchHistory.objects.filter(
-            Q(user_email=user_email)
-            & Q(create_at__lte=date.today() - timedelta(days=7))
-        ).all().delete()
+            user_email=user_email,
+            create_at__lte=date.today() - timedelta(days=7)
+        ).delete()
 
         history_pill_list = (
             SearchHistory.objects.filter(user_email=user_email)
-            .all()
             .values_list("pill_num")
             .order_by("id")[:9]
         )
@@ -407,7 +399,6 @@ def search_history(request):
     # 일주일이 지난 기록이 없는 경우
     history_pill_list = (
         SearchHistory.objects.filter(user_email=user_email)
-        .all()
         .values_list("pill_num")
         .order_by("id")[:9]
     )
