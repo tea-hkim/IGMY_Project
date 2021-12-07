@@ -32,13 +32,17 @@ function DirectSearchPage() {
       color !== '선택안함' ? color : ''
     }&page=1`;
     const response = await axios.get(url);
+    if (response.data.length === 0) {
+      setIsLoaded(false);
+      return;
+    }
     if (response.data) {
       totalPage = response.data[0].total_page;
       setCount(response.data[1].count);
       page = response.data[2].page + 1;
       setPillList(response.data[3]);
     }
-    await setTimeout(setIsLoaded(false), 1000);
+    setIsLoaded(false);
   };
 
   const handleSubmit = (event) => {
