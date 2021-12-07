@@ -201,12 +201,10 @@ def user_pill(request):
         if pn:
             # url 약 넘버 정확하게 일치한다면
             pill = pill.filter(Q(item_num__exact=pn)).distinct()
-            serializer = InfoPillSerializer(pill, many=True)
-
-            content = {"유저": str(request.user.email), "알약": serializer.data}
-            return Response(content)
-        else:
-            return Response("올바른 요청 값이 아닙니다.")
+            if UserPill.objects.filter(Q(user_email=user_email.email) & Q(pill_num=pn)):
+                return Response(True)
+            else:
+                return Response(False)
 
     if request.method == "POST":
         if pn:
@@ -217,8 +215,8 @@ def user_pill(request):
                 item_num=pn)  # 입력한 약 넘버와 일치하는 약 번호 가져오기
 
             # UserPill 테이블에 user_email과 pill_num 저장
-            test = UserPill(user_email=user_email, pill_num=pill_num)
-            test.save()  # 저장 22
+            userpillinfo = UserPill(user_email=user_email, pill_num=pill_num)
+            userpillinfo.save()  # 저장 22
             return Response(f"{serializer.data}를 성공적으로 즐겨찾기에 추가했습니다.")
         else:
             return Response("올바른 요청 값이 아닙니다.")  # 정확한 약 넘버가 들어오지 않다면!
@@ -345,7 +343,7 @@ def result_photo(request):
             print(predict_img.shape)
             predict_img = (
                 cv2.resize(predict_img, (224, 224),
-                           interpolation=cv2.INTER_LINEAR)
+                        interpolation=cv2.INTER_LINEAR)
                 / 255
             )
             predict_list.append(predict_img)
