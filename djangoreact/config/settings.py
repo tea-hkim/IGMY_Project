@@ -55,7 +55,7 @@ INSTALLED_APPS = [
 
     # [djangorestframework-simplejwt]
     "rest_framework_simplejwt",
-    # "rest_framework_simplejwt.token_blacklist",  # : blacklist테이블을 만들고 토큰 추가
+    "rest_framework_simplejwt.token_blacklist",  # : blacklist테이블을 만들고 토큰 추가
 
     # [dj-rest-auth]
     "dj_rest_auth",

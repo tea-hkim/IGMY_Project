@@ -16,9 +16,9 @@ urlpatterns = [
     path("search-direct/", views.search_direct),
     path("user-pill/", views.user_pill),
     path("user-pill-list/", views.user_pill_list),
-    path("pill-detail/", views.pill_detail),
+    path("pill-detail/", views.PillDetailView.as_view()),
     path("result-photo/", views.result_photo),
-    path("search-history/", views.search_history),
+    path("search-history/", views.SearchHistoryView.as_view()),
     path("send_email/", views.send_email),  # 구글 이메일 보내기 테스트용
     # 로그인 api
     path("token/", views.MyTokenObtainPairView.as_view(), name="token_obtain_pair"),

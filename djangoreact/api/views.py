@@ -1,8 +1,8 @@
 import os
 import requests
 import json
-from .serializers import *
-from .models import *
+from .serializers import UserCreateSerializer, InfoPillSerializer, ImageForm, UserPillListSerializer, PillDetailSerializer, MyTokenObtainPairSerializer, MyTokenRefreshSerializer, RefreshTokenSerializer
+from .models import User, InfoPill, UserPill, UploadFileModel, SearchHistory
 from django.core.mail import message
 from django.core.mail.message import EmailMessage
 from django.core.checks.messages import Info
@@ -33,6 +33,8 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework.generics import GenericAPIView
 from django.contrib.auth.views import PasswordResetView
 from django.utils import timezone
+from django.views.generic import ListView
+
 
 
 user = settings.DATABASES["default"]["USER"]
@@ -129,44 +131,45 @@ def search_direct(request):
 
 
 # 알약 상세정보
-@api_view(["GET"])
-@permission_classes([AllowAny])
-def pill_detail(request):
-    """
-    약 이름 = item_name
-    사진 링크 = image
-    분류명 = bit
-    성분/함량/단위 = sungbun
-    효능/효과 = efcy_qesitm
-    용법/용량 = use_method_qesitm
-    부작용(이상반응의 부분집합) = se_qesitm
-    사용 시 주의사항 = atpn_qesitm
-    보관 방법 = deposit_method_qesitm
-    타 악과의 상호작용 = intrc_qesitm
-    """
-    pill_id = request.GET.get("pill_id", "")
+"""
+약 이름 = item_name
+사진 링크 = image
+분류명 = bit
+성분/함량/단위 = sungbun
+효능/효과 = efcy_qesitm
+용법/용량 = use_method_qesitm
+부작용(이상반응의 부분집합) = se_qesitm
+사용 시 주의사항 = atpn_qesitm
+보관 방법 = deposit_method_qesitm
+타 악과의 상호작용 = intrc_qesitm
+"""
+class PillDetailView(APIView):
+    permissions_classes = [AllowAny]
 
-    if pill_id is None:
-        return Response("해당 품목일련번호가 없습니다.")
-
-    pill = InfoPill.objects.filter(item_num=pill_id)
-    # 로그인 한 유저가 없는 경우
-    if request.user.is_anonymous:
+    def get(self, request):
+        pill_id = request.GET.get("pill_id", "")
+        pill = InfoPill.objects.filter(item_num=pill_id)
+        if pill is None:
+            return Response("해당 품목일련번호가 없습니다.")
+        # 로그인 한 유저가 없는 경우
+        if request.user.is_anonymous:
+            serializer = PillDetailSerializer(pill, many=True)
+            return Response(serializer.data)
+        # 로그인 한 유저가 있는 경우: 검색 기록 추가
+        user_email = request.user
+        old_search_history = SearchHistory.objects.filter(
+            user_email=user_email, 
+            pill_num=pill_id
+            ).first()
+        # 같은 알약 기록이 이미 있는 경우
+        if old_search_history is not None:
+            serializer = PillDetailSerializer(pill, many=True)
+            return Response(serializer.data)
+        # 같은 알약 기록이 없는 경우
+        pill_num = InfoPill.objects.get(item_num=pill_id)
+        SearchHistory.objects.create(user_email=user_email, pill_num=pill_num)
         serializer = PillDetailSerializer(pill, many=True)
-
         return Response(serializer.data)
-    # 로그인 한 유저가 있는 경우: 검색 기록 추가
-    user_email = request.user
-    old_search_history = SearchHistory.objects.filter(user_email=user_email, pill_num=pill_id).first()
-    # 같은 알약 기록이 이미 있는 경우
-    if old_search_history is not None:
-        serializer = PillDetailSerializer(pill, many=True)
-        return Response(serializer.data)
-    # 같은 알약 기록이 없는 경우
-    pill_num = InfoPill.objects.get(item_num=pill_id)
-    SearchHistory.objects.create(user_email=user_email, pill_num=pill_num)
-    serializer = PillDetailSerializer(pill, many=True)
-    return Response(serializer.data)
 
 
 # 유저 즐겨찾기 API
@@ -360,53 +363,55 @@ def result_photo(request):
         return Response("파일을 선택해주세요.")
 
 
-# # 검색 기록
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def search_history(request):
-    user_email = str(request.user.email)
-    data = SearchHistory.objects.filter(user_email=user_email).all().count()
-    search_history_max_days = 7
-    max_days_ago = timezone.now() - timedelta(days=search_history_max_days)
 
-    if data == 0:
-        return Response({"message": "최근 검색 기록이 없습니다."})
+# 검색 기록
+class SearchHistoryView(APIView, ListView):
+    permissions_classes = [IsAuthenticated]
+    model = SearchHistory
 
-    old_history = (
-        SearchHistory.objects.filter(
+    def get_queryset(self):
+        user_email = str(self.request.user.email)
+        queryset = super().get_queryset() 
+        queryset = queryset.filter(user_email=user_email).values_list("pill_num", flat=True).order_by("id")[:9]
+        return queryset
+
+    def get(self, request):
+        user_email = str(request.user.email)
+        data = SearchHistory.objects.filter(user_email=user_email).count() 
+        search_history_max_days = 7
+        max_days_ago = timezone.now() - timedelta(days=search_history_max_days)
+
+        # 검색 기록이 없는 경우
+        if data == 0:
+            return Response({"message": "최근 검색 기록이 없습니다."})
+
+        old_history = SearchHistory.objects.filter(
             user_email=user_email, 
-            create_at__lte=max_days_ago)
-    ).count()
+            create_at__lte=max_days_ago
+            ).count()
 
-
-    # 일주일 지난 기록이 있는 경우
-    if old_history > 0:
+        # 일주일 지난 기록이 없는 경우
+        if old_history == 0:
+            history_pill_list = self.get_queryset()
+            pills = InfoPill.objects.filter(item_num__in=history_pill_list)
+            serializer = UserPillListSerializer(pills, many=True)
+            return Response(serializer.data)
+        # 일주일 지난 기록이 있는 경우
         SearchHistory.objects.filter(
             user_email=user_email,
-            create_at__lte=date.today() - timedelta(days=7)
-        ).delete()
+            create_at__lte=max_days_ago
+            ).delete()
+        history_pill_list = self.get_queryset()
+        # 오래된 기록 삭제 후 최근 기록이 남아있는 경우
+        if history_pill_list:
+            pills = InfoPill.objects.filter(item_num__in=history_pill_list)
+            serializer = UserPillListSerializer(pills, many=True)
+            return Response(serializer.data)
+        # 오래된 기록 삭제 후 최근 기록이 없는 경우
+        return Response({"message": "최근 검색 기록이 없습니다."})
 
-        history_pill_list = (
-            SearchHistory.objects.filter(user_email=user_email)
-            .values_list("pill_num")
-            .order_by("id")[:9]
-        )
-        pills = InfoPill.objects.filter(item_num__in=history_pill_list)
-        serializer = UserPillListSerializer(pills, many=True)
 
-        return Response(serializer.data)
 
-    # 일주일이 지난 기록이 없는 경우
-    history_pill_list = (
-        SearchHistory.objects.filter(user_email=user_email)
-        .values_list("pill_num")
-        .order_by("id")[:9]
-    )
-    pills = InfoPill.objects.filter(item_num__in=history_pill_list)
-
-    serializer = UserPillListSerializer(pills, many=True)
-
-    return Response(serializer.data)
 
 
 # 사진 검색 API

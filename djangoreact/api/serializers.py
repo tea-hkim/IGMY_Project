@@ -6,7 +6,7 @@ from rest_framework_simplejwt.serializers import TokenRefreshSerializer, TokenOb
 from rest_framework_simplejwt.state import token_backend
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.models import update_last_login
-from .models import *
+from .models import InfoPill, UploadFileModel
 from django import forms
 from rest_auth.serializers import PasswordResetSerializer
 from django.conf import settings
@@ -37,11 +37,6 @@ class InfoPillSerializer(serializers.ModelSerializer):
         model = InfoPill
         exclude = ["id"]
 
-
-# class UserPillSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = UserPill
-#         exclude = ["id"]
 
 
 class ImageForm(forms.ModelForm):
