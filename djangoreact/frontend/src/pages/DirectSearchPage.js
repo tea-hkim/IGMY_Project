@@ -1,8 +1,8 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import DirectSearchResult from '../components/DirectSearchResult';
 import { PillShapeData, PillColorData } from '../helper/pillData';
-import Loader from '../components/loader';
+import Loader from '../components/Loader';
 import {
   SearchBox,
   NameBox,
@@ -20,16 +20,25 @@ function DirectSearchPage() {
 
   const [target, setTarget] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [count, setCount] = useState(null);
   const [pillList, setPillList] = useState(null);
+
+  let page = 0;
+  let totalPage = 0;
 
   const directSearch = async () => {
     setIsLoaded(true);
     const url = `http://localhost:8000/api/search-direct/?n=${pillName}&s=${shape !== '선택안함' ? shape : ''}&c_f=${
       color !== '선택안함' ? color : ''
-    }&`;
+    }&page=1`;
     const response = await axios.get(url);
-    setPillList(response.data);
-    setIsLoaded(false);
+    if (response.data) {
+      totalPage = response.data[0].total_page;
+      setCount(response.data[1].count);
+      page = response.data[2].page + 1;
+      setPillList(response.data[3]);
+    }
+    await setTimeout(setIsLoaded(false), 1000);
   };
 
   const handleSubmit = (event) => {
@@ -55,33 +64,41 @@ function DirectSearchPage() {
     setPillName('');
     setShape('');
     setColor('');
+    setCount(null);
     setPillList(null);
-  };
-
-  const printMoreItem = async () => {
-    setIsLoaded(true);
+    totalPage = 0;
+    page = 0;
     setIsLoaded(false);
   };
 
-  const onIntersect = ([entry], observer) => {
-    if (entry.isIntersecting && !isLoaded) {
-      observer.unobserve(entry.target);
-      printMoreItem();
-      observer.observe(entry.target);
-    }
+  const printMoreItem = async () => {
+    if (page > totalPage) return;
+    setIsLoaded(true);
+    const url = `http://localhost:8000/api/search-direct/?n=${pillName}&s=${shape !== '선택안함' ? shape : ''}&c_f=${
+      color !== '선택안함' ? color : ''
+    }&page=${page}`;
+    const response = await axios.get(url);
+    page += 1;
+    const newPillList = response.data[3];
+    // if (pillList === null) {
+    //   setIsLoaded(false);
+    //   return;
+    // }
+    setPillList((pillist) => pillist.concat(newPillList));
+    await setIsLoaded(false);
   };
 
-  useEffect(() => {
-    let observer;
-    if (target) {
-      observer = new IntersectionObserver(onIntersect, {
-        threshold: 0.4,
-      });
-      observer.observe(target);
-      console.log(target);
-    }
-    return () => observer && observer.disconnect();
-  }, [target]);
+  const onIntersect = ([{ isIntersecting }]) => {
+    if (page === 0) return;
+    if (isIntersecting) printMoreItem();
+  };
+
+  if (target) {
+    const observer = new IntersectionObserver(onIntersect, {
+      threshold: 1,
+    });
+    observer.observe(target);
+  }
 
   return (
     <SearchPage className="search_direct">
@@ -178,9 +195,9 @@ function DirectSearchPage() {
         </ButtonBox>
       </SearchBox>
       <div>
-        {pillList && (
+        {count && (
           <h4>
-            [{pillName}-{shape}-{color}]으로 {pillList.length} 건의 검색 결과가 있습니다
+            [{pillName}-{shape}-{color}]으로 {count} 건의 검색 결과가 있습니다
           </h4>
         )}
       </div>

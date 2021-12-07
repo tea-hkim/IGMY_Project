@@ -27,9 +27,6 @@ const ResultBox = ({ pill }) => {
           <h4>효능·효과</h4>
           {pill.efcy_qesitm}
         </div>
-        <button type="button" className="btn_to_detail_page">
-          알약 상세 정보
-        </button>
       </DecriptionBox>
     </PillInfoBox>
   );
@@ -93,21 +90,6 @@ const DecriptionBox = styled.div`
     h4 {
       margin: 0px;
       width: 10%;
-    }
-  }
-  button {
-    bottom: 5px;
-    right: 5px;
-    cursor: pointer;
-    position: absolute;
-    background-color: white;
-    border-radius: 5px;
-    border: 2px solid ${palePink};
-    width: 100px;
-
-    font-size: 1rem;
-    &:hover {
-      font-weight: 600;
     }
   }
 `;
