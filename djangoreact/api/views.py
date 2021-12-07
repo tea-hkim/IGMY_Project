@@ -129,7 +129,7 @@ def search_direct(request):
         p = Paginator(serializer.data, 10) # 페이지당 10개씩 보여 주기
         # print(p.page(1).object_list)
         # print(p.num_pages) # 총 페이지 갯수
-        page_data = {"총 페이지 수": p.num_pages}, {"현재 페이지" : page}, p.page(page).object_list
+        page_data = {"total_page": p.num_pages},{"count": p.count}, {"page" : page}, p.page(page).object_list
         return Response(page_data)
 
     return Response([])
