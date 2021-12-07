@@ -504,20 +504,12 @@ KAKAO_CALLBACK_URI = BASE_URL + "api/login/kakao/callback/"
 GOOGLE_CALLBACK_URI = BASE_URL + 'api/login/google/callback/'
 
 
-'''kakao'''
+'''kakao social login'''
 
 
-@api_view(["GET"])
+@api_view(["POST"])
 @permission_classes([AllowAny])
 def kakao_login(request):
-    KAKAO_REST_API_KEY = getattr(settings, 'KAKAO_REST_API_KEY')
-    REDIRECT_URI = KAKAO_CALLBACK_URI
-    return redirect(
-        f"https://kauth.kakao.com/oauth/authorize?client_id={KAKAO_REST_API_KEY}&redirect_uri={REDIRECT_URI}&response_type=code"
-    )
-
-
-def kakao_callback(request):
     code = request.GET['code']
     KAKAO_REST_API_KEY = getattr(settings, 'KAKAO_REST_API_KEY')
     REDIRECT_URI = KAKAO_CALLBACK_URI
@@ -542,7 +534,6 @@ def kakao_callback(request):
     get_user_info_url = 'https://kapi.kakao.com/v2/user/me'
     user_info_json = requests.get(get_user_info_url, headers=headers).json()
 
-    # return JsonResponse(user_info_json)  # test : 확인
     '''
     {
         "id": 2003367790, 
@@ -568,195 +559,51 @@ def kakao_callback(request):
             "email": "sy7434@naver.com"
         }
     }
+    카카오는 이메일이 없을 수 있기 때문에,
+    이메일 있으면 폼에 채워주고 없으면 이메일 받는 페이지 로드 : 프론트에 전달해주기
     '''
 
+    uid = user_info_json['id']
     email = user_info_json['kakao_account']['email']
     nickname = user_info_json['kakao_account']['profile']['nickname']
-    # return HttpResponse(nickname)  # test : 확인 (최종 return에서 utf? 변환하는 과정 필요?)
+    provider = "kakao"
 
-    '''유저가 db에 존재하는지 확인'''
-    if User.objects.filter(
-        email=email,
-        social_platform="kakao"
-    ).exists():
-        user_info = User.objects.get(email=email)
-        # return HttpResponse("이미 존재하는 회원") # test : 확인
+    # email 수집에 동의하지 않아서 값이 비어있는 경우
+    if email == False:
+        return Response({"message": "Email does not exist. Write it yourself."}, status=status.HTTP_400_BAD_REQUEST)
+
+    # db에 이메일이 존재하는 경우
+    if User.objects.filter(email=email).exists():
+        # 소셜로 로그인한적 있음
+        if SocialAccount.objects.filter(uid=uid).exists():
+            pass  # 자체적 토큰 발급 (class) → return으로 토큰과 200 응답 보내줌
+
+        # 해당 이메일로 자체로그인
+        else:
+            return Response({"message": "Email exists But not social user. Try origin login."}, status=status.HTTP_400_BAD_REQUEST)
+
+    # db에 이메일이 존재하지 않는 경우 : 소셜로그인으로 처음 로그인 (회원가입이라고 생각하면 됨!)
     else:
-        user_info = User.objects.create(
+        user_data = User.objects.create(
             email=email,
             username=nickname,
             date_joined=timezone.now(),
-            social_platform="kakao",
         )
-        user_info.save()
-        # return HttpResponse("새로운 회원") # test : 확인
-    # return HttpResponse(user_info.{각각 field}) # test : 확인
-
-    # 토큰 발급
-    refreshToken = RefreshToken.for_user(user_info)
-    accessToken = refreshToken.access_token
-    # return HttpResponse(f"{access_token} & {refresh_token}")  # test : 확인
-    # 인증 만료 시간
-    expires_at = (
-        timezone.now()
-        + getattr(settings, "SIMPLE_JWT", None)["ACCESS_TOKEN_LIFETIME"]
-    )
-    # return HttpResponse(expires_at) # test : 5분뒤 확인
-
-    user_data = {
-        "access_token": str(access_token),
-        "refresh_token": str(refresh_token),
-        "user_email": user_info.email,
-        "user_name": user_info.username,
-        "social_platform": user_info.social_platform,
-        "expires_at": expires_at,
-    }
-
-    return JsonResponse(
-        user_data,
-        status=200,
-    )
-    '''
-    [카카오 추가할 것]
-    1. refresh_token을 업데이트해주는 코드?
-    2. 리펙토링) serializer로 표현해보자 (last_login필드 추가)
-    '''
-
-
-'''google'''
-
-
-@api_view(["GET"])
-def google_login(request):
-    GOOGLE_CLIENT_ID = getattr(settings, "GOOGLE_CLIENT_ID")
-    REDIRECT_URI = GOOGLE_CALLBACK_URI
-    scope = "https://www.googleapis.com/auth/userinfo.email"
-
-    return redirect(f"https://accounts.google.com/o/oauth2/v2/auth?client_id={GOOGLE_CLIENT_ID}&response_type=code&redirect_uri={REDIRECT_URI}&scope={scope}")
-
-
-def google_callback(request):
-    GOOGLE_CLIENT_ID = getattr(settings, "GOOGLE_CLIENT_ID")
-    GOOGLE_SECRET = getattr(settings, "GOOGLE_SECRET")
-    REDIRECT_URI = GOOGLE_CALLBACK_URI
-    state = request.GET.get('state')
-    code = request.GET.get('code')
-
-    # 구글에 요청해서 token data 가져오기
-    token_data = requests.post(
-        f"https://oauth2.googleapis.com/token?client_id={GOOGLE_CLIENT_ID}&client_secret={GOOGLE_SECRET}&code={code}&grant_type=authorization_code&redirect_uri={REDIRECT_URI}&state={state}").json()
-
-    # return JsonResponse(token_data)  # test : 토큰 발급 확인
-
-    error = token_data.get("error", None)
-    if error is not None:
-        raise JSONDecodeError(error)
-
-    access_token = token_data.get("access_token")  # refresh_token은 회원가입시에만 발급됨
-
-    # 발급된 Access Token을 이용해서 사용자 정보 json 형식으로 가져오기
-    get_user_info = requests.get(
-        f"https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={access_token}")
-
-    status_code = get_user_info.status_code  # 제대로 들어가면 200 반환
-    # return HttpResponse(status_code)  # test : 200 나오는거 확인
-
-    if status_code != 200:
-        return JsonResponse(
-            {'err_msg': 'failed to get email'},
-            status=status.HTTP_400_BAD_REQUEST
+        user_data.save()
+        user_info = User.objects.get(email=email)
+        social_user = SocialAccount(
+            user=user_info,
+            uid=uid,
+            provider=provider
         )
+        social_user.save()
 
-    user_info_json = get_user_info.json()  # json형태로 프로필 값 가져오기
+        # 자체적 토큰 발급 (class) → return으로 토큰과 200 응답 보내줌 (아래 두줄은 뇌피셜)
+        # data = {'email': email, 'username': nickname}
+        # return requests.post(
+        #     f"{BASE_URL}api/token/", data=data)
 
-    # return JsonResponse(user_info_json)  # test : 확인
-    '''
-    {
-        "issued_to": "775963563051-uv8t5d689e6eerchgedpdu2f36bthj45.apps.googleusercontent.com", 
-        "audience": "775963563051-uv8t5d689e6eerchgedpdu2f36bthj45.apps.googleusercontent.com",
-        "user_id": "112901936700065846512", 
-        "scope": "https://www.googleapis.com/auth/userinfo.email openid", 
-        "expires_in": 3598, 
-        "email": "ksge1124@gmail.com", 
-        "verified_email": true, 
-        "access_type": "online"
-    }
-    '''
-
-    # 이메일과 이름 데이터 가져옴 (구글에서는 이름 데이터가 없나,,?)
-    email = user_info_json.get('email')
-    # username = user_info_json.get('??')  # ??
-    # return HttpResponse(email)  # test : 확인
-
-    '''db에 이미 저장되어있는 회원인지 확인'''
-    try:
-        user = User.objects.get(email=email)
-        social_user = SocialAccount.objects.get(
-            user=user)  # 소셜로그인으로 회원가입 했는지 여부 확인
-
-        # 이메일은 있지만 social user가 아님
-        if social_user is None:
-            return JsonResponse({'err_msg': 'email exists but not social user'}, status=status.HTTP_400_BAD_REQUEST)
-
-        # google에서 찾을 수 없음
-        if social_user.provider != 'google':
-            return JsonResponse({'err_msg': 'no matching social type'}, status=status.HTTP_400_BAD_REQUEST)
-
-        # 기존에 Google로 가입된 유저
-        data = {'access_token': access_token, 'code': code}
-        accept = requests.post(
-            f"{BASE_URL}api/login/google/finish/", data=data)
-
-        accept_status = accept.status_code
-
-        if accept_status != 200:
-            return JsonResponse({'err_msg': 'failed to signin'}, status=accept_status)
-
-        accept_json = accept.json()
-        accept_json.pop('user', None)  # ?
-
-        # return JsonResponse(accept_json)
-        # jwt토큰 프론트엔드에 전달
-        return JsonResponse(
-            {
-                "access_token": access_token,
-                "user_email": email,
-            },
-            status=200,
-        )
-
-    except User.DoesNotExist:
-        data = {'access_token': access_token, 'code': code}
-        accept = requests.post(
-            f"{BASE_URL}api/login/google/finish/", data=data)
-        accept_status = accept.status_code
-
-        if accept_status != 200:
-            return JsonResponse({'err_msg': 'failed to signup'}, status=accept_status)
-
-        accept_json = accept.json()
-        accept_json.pop('user', None)  # ?
-
-        # return JsonResponse(accept_json)
-        # jwt토큰 프론트엔드에 전달
-        return JsonResponse(
-            {
-                "access_token": access_token,
-                "user_email": email,
-            },
-            status=200,
-        )
-        '''
-        토큰 발급 완료
-        {"access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjM4MjkyNTg1LCJpYXQiOjE2MzgyOTIyODUsImp0aSI6IjViY2Y4YTQ2ZjRjZTRhODM4N2Q3ZTk4YmIzYzZjZTg0IiwidXNlcl9pZCI6NTV9.5IENJTLfMARy2AmXRTvXxGvVT9x2gHZykfbHqo17v9w",
-            "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTYzODg5NzA4NSwiaWF0IjoxNjM4MjkyMjg1LCJqdGkiOiJiMWY5OTkzYTM2OWQ0YTIxYTNiOTU1YTBkNTNiMmZjMSIsInVzZXJfaWQiOjU1fQ._tRNLQnXlX5p-dSzTOuzcF6sag5TqJJk53OTdMcyYWo"}
-        '''
-
-
-class GoogleLogin(SocialLoginView):
-    adapter_class = google_view.GoogleOAuth2Adapter
-    callback_url = GOOGLE_CALLBACK_URI
-    client_class = OAuth2Client
+        return
 
 
 class MyTokenObtainPairView(TokenObtainPairView):

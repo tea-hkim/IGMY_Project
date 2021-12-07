@@ -27,12 +27,7 @@ urlpatterns = [
     path('logout/', views.LogoutView.as_view()),
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     # OAuth : kakao api
-    path("login/kakao/", views.kakao_login, name="kakao_login"),
-    path("login/kakao/callback/", views.kakao_callback, name="kakao_callback"),
+    path("login/kakao/", views.kakao_login, name='kakao_login'),
     # OAuth : google api
-    path('login/google/', views.google_login, name='google_login'),
-    path('login/google/callback/', views.google_callback,
-         name='google_callback'),
-    path('login/google/finish/', views.GoogleLogin.as_view(),
-         name='google_login_todjango'),
+    # path('login/google/', views.google_login, name='google_login'),
 ]
