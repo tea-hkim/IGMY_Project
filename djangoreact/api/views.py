@@ -6,6 +6,7 @@ from .models import User, InfoPill, UserPill, UploadFileModel, SearchHistory
 from django.core.mail import message
 from django.core.mail.message import EmailMessage
 from django.core.checks.messages import Info
+from django.core.paginator import Paginator
 from django.conf import settings
 from django.db.models.expressions import RawSQL
 from rest_framework import status, permissions, generics
@@ -95,7 +96,7 @@ def search_all(request):
 
 @api_view(["GET"])
 @permission_classes([AllowAny])
-def search_direct(request):
+def search_direct(request):    
     name = request.GET.get("n")  # 약 이름
     shape = request.GET.get("s")  # 약 모양
     color_front = request.GET.get("c_f")  # 약 앞면 색상
@@ -125,7 +126,13 @@ def search_direct(request):
         query_all = "SELECT * FROM api_infopill WHERE " + query_all
         pill = engine.execute(text(query_all))
         serializer = InfoPillSerializer(pill, many=True)
-        return Response(serializer.data)
+        
+        page = int(request.GET.get('page', '1')) # 페이지 params
+        p = Paginator(serializer.data, 10) # 페이지당 10개씩 보여 주기
+        # print(p.page(1).object_list)
+        # print(p.num_pages) # 총 페이지 갯수
+        page_data = {"총 페이지 수": p.num_pages}, {"현재 페이지" : page}, p.page(page).object_list
+        return Response(page_data)
 
     return Response([])
 
@@ -190,12 +197,10 @@ def user_pill(request):
         if pn:
             # url 약 넘버 정확하게 일치한다면
             pill = pill.filter(Q(item_num__exact=pn)).distinct()
-            serializer = InfoPillSerializer(pill, many=True)
-
-            content = {"유저": str(request.user.email), "알약": serializer.data}
-            return Response(content)
-        else:
-            return Response("올바른 요청 값이 아닙니다.")
+            if UserPill.objects.filter(Q(user_email=user_email.email) & Q(pill_num=pn)):
+                return Response(True)
+            else:
+                return Response(False)
 
     if request.method == "POST":
         if pn:
@@ -206,8 +211,8 @@ def user_pill(request):
                 item_num=pn)  # 입력한 약 넘버와 일치하는 약 번호 가져오기
 
             # UserPill 테이블에 user_email과 pill_num 저장
-            test = UserPill(user_email=user_email, pill_num=pill_num)
-            test.save()  # 저장 22
+            userpillinfo = UserPill(user_email=user_email, pill_num=pill_num)
+            userpillinfo.save()  # 저장 22
             return Response(f"{serializer.data}를 성공적으로 즐겨찾기에 추가했습니다.")
         else:
             return Response("올바른 요청 값이 아닙니다.")  # 정확한 약 넘버가 들어오지 않다면!
@@ -262,7 +267,7 @@ def send_email(request):
     from_email = "igmy1108@email.com"
     message = "메시지 테스트"
     EmailMessage(subject=subject, body=message,
-                 to=to, from_email=from_email).send()
+                to=to, from_email=from_email).send()
 
 
 # 준 왓 이즈 디스?
@@ -334,7 +339,7 @@ def result_photo(request):
             print(predict_img.shape)
             predict_img = (
                 cv2.resize(predict_img, (224, 224),
-                           interpolation=cv2.INTER_LINEAR)
+                        interpolation=cv2.INTER_LINEAR)
                 / 255
             )
             predict_list.append(predict_img)

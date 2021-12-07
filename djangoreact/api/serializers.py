@@ -1,6 +1,7 @@
 from django.conf.urls import include
 from django.forms.models import fields_for_model
 from rest_framework import serializers
+from rest_framework.pagination import PageNumberPagination
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer, TokenObtainPairSerializer
 from rest_framework_simplejwt.state import token_backend
