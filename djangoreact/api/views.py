@@ -28,26 +28,12 @@ from json.decoder import JSONDecodeError
 from django.http import JsonResponse, HttpResponse
 from django.contrib import auth
 from datetime import timedelta
-from sqlalchemy import create_engine
-from sqlalchemy.sql import text
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework.generics import GenericAPIView
 from django.contrib.auth.views import PasswordResetView
 from django.utils import timezone
 from django.views.generic import ListView
 
-
-
-user = settings.DATABASES["default"]["USER"]
-password = settings.DATABASES["default"]["PASSWORD"]
-host = settings.DATABASES["default"]["HOST"]
-port = settings.DATABASES["default"]["PORT"]
-name = settings.DATABASES["default"]["NAME"]
-
-url = "postgresql+psycopg2://{}:{}@{}:{}/{}"
-url = url.format(user, password, host, port, name)
-
-engine = create_engine(url)
 
 # import numpy as np
 # import cv2
@@ -97,44 +83,28 @@ def search_all(request):
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def search_direct(request):    
-    name = request.GET.get("n")  # 약 이름
-    shape = request.GET.get("s")  # 약 모양
-    color_front = request.GET.get("c_f")  # 약 앞면 색상
+    name = request.GET.get("name")  # 약 이름
+    shape = request.GET.get("shape")  # 약 모양
+    color_front = request.GET.get("color_front")  # 약 앞면 색상
 
-    # 만약 ?n={약이름} 이랑 모양, 앞면 색상으로 검색 시 해당 이름과 모양, 색상이 포함된 값을 반환해줌
-    query_all = ""
+    # 만약 ?name={약이름} 이랑 모양, 앞면 색상으로 검색 시 해당 이름과 모양, 색상이 포함된 값을 반환해줌
+    if not name:
+        name = ''
+    if not color_front:
+        color_front = ''
 
-    shape_query = ""
+    if not shape:
+        pill = InfoPill.objects.filter(item_name__contains = name) & InfoPill.objects.filter(color_front__contains = color_front)
     if shape:
-        shape_query = f"shape = '{shape}' AND "
-        query_all += shape_query
+        pill = InfoPill.objects.filter(shape__exact = shape) & InfoPill.objects.filter(item_name__contains = name) & InfoPill.objects.filter(color_front__contains = color_front)
 
-    name_query = ""
-    if name:
-        name = "%{}%".format(name)
-        name_query = f"item_name LIKE '{name}' AND "
-        query_all += name_query
-
-    color_front_query = ""
-    if color_front:
-        color_front = "%{}%".format(color_front)
-        color_front_query = f"color_front LIKE '{color_front}' AND "
-        query_all += color_front_query
-
-    if not query_all == "":
-        query_all = query_all[:-4]
-        query_all = "SELECT * FROM api_infopill WHERE " + query_all
-        pill = engine.execute(text(query_all))
-        serializer = InfoPillSerializer(pill, many=True)
-        
-        page = int(request.GET.get('page', '1')) # 페이지 params
-        p = Paginator(serializer.data, 10) # 페이지당 10개씩 보여 주기
-        # print(p.page(1).object_list)
-        # print(p.num_pages) # 총 페이지 갯수
-        page_data = {"total_page": p.num_pages},{"count": p.count}, {"page" : page}, p.page(page).object_list
-        return Response(page_data)
-
-    return Response([])
+    serializer = InfoPillSerializer(pill, many=True)
+    
+    page = int(request.GET.get('page', '1')) # 페이지 params
+    p = Paginator(serializer.data, 10) # 페이지당 10개씩 보여 주기
+    page_data = {"total_page": p.num_pages}, {"count": p.count}, {"page" : page}, p.page(page).object_list
+    
+    return Response(page_data)
 
 
 # 알약 상세정보
