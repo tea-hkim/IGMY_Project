@@ -26,14 +26,14 @@ STATE = "random_string"  # 나중에 url 요청 시 사용되는 값
 SECRET_KEY = "django-insecure-788$x$hv@n*dzud$08r-_-i11kn!e-fv#1$*mlk+%*2-$3!wby"
 
 # Social client key
-KAKAO_REST_API_KEY = "36bab671cc6d302ae5ccc02a2c1aa707"
+KAKAO_REST_API_KEY = "a99d9ab952d8ff978691e6981a20b3f4"
 GOOGLE_CLIENT_ID = "775963563051-uv8t5d689e6eerchgedpdu2f36bthj45.apps.googleusercontent.com"
 GOOGLE_SECRET = "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"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
