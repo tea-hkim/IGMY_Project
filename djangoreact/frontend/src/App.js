@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import './App.css';
 import { Route, Routes } from 'react-router-dom';
+import GlobalStyle from './styles/GlobalStyle';
 import { login } from './redux/authSlice';
 import MainPage from './pages/MainPage';
 import LoginPage from './pages/LoginPage';
@@ -16,8 +17,10 @@ import ScanFailPage from './pages/ScanFailPage';
 import PillBoxPage from './pages/PillBoxPage';
 import DirectSearchPage from './pages/DirectSearchPage';
 import AboutUsPage from './pages/about-us-page';
+import AboutServicePage from './pages/about-service-page';
 import PillDetailPage from './pages/PillDetailPage';
 import ResetPasswordConfimPage from './pages/ResetPasswordConfimPage';
+import Social from './auth/Social';
 
 function App() {
   const dispatch = useDispatch();
@@ -46,6 +49,7 @@ function App() {
 
   return (
     <div className="App">
+      <GlobalStyle />
       <Navbar />
       <Routes>
         <Route exact path="/" element={<MainPage />} />
@@ -60,6 +64,8 @@ function App() {
         <Route path="/direct" element={<DirectSearchPage />} />
         <Route path="/pilldetail" element={<PillDetailPage />} />
         <Route path="/about-us" element={<AboutUsPage />} />
+        <Route path="/about-service" element={<AboutServicePage />} />
+        <Route path="oauth/callback/kakao" element={<Social />} />
       </Routes>
       <Footer />
     </div>

@@ -1,5 +1,6 @@
 /* eslint-disable*/
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import axios from 'axios';
 import Modal from 'react-modal';
 import { AiOutlineStar, AiFillStar } from 'react-icons/ai';
@@ -22,6 +23,7 @@ import {
 const PillDetailPage = () => {
   Modal.setAppElement('#root');
   const location = useLocation();
+  const { access } = useSelector((state) => state.auth);
   const [isOpen, setOpen] = useState(false);
   const [isUserPill, setUserPill] = useState(false);
   const [isMoreDetail, setMoreDetail] = useState(false);
@@ -39,7 +41,7 @@ const PillDetailPage = () => {
 
   useEffect(async () => {
     setPillNum(location.state.pillNum); // 일련번호
-
+    
     try {
       const response1 = await axios.get(`http://127.0.0.1:8000/api/pill-detail/?pill_id=${location.state.pillNum}`);
       console.log(response1.data);
@@ -53,13 +55,12 @@ const PillDetailPage = () => {
       setPillAttention(response1.data[0].atpn_qesitm); // 주의사항
       setPillInteraction(response1.data[0].intrc_qesitm); // 상호작용
       setPillDeposit(response1.data[0].deposit_method_qesitm); // 보관방법
+      // const response2 = await axios.get(`http://127.0.0.1:8000/api/user-pill/?pn=${location.state.pillNum}`);
+      // const CheckPillNum = response2.data[0].item_num;
 
-      const response2 = await axios.get(`http://127.0.0.1:8000/api/user-pill/?pn=${location.state.pillNum}`);
-      const CheckPillNum = response2.data[0].item_num;
-
-      if (CheckPillNum === pillNum) {
-        setUserPill(true);
-      }
+      // if (CheckPillNum === location.state.pillNumNum) {
+      //   setUserPill(true);
+      // }
     } catch (err) {
       console.log(err);
     }
@@ -69,11 +70,11 @@ const PillDetailPage = () => {
     setUserPill(!isUserPill);
 
     console.log(localStorage.getItem('jwt'));
-    if (isUserPill) {
+    if (!isUserPill) {
       try {
         const response = await axios.post(`http://127.0.0.1:8000/api/user-pill/?pn=${pillNum}`, pillNum, {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+            Authorization: `Bearer ${access}`,
           },
         });
         console.log(response.data);
@@ -84,7 +85,7 @@ const PillDetailPage = () => {
       try {
         const response = await axios.delete(`http://127.0.0.1:8000/api/user-pill/?pn=${pillNum}`, pillNum, {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+            Authorization: `Bearer ${access}`,
           },
         });
         console.log(response.data);

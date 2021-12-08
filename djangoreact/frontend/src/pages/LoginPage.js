@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import KakaoLogin from '../auth/KakaoLogin';
 import InputWithLabel from '../auth/InputWithLabel';
 import AuthButton from '../auth/AuthButton';
 import { login } from '../redux/authSlice';
@@ -72,15 +73,15 @@ const LoginPage = () => {
     navigate('/register');
   };
 
-  const handleClickToFindPw = () => {
-    navigate('/findPw');
+  const handleClickToResetPw = () => {
+    navigate('/reset-password');
   };
 
   return (
     <AuthContainer>
       <AuthTitle>로그인</AuthTitle>
       <KakaoBox className="kakaoButton">
-        <img src="images/카카오 버튼 PNG.png" alt="카카오버튼" style={{ width: '100%' }} />
+        <KakaoLogin />
       </KakaoBox>
       <LineBox>
         <Or> 또는 </Or>
@@ -121,7 +122,7 @@ const LoginPage = () => {
         <Line />
         <AuthFooterContent>
           <div>혹시 비밀번호를 잊으셨나요?</div>
-          <div tabIndex="-1" role="button" onClick={handleClickToFindPw} onKeyDown={handleClickToFindPw}>
+          <div tabIndex="-1" role="button" onClick={handleClickToResetPw} onKeyDown={handleClickToResetPw}>
             비밀번호 재설정
           </div>
         </AuthFooterContent>

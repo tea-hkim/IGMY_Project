@@ -1,14 +1,23 @@
 import React, { useState } from 'react';
 import '../styles/Tabs.css';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 function Tabs() {
   const [toggleState, setToggleState] = useState(1);
   const [data, setData] = useState(null);
-
+  const { access } = useSelector((state) => state.auth);
   const toggleTab = (index) => {
     setToggleState(index);
-    axios.get('http://127.0.0.1:8000/api/user-pill-list/').then((response) => {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        // eslint-disable-next-line prettier/prettier
+        'Authorization': `Bearer ${access}`,
+      },
+    };
+
+    axios.get('http://127.0.0.1:8000/api/user-pill-list/', config).then((response) => {
       setData(response.data);
     });
   };
@@ -28,7 +37,6 @@ function Tabs() {
         <div className={toggleState === 1 ? 'content  active-content' : 'content'}>
           <h2>내가 검색한 알약을 보여줘유</h2>
           <hr />
-          <p>타이레놀</p>
         </div>
 
         <div className={toggleState === 2 ? 'content  active-content' : 'content'}>

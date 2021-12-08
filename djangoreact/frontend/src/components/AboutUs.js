@@ -17,13 +17,13 @@ export const AboutUs = ({ engName, name, position, mbti, url, email, blog, comme
   return (
     <Card className="card-inner" onClick={handleClick}>
       <Content className="front">
-        <img src={frontImg} alt={`${name} 앞면 이미지`} style={{ width: '200px', height: '200px' }} />
+        <img src={frontImg} alt={`${name} 앞면 이미지`} />
         <h2>{engName}</h2>
         <h4>{position}</h4>
       </Content>
       <Content className="back">
         <div className="back_header">
-          <img src={backImg} alt={`${name} 뒷면 이미지`} style={{ width: '150px', height: '150px' }} />
+          <img src={backImg} alt={`${name} 뒷면 이미지`} />
           <h2>
             {name} ({mbti})
           </h2>
@@ -51,7 +51,6 @@ const Card = styled.div`
   transform-style: preserve-3d;
   position: relative;
   .front {
-    box-sizing: border-box;
     padding: 0.625rem 1.875rem;
     transform: rotateY(0deg);
     border-radius: 0.313rem;
@@ -63,9 +62,12 @@ const Card = styled.div`
       color: rgba(0, 0, 0, 0.7);
       margin-top: 5px;
     }
+    img {
+      height: 200px;
+      width: 200px;
+    }
   }
   .back {
-    box-sizing: border-box;
     padding: 0.625rem 1.875rem;
     transform: rotateY(180deg);
     background-color: #faf78e;
@@ -73,11 +75,18 @@ const Card = styled.div`
     box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.4);
     display: flex;
     justify-content: flex-start;
+    img {
+      height: 150px;
+      width: 150px;
+    }
     .back_header {
       font-family: 'Gmarket_Medium';
       display: flex;
       flex-direction: column;
       align-items: center;
+      img {
+        margin: 5px;
+      }
       h2 {
         margin: 0;
       }
@@ -89,16 +98,17 @@ const Card = styled.div`
     .back_content {
       width: 90%;
       margin-top: 0.625rem;
-      font-family: 'Kyobo_handwriting';
       font-weight: 600;
       font-size: 1.125rem;
+      font-family: 'Kyobo_handwriting';
       p {
         text-align: start;
-        margin-top: 0.625rem;
+        margin-top: 5px;
       }
       a {
         text-decoration: none;
         color: blue;
+        font-size: 1rem;
       }
     }
   }

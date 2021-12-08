@@ -36,7 +36,7 @@ export const ScanBox1 = styled.div`
   display: flex;
   flex-direction: row;
   margin: 0 auto;
-  width: 50vw; //모바일 80vw
+  width: 60vw; //모바일 80vw
   height: 36%;
   border: 0.3rem solid #b4a2eb;
   background-color: #b2acfa;
@@ -51,7 +51,7 @@ export const ScanBox2 = styled.div`
   display: flex;
   flex-direction: row;
   margin: 0 auto;
-  width: 46vw; //모바일 75vw
+  width: 56vw; //모바일 75vw
   height: 32%;
   border: 0.3rem solid #b4a2eb;
   background-color: #dee2e6;
