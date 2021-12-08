@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as mdIcons from 'react-icons/md';
 import * as imIcons from 'react-icons/im';
-import { MainContainer, Box, Circle, Giyeog, Square } from '../styles/MainPageStyle';
+import { MainContainer, Box, Circle, OtherThings } from '../styles/MainPageStyle';
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -17,20 +17,20 @@ const MainPage = () => {
             사진 검색
           </div>
         </Circle>
-        <Giyeog className="main_container_box_introduce" onClick={() => navigate('/about-us')}>
+        <OtherThings team className="main_container_box_introduce" onClick={() => navigate('/about-us')}>
           <div>
             팀원
             <br />
             소개
           </div>
-        </Giyeog>
-        <Square className="main_container_box_rectangle" onClick={() => navigate('/about-service')}>
+        </OtherThings>
+        <OtherThings className="main_container_box_rectangle" onClick={() => navigate('/about-service')}>
           <div>
             서비스
             <br />
             소개
           </div>
-        </Square>
+        </OtherThings>
         <Circle className="main_container_box_search" onClick={() => navigate('/direct')}>
           <img src="images/pill.png" alt="알약" />
           <div>

@@ -40,9 +40,6 @@ export const Circle = styled.div`
 
   img {
     width: 100%;
-    &::hover {
-      display: none;
-    }
   }
   div {
     display: none;
@@ -69,57 +66,42 @@ export const Circle = styled.div`
   }
 `;
 
-export const Giyeog = styled.div`
+export const OtherThings = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
 
-  border-top: 25px solid ${lightYellow};
-  border-right: 25px solid ${lightYellow};
+  ${(props) => {
+    if (props.team) {
+      return `
+        border-top: 25px solid ${lightYellow};
+        border-right: 25px solid ${lightYellow};
 
-  width: 55%;
-  height: 55%;
-
-  div {
-    display: none;
-  }
-
-  :hover {
-    width: 75%;
-    height: 75%;
-
-    border: none;
-    border-radius: 50%;
-    background-color: ${lightYellow};
-    div {
-      display: flex;
-      font-size: 1.563rem;
-      font-weight: 600;
+        width: 55%;
+        height: 55%;
+      `;
     }
-  }
-`;
+    return `
+      border: 25px solid ${lightGreen};
+      border-radius: 15%;
 
-export const Square = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
+      width: 60%;
+      height: 60%;
+    `;
+  }}}
 
-  border: 25px solid ${lightGreen};
-  border-radius: 15%;
-
-  width: 60%;
-  height: 60%;
 
   div {
     display: none;
   }
+
   :hover {
     width: 75%;
     height: 75%;
 
     border: none;
     border-radius: 50%;
-    background-color: ${lightGreen};
+    background-color: ${(props) => (props.team ? lightYellow : lightGreen)};
     div {
       display: flex;
       font-size: 1.563rem;
