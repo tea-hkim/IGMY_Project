@@ -8,6 +8,7 @@ export const NavBox = styled.div`
   align-items: center;
   right: 0;
   position: fixed;
+  z-index: 2;
   padding: 0.625rem 15vw 0.625rem 0;
   svg {
     cursor: pointer;
@@ -16,11 +17,12 @@ export const NavBox = styled.div`
 
 export const MenuBox = styled.nav`
   background-color: white;
-  border: 1px solid ${palePink};
+  border-left: 1px solid ${palePink};
   width: 20vw;
   height: 100vh;
   display: flex;
   position: fixed;
+  z-index: 3;
   top: 0;
   right: ${(props) => (props.active ? '0' : '-100%')};
   transition: 800ms;
