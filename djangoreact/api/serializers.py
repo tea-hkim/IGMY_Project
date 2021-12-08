@@ -1,12 +1,13 @@
 from django.conf.urls import include
 from django.forms.models import fields_for_model
 from rest_framework import serializers
+from rest_framework.pagination import PageNumberPagination
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer, TokenObtainPairSerializer
 from rest_framework_simplejwt.state import token_backend
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.models import update_last_login
-from .models import *
+from .models import InfoPill, UploadFileModel
 from django import forms
 from rest_auth.serializers import PasswordResetSerializer
 from django.conf import settings
@@ -32,22 +33,9 @@ class UserCreateSerializer(serializers.Serializer):
         return user
 
 
-
 class InfoPillSerializer(serializers.ModelSerializer):
     class Meta:
         model = InfoPill
-        exclude = ["id"]
-
-
-class InfoPillSerializer2(serializers.ModelSerializer):
-    class Meta:
-        model = InfoPill
-        fields = ("item_name", "image", "use_method_qesitm", "sungbun")
-
-
-class UserPillSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserPill
         exclude = ["id"]
 
 
@@ -57,16 +45,11 @@ class ImageForm(forms.ModelForm):
         fields = "__all__"
 
 
-class SearchHistorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SearchHistory
-        exclude = ["id"]
-
-
 class UserPillListSerializer(serializers.ModelSerializer):
     class Meta:
         model = InfoPill
         fields = (
+            "item_num",
             "item_name",
             "image",
             "sungbun",
@@ -98,10 +81,10 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
 
-        token['email']=user.email #확장
-        token['username'] = user.username #확장
+        token['email'] = user.email  # 확장
+        token['username'] = user.username  # 확장
         return token
-    
+
     def validate(self, attrs):
         data = super().validate(attrs)
 
@@ -126,7 +109,7 @@ class MyTokenRefreshSerializer(TokenRefreshSerializer):
         data.update({
             'email': email,
             'username': username,
-            })
+        })
         return data
 
 
@@ -146,5 +129,3 @@ class RefreshTokenSerializer(serializers.Serializer):
             RefreshToken(self.token).blacklist()
         except TokenError:
             self.fail('bad_token')
-
-

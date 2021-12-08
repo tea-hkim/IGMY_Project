@@ -26,14 +26,14 @@ STATE = "random_string"  # 나중에 url 요청 시 사용되는 값
 SECRET_KEY = "django-insecure-788$x$hv@n*dzud$08r-_-i11kn!e-fv#1$*mlk+%*2-$3!wby"
 
 # Social client key
-KAKAO_REST_API_KEY = "36bab671cc6d302ae5ccc02a2c1aa707"
-SOCIAL_AUTH_GOOGLE_CLIENT_ID = "775963563051-uv8t5d689e6eerchgedpdu2f36bthj45.apps.googleusercontent.com"
-SOCIAL_AUTH_GOOGLE_SECRET = "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"
+KAKAO_REST_API_KEY = "a99d9ab952d8ff978691e6981a20b3f4"
+GOOGLE_CLIENT_ID = "775963563051-uv8t5d689e6eerchgedpdu2f36bthj45.apps.googleusercontent.com"
+GOOGLE_SECRET = "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"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -68,8 +68,8 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
 
-    # [개별 서비스의 연결모듈 지원 내용]
-    # "allauth.socialaccount.providers.kakao",
+    # [소셜로그인 개별 서비스의 연결모듈 지원 내용]
+    "allauth.socialaccount.providers.kakao",
     'allauth.socialaccount.providers.google',
 
     # [비밀번호 변경]
@@ -87,6 +87,7 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True            # email 필드 사용 o
 ACCOUNT_USERNAME_REQUIRED = True        # username 필드 사용 o
 # ACCOUNT_EMAIL_VERIFICATION = 'none' # 이메일 유효성 인증 필요 여부
+# SOCIALACCOUNT_AUTO_SIGNUP = True # 기본값
 
 # JWT 환경 설정
 REST_USE_JWT = True
@@ -106,6 +107,23 @@ SIMPLE_JWT = {
     'TOKEN_TYPE_CLAIM': 'token_type',
     'JTI_CLAIM': 'jti',
 }
+
+# JWT_AUTH = {
+
+# }
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",  # CORS 관련
@@ -216,8 +234,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # DRF 설정
 REST_FRAMEWORK = {
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 10,
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 100,
     # API에 대한 접근 권한 커스터마이징
     "DEFAULT_PERMISSION_CLASSES": (
         # "rest_framework.permissions.IsAuthenticated",
