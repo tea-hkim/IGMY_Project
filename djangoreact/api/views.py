@@ -333,40 +333,6 @@ def result_photo(request):
                 f.write(response.content)
         except:
             return Response("이미지 형식의 파일을 올려주세요.")
-        
-        image = cv2.imread(f'{image_path}')
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-
-        x, y, _ = image.shape
-
-        big, small = max(x, y), min(x, y)
-        shape = 1 if ((3*big) // 4) > small else 0
-            
-        image = image.reshape((image.shape[0] * image.shape[1], 3))
-
-        k = 2
-        clt = KMeans(n_clusters = k)
-        clt.fit(image)
-
-        color_list = []
-
-        for center in clt.cluster_centers_:
-            color_list.append(list(center))
-        color_list.sort()
-        color_list = color_list[-1]
-
-        # 흰색, 갈색, 노랑, 초록
-        color_ck = [[224, 224, 224], [150, 100, 80], [180, 150, 80], [80, 180, 140]]
-
-        color_distance_list = []
-
-        for i in range(len(color_ck)):
-            color_diff = color_distance(color_list[0], color_list[1], color_list[2], color_ck[i][0], color_ck[i][1], color_ck[i][2])
-            color_distance_list.append((color_diff, i))
-        color_distance_list.sort()
-        color_distance_list
-        color = color_distance_list[0][1]
-        color_distance_list
 
         try:
             img_array = np.fromfile(f"{image_path}", np.uint8)
@@ -402,6 +368,40 @@ def result_photo(request):
                 cv2.imwrite(f"{image_path}", img_trim)
         except:
             return Response("알약이 중앙에 위치하도록 사진을 다시 촬영하여주세요.")
+        
+        image = cv2.imread(f'{image_path}')
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+        x, y, _ = image.shape
+
+        big, small = max(x, y), min(x, y)
+        shape = 1 if ((3*big) // 4) > small else 0
+            
+        image = image.reshape((image.shape[0] * image.shape[1], 3))
+
+        k = 2
+        clt = KMeans(n_clusters = k)
+        clt.fit(image)
+
+        color_list = []
+
+        for center in clt.cluster_centers_:
+            color_list.append(list(center))
+        color_list.sort()
+        color_list = color_list[-1]
+
+        # 흰색, 갈색, 노랑, 초록
+        color_ck = [[224, 224, 224], [150, 100, 80], [180, 150, 80], [80, 180, 140]]
+
+        color_distance_list = []
+
+        for i in range(len(color_ck)):
+            color_diff = color_distance(color_list[0], color_list[1], color_list[2], color_ck[i][0], color_ck[i][1], color_ck[i][2])
+            color_distance_list.append((color_diff, i))
+        color_distance_list.sort()
+        color_distance_list
+        color = color_distance_list[0][1]
+        color_distance_list
 
         try:
             predict_list = []
