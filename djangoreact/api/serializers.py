@@ -39,7 +39,6 @@ class InfoPillSerializer(serializers.ModelSerializer):
         exclude = ["id"]
 
 
-
 class ImageForm(forms.ModelForm):
     class Meta:
         model = UploadFileModel
@@ -50,6 +49,7 @@ class UserPillListSerializer(serializers.ModelSerializer):
     class Meta:
         model = InfoPill
         fields = (
+            "item_num",
             "item_name",
             "image",
             "sungbun",

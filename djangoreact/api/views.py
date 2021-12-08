@@ -76,7 +76,7 @@ def search_all(request):
 
 @api_view(["GET"])
 @permission_classes([AllowAny])
-def search_direct(request):    
+def search_direct(request):
     name = request.GET.get("name")  # 약 이름
     shape = request.GET.get("shape")  # 약 모양
     color_front = request.GET.get("color_front")  # 약 앞면 색상
@@ -88,16 +88,19 @@ def search_direct(request):
         color_front = ''
 
     if not shape:
-        pill = InfoPill.objects.filter(item_name__contains = name) & InfoPill.objects.filter(color_front__contains = color_front)
+        pill = InfoPill.objects.filter(item_name__contains=name) & InfoPill.objects.filter(
+            color_front__contains=color_front)
     if shape:
-        pill = InfoPill.objects.filter(shape__exact = shape) & InfoPill.objects.filter(item_name__contains = name) & InfoPill.objects.filter(color_front__contains = color_front)
+        pill = InfoPill.objects.filter(shape__exact=shape) & InfoPill.objects.filter(
+            item_name__contains=name) & InfoPill.objects.filter(color_front__contains=color_front)
 
     serializer = InfoPillSerializer(pill, many=True)
-    
-    page = int(request.GET.get('page', '1')) # 페이지 params
-    p = Paginator(serializer.data, 10) # 페이지당 10개씩 보여 주기
-    page_data = {"total_page": p.num_pages}, {"count": p.count}, {"page" : page}, p.page(page).object_list
-    
+
+    page = int(request.GET.get('page', '1'))  # 페이지 params
+    p = Paginator(serializer.data, 10)  # 페이지당 10개씩 보여 주기
+    page_data = {"total_page": p.num_pages}, {"count": p.count}, {
+        "page": page}, p.page(page).object_list
+
     return Response(page_data)
 
 
@@ -114,6 +117,8 @@ def search_direct(request):
 보관 방법 = deposit_method_qesitm
 타 악과의 상호작용 = intrc_qesitm
 """
+
+
 class PillDetailView(APIView):
     permissions_classes = [AllowAny]
 
@@ -129,9 +134,9 @@ class PillDetailView(APIView):
         # 로그인 한 유저가 있는 경우: 검색 기록 추가
         user_email = request.user
         old_search_history = SearchHistory.objects.filter(
-            user_email=user_email, 
+            user_email=user_email,
             pill_num=pill_id
-            ).first()
+        ).first()
         # 같은 알약 기록이 이미 있는 경우
         if old_search_history is not None:
             serializer = PillDetailSerializer(pill, many=True)
@@ -231,7 +236,7 @@ def send_email(request):
     from_email = "igmy1108@email.com"
     message = "메시지 테스트"
     EmailMessage(subject=subject, body=message,
-                to=to, from_email=from_email).send()
+                 to=to, from_email=from_email).send()
 
 
 # 준 왓 이즈 디스?
@@ -303,7 +308,7 @@ def result_photo(request):
             print(predict_img.shape)
             predict_img = (
                 cv2.resize(predict_img, (224, 224),
-                        interpolation=cv2.INTER_LINEAR)
+                           interpolation=cv2.INTER_LINEAR)
                 / 255
             )
             predict_list.append(predict_img)
@@ -332,7 +337,6 @@ def result_photo(request):
         return Response("파일을 선택해주세요.")
 
 
-
 # 검색 기록
 class SearchHistoryView(APIView, ListView):
     permissions_classes = [IsAuthenticated]
@@ -340,13 +344,14 @@ class SearchHistoryView(APIView, ListView):
 
     def get_queryset(self):
         user_email = str(self.request.user.email)
-        queryset = super().get_queryset() 
-        queryset = queryset.filter(user_email=user_email).values_list("pill_num", flat=True).order_by("id")[:9]
+        queryset = super().get_queryset()
+        queryset = queryset.filter(user_email=user_email).values_list(
+            "pill_num", flat=True).order_by("id")[:9]
         return queryset
 
     def get(self, request):
         user_email = str(request.user.email)
-        data = SearchHistory.objects.filter(user_email=user_email).count() 
+        data = SearchHistory.objects.filter(user_email=user_email).count()
         search_history_max_days = 7
         max_days_ago = timezone.now() - timedelta(days=search_history_max_days)
 
@@ -355,9 +360,9 @@ class SearchHistoryView(APIView, ListView):
             return Response({"message": "최근 검색 기록이 없습니다."})
 
         old_history = SearchHistory.objects.filter(
-            user_email=user_email, 
+            user_email=user_email,
             create_at__lte=max_days_ago
-            ).count()
+        ).count()
 
         # 일주일 지난 기록이 없는 경우
         if old_history == 0:
@@ -369,7 +374,7 @@ class SearchHistoryView(APIView, ListView):
         SearchHistory.objects.filter(
             user_email=user_email,
             create_at__lte=max_days_ago
-            ).delete()
+        ).delete()
         history_pill_list = self.get_queryset()
         # 오래된 기록 삭제 후 최근 기록이 남아있는 경우
         if history_pill_list:
@@ -378,9 +383,6 @@ class SearchHistoryView(APIView, ListView):
             return Response(serializer.data)
         # 오래된 기록 삭제 후 최근 기록이 없는 경우
         return Response({"message": "최근 검색 기록이 없습니다."})
-
-
-
 
 
 # 사진 검색 API
@@ -490,24 +492,21 @@ class SearchHistoryView(APIView, ListView):
 #             'token': str(request.META['HTTP_AUTHORIZATION']).split(' ')[1]
 #         }
 #         return Response(result)
-
 #     return Response("토큰이 유효하지 않습니다.")
-
-
 '''OAuth : social login'''
 
 state = getattr(settings, 'STATE')
 
-BASE_URL = "http://localhost:8000/"
+BASE_URL = "http://localhost:3000/"
 
-KAKAO_CALLBACK_URI = BASE_URL + "api/login/kakao/callback/"
-GOOGLE_CALLBACK_URI = BASE_URL + 'api/login/google/callback/'
+KAKAO_CALLBACK_URI = BASE_URL + "/oauth/callback/kakao"
+# GOOGLE_CALLBACK_URI = BASE_URL + 'api/login/google/callback/'
 
 
 '''kakao social login'''
 
 
-@api_view(["POST"])
+@api_view(["GET"])
 @permission_classes([AllowAny])
 def kakao_login(request):
     code = request.GET['code']
@@ -522,6 +521,8 @@ def kakao_login(request):
 
     token_data = requests.get(request_uri).json()
 
+    # return Response(token_data)  # test : 확인
+
     access_token = token_data['access_token']
     refresh_token = token_data['refresh_token']
 
@@ -534,28 +535,30 @@ def kakao_login(request):
     get_user_info_url = 'https://kapi.kakao.com/v2/user/me'
     user_info_json = requests.get(get_user_info_url, headers=headers).json()
 
+    # return Response(user_info_json)  # test : 확인
+
     '''
     {
-        "id": 2003367790, 
-        "connected_at": "2021-11-23T00:48:16Z", 
+        "id": 2003367790,
+        "connected_at": "2021-11-23T00:48:16Z",
         "properties": {
-            "nickname": "\uac15\uc11d\uc601", 
-            "profile_image": "http://k.kakaocdn.net/dn/b5NyPn/btrkz4wgIhn/zA3lMIXWu1cSlh7qeAsLKk/img_640x640.jpg", 
+            "nickname": "\uac15\uc11d\uc601",
+            "profile_image": "http://k.kakaocdn.net/dn/b5NyPn/btrkz4wgIhn/zA3lMIXWu1cSlh7qeAsLKk/img_640x640.jpg",
             "thumbnail_image": "http://k.kakaocdn.net/dn/b5NyPn/btrkz4wgIhn/zA3lMIXWu1cSlh7qeAsLKk/img_110x110.jpg"
-        }, 
+        },
         "kakao_account": {
-            "profile_nickname_needs_agreement": false, 
-            "profile_image_needs_agreement": false, 
+            "profile_nickname_needs_agreement": false,
+            "profile_image_needs_agreement": false,
             "profile": {
-                "nickname": "\uac15\uc11d\uc601", 
-                "thumbnail_image_url": "http://k.kakaocdn.net/dn/cGnCMx/btrmKlB3UyN/0WKCOQ8p30n6CzoxqpT9lK/img_110x110.jpg", 
-                "profile_image_url": "http://k.kakaocdn.net/dn/cGnCMx/btrmKlB3UyN/0WKCOQ8p30n6CzoxqpT9lK/img_640x640.jpg", 
+                "nickname": "\uac15\uc11d\uc601",
+                "thumbnail_image_url": "http://k.kakaocdn.net/dn/cGnCMx/btrmKlB3UyN/0WKCOQ8p30n6CzoxqpT9lK/img_110x110.jpg",
+                "profile_image_url": "http://k.kakaocdn.net/dn/cGnCMx/btrmKlB3UyN/0WKCOQ8p30n6CzoxqpT9lK/img_640x640.jpg",
                 "is_default_image": false
-            }, 
-            "has_email": true, 
-            "email_needs_agreement": false, 
-            "is_email_valid": true, 
-            "is_email_verified": true, 
+            },
+            "has_email": true,
+            "email_needs_agreement": false,
+            "is_email_valid": true,
+            "is_email_verified": true,
             "email": "sy7434@naver.com"
         }
     }
@@ -568,15 +571,45 @@ def kakao_login(request):
     nickname = user_info_json['kakao_account']['profile']['nickname']
     provider = "kakao"
 
+    # [test용]
+    # uid = 2003367790
+    # email = "sy7434@naver.com"
+    # nickname = "\uac15\uc11d\uc601"
+    # provider = "kakao"
+
+    # uid = 2024703665
+    # email = "tu1457@kakao.com"
+    # nickname = "김태호"
+    # provider = "kakao"
+
+    # user_test_data = {
+    #     'uid': uid,
+    #     'email': email,
+    #     'nickname': nickname,
+    #     'provider': provider,
+    # }
+    # return JsonResponse(user_test_data) # test완료
+
     # email 수집에 동의하지 않아서 값이 비어있는 경우
-    if email == False:
-        return Response({"message": "Email does not exist. Write it yourself."}, status=status.HTTP_400_BAD_REQUEST)
+    if email == "" or email == False:
+        return Response({"message": "No email."}, status=status.HTTP_400_BAD_REQUEST)
 
     # db에 이메일이 존재하는 경우
     if User.objects.filter(email=email).exists():
+        # [test]
+        # user_data_u = User.objects.get(email=email)
+        # user_data_s = SocialAccount.objects.get(user=user_data_u)
+        # return JsonResponse({
+        #     'uid': user_data_s.uid,
+        #     'email': user_data_u.email,
+        #     'nickname': user_data_u.username,
+        #     'provider': user_data_s.provider,
+        # })
+
         # 소셜로 로그인한적 있음
         if SocialAccount.objects.filter(uid=uid).exists():
-            pass  # 자체적 토큰 발급 (class) → return으로 토큰과 200 응답 보내줌
+            return Response({"message": "토큰발급예정1"})
+            # pass  # 자체적 토큰 발급 (class) → return으로 토큰과 200 응답 보내줌
 
         # 해당 이메일로 자체로그인
         else:
@@ -598,12 +631,12 @@ def kakao_login(request):
         )
         social_user.save()
 
+        return JsonResponse({"message": "토큰발급예정2"})
+
         # 자체적 토큰 발급 (class) → return으로 토큰과 200 응답 보내줌 (아래 두줄은 뇌피셜)
         # data = {'email': email, 'username': nickname}
         # return requests.post(
-        #     f"{BASE_URL}api/token/", data=data)
-
-        return
+        #     f"{BASE_URL}api/token/social/", data=data)
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
