@@ -1,19 +1,54 @@
 import React from 'react';
-// import { useNavigate } from 'react-router-dom';
-import { FaTablets } from 'react-icons/fa';
-import { PillBoxContainer, Box } from '../styles/PillBoxPageStyle';
+import { useSelector } from 'react-redux';
+import styled from 'styled-components';
+import * as imIcons from 'react-icons/im';
 import Tabs from '../components/Tabs';
+import WhiteNavbar from '../components/WhiteNavbar';
 
 const PillBoxPage = () => {
+  const { username } = useSelector((state) => state.auth);
   return (
-    <PillBoxContainer>
-      <Box>
-        <FaTablets size="60px" color="pink" />
-        <h2>&nbsp;&nbsp;내 알약 상자</h2>
-      </Box>
-      <Tabs />
-    </PillBoxContainer>
+    <>
+      <WhiteNavbar />
+      <PillBoxContainer>
+        <div className="pillbox_header">
+          <imIcons.ImAidKit size="1.428rem" />
+          <h1>내 알약 상자</h1>
+          <span>{username}님</span>
+        </div>
+        <Tabs />
+      </PillBoxContainer>
+    </>
   );
 };
 
 export default PillBoxPage;
+
+const PillBoxContainer = styled.div`
+  padding-top: 15vh;
+  width: 100vw;
+  height: 115vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  > h2 {
+    font-size: 2rem;
+  }
+  .pillbox_header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 60vw;
+    margin-bottom: 1rem;
+    h1,
+    svg {
+      color: white;
+      margin-right: 0.625rem;
+    }
+    span {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+  }
+`;
