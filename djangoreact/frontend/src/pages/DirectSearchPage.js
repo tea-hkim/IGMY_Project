@@ -28,9 +28,9 @@ function DirectSearchPage() {
 
   const directSearch = async () => {
     setIsLoaded(true);
-    const url = `http://localhost:8000/api/search-direct/?n=${pillName}&s=${shape !== '선택안함' ? shape : ''}&c_f=${
-      color !== '선택안함' ? color : ''
-    }&page=1`;
+    const url = `http://localhost:8000/api/search-direct/?name=${pillName}&shape=${
+      shape !== '선택안함' ? shape : ''
+    }&color_front=${color !== '선택안함' ? color : ''}&page=1`;
     const response = await axios.get(url);
     if (response.data.length === 0) {
       setIsLoaded(false);
@@ -78,9 +78,9 @@ function DirectSearchPage() {
   const printMoreItem = async () => {
     if (page > totalPage) return;
     setIsLoaded(true);
-    const url = `http://localhost:8000/api/search-direct/?n=${pillName}&s=${shape !== '선택안함' ? shape : ''}&c_f=${
-      color !== '선택안함' ? color : ''
-    }&page=${page}`;
+    const url = `http://localhost:8000/api/search-direct/?name=${pillName}&shape=${
+      shape !== '선택안함' ? shape : ''
+    }&color_front=${color !== '선택안함' ? color : ''}&page=${page}`;
     const response = await axios.get(url);
     page += 1;
     const newPillList = response.data[3];
