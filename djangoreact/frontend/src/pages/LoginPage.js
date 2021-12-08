@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import KakaoLogin from '../auth/KakaoLogin';
 import InputWithLabel from '../auth/InputWithLabel';
 import AuthButton from '../auth/AuthButton';
 import { login } from '../redux/authSlice';
@@ -80,7 +81,7 @@ const LoginPage = () => {
     <AuthContainer>
       <AuthTitle>로그인</AuthTitle>
       <KakaoBox className="kakaoButton">
-        <img src="images/카카오 버튼 PNG.png" alt="카카오버튼" style={{ width: '100%' }} />
+        <KakaoLogin />
       </KakaoBox>
       <LineBox>
         <Or> 또는 </Or>

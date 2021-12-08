@@ -9,6 +9,10 @@ const GlobalStyle = createGlobalStyle`
         background-color: #b2acfa;
         font-family: 'Gmarket_Medium';
     }
+    
+    a {
+        text-decoration: none;
+    }
 `;
 
 export default GlobalStyle;

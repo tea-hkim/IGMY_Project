@@ -20,6 +20,7 @@ import AboutUsPage from './pages/about-us-page';
 import AboutServicePage from './pages/about-service-page';
 import PillDetailPage from './pages/PillDetailPage';
 import ResetPasswordConfimPage from './pages/ResetPasswordConfimPage';
+import Social from './auth/Social';
 
 function App() {
   const dispatch = useDispatch();
@@ -64,6 +65,7 @@ function App() {
         <Route path="/pilldetail" element={<PillDetailPage />} />
         <Route path="/about-us" element={<AboutUsPage />} />
         <Route path="/about-service" element={<AboutServicePage />} />
+        <Route path="oauth/callback/kakao" element={<Social />} />
       </Routes>
       <Footer />
     </div>

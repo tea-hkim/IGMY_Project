@@ -2,15 +2,13 @@ import styled from 'styled-components';
 import { mainPink, palePink } from './color';
 
 export const NavBox = styled.div`
-  background-color: ${mainPink};
-  height: 13vh;
+  height: 10vh;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
-  position: relative;
-  padding: 0.625rem 3.125rem;
-  margin-bottom: 4vh;
-  box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.3);
+  right: 0;
+  position: fixed;
+  padding: 0.625rem 15vw 0.625rem 0;
   svg {
     cursor: pointer;
   }
@@ -77,20 +75,5 @@ export const ContentBox = styled.div`
       align-items: center;
       height: 100%;
     }
-  }
-`;
-
-export const MainLogo = styled.div`
-  h2 {
-    color: white;
-    padding: 1.25em;
-    font-size: 2rem;
-    margin: 0;
-  }
-  a {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-decoration: none;
   }
 `;

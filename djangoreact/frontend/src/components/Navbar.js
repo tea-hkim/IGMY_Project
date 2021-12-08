@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import * as faIcons from 'react-icons/fa';
 import * as grIcons from 'react-icons/gr';
 import { useSelector } from 'react-redux';
 import { SearchBoxData, AuthBoxData, PillBoxData } from '../helper/sidebarData';
-import { NavBox, MenuBox, MenuBoxContent, ContentBox, MainLogo } from '../styles/NavbarStyle';
+import { NavBox, MenuBox, MenuBoxContent, ContentBox } from '../styles/NavbarStyle';
 
 const Navbar = () => {
-  const navigate = useNavigate();
   const [sidebar, setSidebar] = useState(false);
   const showSidebar = () => {
     setSidebar(!sidebar);
@@ -17,18 +16,6 @@ const Navbar = () => {
   return (
     <>
       <NavBox className="navbar">
-        <MainLogo className="navbar_main_logo">
-          <Link to="/">
-            <faIcons.FaPills
-              size="3.75rem"
-              color="white"
-              onClick={() => {
-                navigate('/');
-              }}
-            />
-            <h2>이게모약</h2>
-          </Link>
-        </MainLogo>
         <faIcons.FaBars onClick={showSidebar} size="2.5rem" />
       </NavBox>
       <MenuBox active={sidebar} className={sidebar ? 'sidebar_active' : 'sidebar_unactive'}>
