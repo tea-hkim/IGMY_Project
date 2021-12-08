@@ -72,8 +72,8 @@ const LoginPage = () => {
     navigate('/register');
   };
 
-  const handleClickToFindPw = () => {
-    navigate('/findPw');
+  const handleClickToResetPw = () => {
+    navigate('/reset-password');
   };
 
   return (
@@ -121,7 +121,7 @@ const LoginPage = () => {
         <Line />
         <AuthFooterContent>
           <div>혹시 비밀번호를 잊으셨나요?</div>
-          <div tabIndex="-1" role="button" onClick={handleClickToFindPw} onKeyDown={handleClickToFindPw}>
+          <div tabIndex="-1" role="button" onClick={handleClickToResetPw} onKeyDown={handleClickToResetPw}>
             비밀번호 재설정
           </div>
         </AuthFooterContent>
