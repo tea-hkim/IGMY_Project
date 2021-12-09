@@ -19,7 +19,7 @@ export default WhiteNavbar;
 const WhiteBox = styled.div`
   position: fixed;
   width: 100vw;
-  height: 10vh;
+  height: 8vh;
   z-index: 1;
   background-color: white;
   padding: 0.625rem 15vw;

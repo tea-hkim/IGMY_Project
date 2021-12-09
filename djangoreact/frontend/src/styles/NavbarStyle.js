@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { mainPink, palePink } from './color';
 
 export const NavBox = styled.div`
-  height: 10vh;
+  height: 8vh;
   display: flex;
   justify-content: flex-end;
   align-items: center;
