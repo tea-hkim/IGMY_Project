@@ -5,16 +5,24 @@ const loginWidth = '80%';
 const loginheight = '2rem';
 const marginBottom = '0.625rem';
 
+export const AuthPage = styled.div`
+  padding-top: 15vh;
+  min-height: 95vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 export const AuthContainer = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 70vh;
   width: 25%;
   margin: 0 auto;
   padding: 1.563rem 0;
-  border: 0.125rem solid ${mainPink};
-  border-radius: 1.25rem;
+  border-radius: 0.625rem;
   text-align: center;
+  background-color: white;
 `;
 
 export const AuthTitle = styled.h1`
@@ -31,15 +39,17 @@ export const LineBox = styled.div`
   display: flex;
   justify-content: center;
 `;
+
 export const Or = styled.div`
   background-color: white;
   width: 30%;
   font-size: 1rem;
   font-weight: 500;
 `;
+
 export const Line = styled.div`
   position: absolute;
-  border-top: 2px dotted black;
+  border-top: 3px dotted black;
   width: 100%;
   top: 50%;
   z-index: -1;

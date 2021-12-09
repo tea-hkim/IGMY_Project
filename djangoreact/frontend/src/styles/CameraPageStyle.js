@@ -1,5 +1,21 @@
 import styled from 'styled-components';
 
+export const CameraPageContainer = styled.div`
+  padding-top: 15vh;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  .camerapage_header {
+    width: 60vw;
+  }
+  h1 {
+    color: white;
+    margin-bottom: 1rem;
+  }
+`;
+
 export const LogoStyle = styled.img`
   width: 22vw; //모바일 100vw
   margin: 0 auto;
@@ -9,22 +25,22 @@ export const LogoStyle = styled.img`
 
 export const InfoStyle = styled.div`
   display: flex;
-  margin: 2rem auto;
-  width: 40vw; //모바일 90vw
-  padding-left: 1rem;
-  border: 0.5rem solid #b4a2eb;
-  border-radius: 0.5rem;
+  height: 12vh;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 0.625rem 0;
+  margin-bottom: 1rem;
+  width: 60vw; //모바일 90vw
+  border-radius: 5px;
+  background-color: white;
 
-  > img {
+  img {
     float: right;
-    width: 5rem;
-    height: 5rem;
-    margin: 1rem auto;
+    height: 100%;
   }
 
   > p {
-    font-size: 1rem;
-    margin: auto;
+    font-size: 1.25rem;
   }
 
   .scanning {
@@ -38,8 +54,9 @@ export const InfoStyle = styled.div`
 export const ContainerWrap = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 0 auto;
-  width: 90vw;
+  width: 60vw;
+  background-color: white;
+  border-radius: 5px;
 `;
 
 export const WebcamContainer = styled.div`

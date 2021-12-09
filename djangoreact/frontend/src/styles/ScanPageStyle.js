@@ -1,4 +1,14 @@
 import styled from 'styled-components';
+import { mainPink } from './color';
+
+export const SuccessPage = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 15vh;
+  min-height: 95vh;
+`;
 
 export const modalStyles = {
   overlay: {
@@ -19,6 +29,10 @@ export const ContainerWrap = styled.div`
   display: flex;
   flex-direction: column;
   margin: 0 auto;
+  background-color: white;
+  width: 60vw;
+  border-radius: 0.313rem;
+  padding: 1rem;
 
   > h1 {
     margin: 0 auto;
@@ -27,7 +41,7 @@ export const ContainerWrap = styled.div`
 
 export const ScanContainer = styled.div`
   position: relative;
-  width: 90vw;
+  width: 100%;
   height: 60vh;
   margin: 1rem auto;
 `;
@@ -36,7 +50,7 @@ export const ScanBox1 = styled.div`
   display: flex;
   flex-direction: row;
   margin: 0 auto;
-  width: 60vw; //모바일 80vw
+  width: 80%; //모바일 80vw
   height: 36%;
   border: 0.3rem solid #b4a2eb;
   background-color: #b2acfa;
@@ -51,7 +65,7 @@ export const ScanBox2 = styled.div`
   display: flex;
   flex-direction: row;
   margin: 0 auto;
-  width: 56vw; //모바일 75vw
+  width: 70%; //모바일 75vw
   height: 32%;
   border: 0.3rem solid #b4a2eb;
   background-color: #dee2e6;
@@ -111,35 +125,51 @@ export const InfoButton = styled.button`
 `;
 
 export const InfoContainer = styled.div`
+  padding-top: 15vh;
+  min-height: 90vh;
   display: flex;
   flex-direction: column;
   margin: 0 auto;
-  width: 70vw;
+  width: 60vw;
 `;
 
 export const FailInfo = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 1rem auto;
+  justify-content: center;
+  align-items: center;
   width: 100%;
-  border: 0.5rem solid #b4a2eb;
-  border-radius: 0.5rem;
+  height: 70vh;
+  border-radius: 0.313rem;
+  background-color: white;
 
-  > h1 {
-    font-size: 1rem;
-    margin: 0.5rem auto;
+  > h2 {
     text-align: center;
   }
 
   > p {
-    font-size: 0.6rem;
-    margin: 0.2rem auto;
-    text-align: center;
+    font-size: 1.25rem;
+    font-weight: 600;
   }
 
   > img {
-    width: 60%;
-    height: 60%;
-    margin: 1rem auto;
+    padding: 1rem;
+    width: 40vh;
+    height: 40vh;
+  }
+`;
+
+export const ButtonBox = styled.div`
+  width: 60%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  button {
+    height: 2.25rem;
+    width: 40%;
+    font-size: 1.25rem;
+    border: 1px solid ${mainPink};
+    background-color: ${mainPink};
   }
 `;

@@ -2,11 +2,13 @@ import styled from 'styled-components';
 import { mainPink, palePink } from './color';
 
 export const SearchPage = styled.div`
+  padding-top: 15vh;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  min-height: 80vh;
+  min-height: 95vh;
+
   h1 {
     width: 60vw;
     color: white;
@@ -123,6 +125,7 @@ export const ButtonBox = styled.div`
   width: 100%;
   margin-top: 20px;
   button {
+    border: none;
     border-radius: 5px;
     background-color: white;
     width: 20%;

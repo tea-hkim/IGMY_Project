@@ -22,15 +22,15 @@ const WhiteBox = styled.div`
   height: 10vh;
   z-index: 1;
   background-color: white;
-  padding: 0.625rem 0;
-  padding-left: 15vw;
+  padding: 0.625rem 15vw;
   a {
     height: 100%;
+    width: 30%;
     display: flex;
     justify-content: flex-start;
     align-items: center;
     img {
-      height: 70%;
+      height: 60%;
       margin: 0 1rem;
     }
     h2 {
