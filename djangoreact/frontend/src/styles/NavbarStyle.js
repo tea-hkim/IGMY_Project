@@ -2,16 +2,14 @@ import styled from 'styled-components';
 import { mainPink, palePink } from './color';
 
 export const NavBox = styled.div`
-  background-color: ${mainPink};
-  height: 13vh;
+  height: 10vh;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
-  position: relative;
-  box-sizing: border-box;
-  padding: 0.625rem 3.125rem;
-  margin-bottom: 4vh;
-  box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.3);
+  right: 0;
+  position: fixed;
+  z-index: 2;
+  padding: 0.625rem 15vw 0.625rem 0;
   svg {
     cursor: pointer;
   }
@@ -19,11 +17,12 @@ export const NavBox = styled.div`
 
 export const MenuBox = styled.nav`
   background-color: white;
-  border: 1px solid ${palePink};
+  border-left: 1px solid ${palePink};
   width: 20vw;
   height: 100vh;
   display: flex;
   position: fixed;
+  z-index: 3;
   top: 0;
   right: ${(props) => (props.active ? '0' : '-100%')};
   transition: 800ms;
@@ -33,7 +32,6 @@ export const MenuBoxContent = styled.ul`
   display: flex;
   flex-direction: column;
   align-items: start;
-  box-sizing: border-box;
   margin: 0;
   padding: 0.938rem;
   width: 100%;
@@ -52,7 +50,6 @@ export const MenuBoxContent = styled.ul`
   }
   h3 {
     width: 100%;
-    box-sizing: border-box;
     padding-bottom: 10px;
     font-size: 1.563rem;
     border-bottom: 3px solid ${mainPink};
@@ -80,21 +77,5 @@ export const ContentBox = styled.div`
       align-items: center;
       height: 100%;
     }
-  }
-`;
-
-export const MainLogo = styled.div`
-  h2 {
-    box-sizing: border-box;
-    color: white;
-    padding: 1.25em;
-    font-size: 2rem;
-    margin: 0;
-  }
-  a {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-decoration: none;
   }
 `;

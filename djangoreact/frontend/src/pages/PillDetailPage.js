@@ -41,7 +41,6 @@ const PillDetailPage = () => {
 
   useEffect(async () => {
     setPillNum(location.state.pillNum); // 일련번호
-
     try {
       const response1 = await axios.get(`http://127.0.0.1:8000/api/pill-detail/?pill_id=${location.state.pillNum}`, {
         headers: {
@@ -59,6 +58,13 @@ const PillDetailPage = () => {
       setPillAttention(response1.data[0].atpn_qesitm); // 주의사항
       setPillInteraction(response1.data[0].intrc_qesitm); // 상호작용
       setPillDeposit(response1.data[0].deposit_method_qesitm); // 보관방법
+
+      const response2 = await axios.get(`http://127.0.0.1:8000/api/user-pill/?pn=${location.state.pillNum}`);
+      const CheckPillNum = response2.data[0].item_num;
+
+      if (CheckPillNum === location.state.pillNumNum) {
+        setUserPill(true);
+      }
     } catch (err) {
       console.log(err);
     }

@@ -27,8 +27,3 @@
   font-family: 'Gmarket_bold';
   src: url('./styles/font/GmarketSansTTFBold.ttf');
 }
-
-.App {
-  background-color: #b2acfa;
-  font-family: 'Gmarket_Medium';
-}

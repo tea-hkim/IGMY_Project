@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import DirectSearchResult from '../components/DirectSearchResult';
 import { PillShapeData, PillColorData } from '../helper/pillData';
+import Loader from '../components/Loader';
 import {
   SearchBox,
   NameBox,
@@ -16,21 +17,40 @@ function DirectSearchPage() {
   const [pillName, setPillName] = useState('');
   const [shape, setShape] = useState('');
   const [color, setColor] = useState('');
-  const [pillData, setPillData] = useState([]);
 
-  async function directSearch() {
-    const url = `http://localhost:8000/api/search-direct/?n=${pillName}&s=${shape}&c=${color}&`;
+  const [target, setTarget] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [count, setCount] = useState(null);
+  const [pillList, setPillList] = useState(null);
+
+  let page = 0;
+  let totalPage = 0;
+
+  const directSearch = async () => {
+    setIsLoaded(true);
+    const url = `http://localhost:8000/api/search-direct/?name=${pillName}&shape=${
+      shape !== '선택안함' ? shape : ''
+    }&color_front=${color !== '선택안함' ? color : ''}&page=1`;
     const response = await axios.get(url);
-    setPillData(response.data);
-    console.log(response.data);
-  }
+    if (response.data.length === 0) {
+      setIsLoaded(false);
+      return;
+    }
+    if (response.data) {
+      totalPage = response.data[0].total_page;
+      setCount(response.data[1].count);
+      page = response.data[2].page + 1;
+      setPillList(response.data[3]);
+    }
+    setIsLoaded(false);
+  };
 
-  const onSubmit = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     directSearch();
   };
 
-  const onChange = (event) => {
+  const handleChange = (event) => {
     setPillName(event.target.value);
   };
 
@@ -48,16 +68,49 @@ function DirectSearchPage() {
     setPillName('');
     setShape('');
     setColor('');
-    setPillData([]);
+    setCount(null);
+    setPillList(null);
+    totalPage = 0;
+    page = 0;
+    setIsLoaded(false);
   };
+
+  const printMoreItem = async () => {
+    if (page > totalPage) return;
+    setIsLoaded(true);
+    const url = `http://localhost:8000/api/search-direct/?name=${pillName}&shape=${
+      shape !== '선택안함' ? shape : ''
+    }&color_front=${color !== '선택안함' ? color : ''}&page=${page}`;
+    const response = await axios.get(url);
+    page += 1;
+    const newPillList = response.data[3];
+    // if (pillList === null) {
+    //   setIsLoaded(false);
+    //   return;
+    // }
+    setPillList((pillist) => pillist.concat(newPillList));
+    await setIsLoaded(false);
+  };
+
+  const onIntersect = ([{ isIntersecting }]) => {
+    if (page === 0) return;
+    if (isIntersecting) printMoreItem();
+  };
+
+  if (target) {
+    const observer = new IntersectionObserver(onIntersect, {
+      threshold: 1,
+    });
+    observer.observe(target);
+  }
 
   return (
     <SearchPage className="search_direct">
       <h1>알약 직접 검색</h1>
-      <SearchBox className="search_direct_box" onSubmit={onSubmit}>
+      <SearchBox className="search_direct_box" onSubmit={handleSubmit}>
         <NameBox className="search_name_box">
           <h2>약 이름 검색</h2>
-          <input name="searchName" type="text" onChange={onChange} value={pillName} />
+          <input name="searchName" type="text" onChange={handleChange} value={pillName} />
         </NameBox>
         <NonNameContainer className="search_another_box">
           <h2>약 모양 검색</h2>
@@ -141,12 +194,21 @@ function DirectSearchPage() {
             검색
           </button>
           <button type="button" className="reset_button" onClick={handleReset}>
-            선택 초기화
+            초기화
           </button>
         </ButtonBox>
       </SearchBox>
-      <div>{pillData.length !== 0 ? <h4>총 {pillData.length} 건의 검색 결과가 있습니다</h4> : null}</div>
-      {DirectSearchResult(pillData)}
+      <div>
+        {count && (
+          <h4>
+            [{pillName}-{shape}-{color}]으로 {count} 건의 검색 결과가 있습니다
+          </h4>
+        )}
+      </div>
+      {pillList && <DirectSearchResult pillList={pillList} />}
+      <div ref={setTarget} className="target_element">
+        {isLoaded && <Loader />}
+      </div>
     </SearchPage>
   );
 }
