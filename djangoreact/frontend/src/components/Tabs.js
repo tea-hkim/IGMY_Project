@@ -1,11 +1,10 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/Tabs.css';
 import axios from 'axios';
-import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import PillCardContainer from './PillCardContainer';
+import { Horizon, TabContainer, BlockTabs, ContentTabs } from '../styles/Tabs'
 
 function Tabs() {
   const [toggleState, setToggleState] = useState(1);
@@ -61,17 +60,17 @@ function Tabs() {
   }, []);
 
   return (
-    <div className="container">
-      <div className="bloc-tabs">
+    <TabContainer>
+      <BlockTabs className="bloc-tabs">
         <button type="button" className={toggleState === 1 ? 'tabs active-tabs' : 'tabs'} onClick={() => toggleTab(1)}>
           최근 검색한 알약
         </button>
         <button type="button" className={toggleState === 2 ? 'tabs active-tabs' : 'tabs'} onClick={() => toggleTab(2)}>
           즐겨찾기한 알약
         </button>
-      </div>
+      </BlockTabs>
 
-      <div className="content-tabs">
+      <ContentTabs className="content-tabs">
         <div className={toggleState === 1 ? 'content  active-content' : 'content'}>
           <h2>내가 검색한 알약</h2>
           <Horizon />
@@ -83,13 +82,10 @@ function Tabs() {
           <Horizon />
           {!userPill ? <p>즐겨 찾기한 알약이 없습니다</p> : <PillCardContainer pillList={userPill.pillList} />}
         </div>
-      </div>
-    </div>
+      </ContentTabs>
+    </TabContainer>
   );
 }
 
 export default Tabs;
 
-const Horizon = styled.hr`
-  margin: 0.625rem auto;
-`;
