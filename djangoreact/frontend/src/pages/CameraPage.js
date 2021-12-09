@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -96,7 +97,7 @@ const CameraPage = () => {
                     id="files"
                     name="files"
                     type="file"
-                    // capture="camera"
+                    capture="camera"
                     accept="image/*"
                     style={{ display: 'none' }}
                     onChange={(e) => setFile(e.target.files)}
