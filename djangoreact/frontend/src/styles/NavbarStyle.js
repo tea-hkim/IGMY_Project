@@ -17,7 +17,6 @@ export const NavBox = styled.div`
 
 export const MenuBox = styled.nav`
   background-color: white;
-  border-left: 1px solid ${palePink};
   width: 20vw;
   height: 100vh;
   display: flex;
@@ -25,6 +24,7 @@ export const MenuBox = styled.nav`
   z-index: 3;
   top: 0;
   right: ${(props) => (props.active ? '0' : '-100%')};
+  box-shadow: -5px 0px 10px rgba(0, 0, 0, 0.2);
   transition: 800ms;
 `;
 

@@ -17,6 +17,7 @@ const Navbar = () => {
   const { username, logged } = useSelector((state) => state.auth);
 
   const Logout = async () => {
+    setSidebar(!sidebar);
     const LOGOUT_URL = 'http://localhost:8000/api/logout/';
     const localRefreshToken = localStorage.getItem('refresh');
     const sessionRefreshToken = sessionStorage.getItem('refresh');
