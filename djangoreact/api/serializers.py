@@ -67,6 +67,7 @@ class UserPillListSerializer(serializers.ModelSerializer):
     class Meta:
         model = InfoPill
         fields = (
+            "item_num",
             "item_name",
             "image",
             "sungbun",

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -114,7 +115,20 @@ const CameraPage = () => {
                 )}
               </WebcamContainer>
               {!imgSrc ? (
-                <div> </div>
+                <>
+                  <InputLabel htmlFor="files">
+                    <PreviewImgStyle src="images/이게모약로고.png" alt="알약사진" />
+                  </InputLabel>
+                  <input
+                    id="files"
+                    name="files"
+                    type="file"
+                    capture="camera"
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                    onChange={(e) => setFile(e.target.files)}
+                  />
+                </>
               ) : (
                 <ButtonStyle>
                   <button type="button" onClick={resetImg}>

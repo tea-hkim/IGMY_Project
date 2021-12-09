@@ -88,8 +88,7 @@ export const OtherThings = styled.div`
       width: 60%;
       height: 60%;
     `;
-  }}}
-
+  }}
 
   div {
     display: none;

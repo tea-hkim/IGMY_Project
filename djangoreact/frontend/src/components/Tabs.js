@@ -1,15 +1,17 @@
+/* eslint-disable */
 import React, { useState, useEffect } from 'react';
-import '../styles/Tabs.css';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import PillCardContainer from './PillCardContainer';
+import { Horizon, TabContainer, BlockTabs, ContentTabs } from '../styles/Tabs'
 
 function Tabs() {
   const [toggleState, setToggleState] = useState(1);
   const [recentlyPill, setRecentlyPill] = useState();
   const [userPill, setUserPill] = useState();
-
+  const [pillNum, setPillNum] = useState();
+  const navigate = useNavigate();
   const { access } = useSelector((state) => state.auth);
   const toggleTab = async (index) => {
     setToggleState(index);
@@ -58,41 +60,32 @@ function Tabs() {
   }, []);
 
   return (
-    <div className="container">
-      <div className="bloc-tabs">
+    <TabContainer>
+      <BlockTabs className="bloc-tabs">
         <button type="button" className={toggleState === 1 ? 'tabs active-tabs' : 'tabs'} onClick={() => toggleTab(1)}>
           최근 검색한 알약
         </button>
         <button type="button" className={toggleState === 2 ? 'tabs active-tabs' : 'tabs'} onClick={() => toggleTab(2)}>
           즐겨찾기한 알약
         </button>
-      </div>
+      </BlockTabs>
 
-      <div className="content-tabs">
+      <ContentTabs className="content-tabs">
         <div className={toggleState === 1 ? 'content  active-content' : 'content'}>
           <h2>내가 검색한 알약</h2>
           <Horizon />
-          {!recentlyPill ? (
-            <p>최근 검색한 알약이 없습니다</p>
-          ) : (
-            <button type="button" onClick={() => console.log('최근 검색 알약 리스트', recentlyPill.pillList)}>
-              성공
-            </button>
-          )}
+          {!recentlyPill ? <p>최근 검색한 알약이 없습니다</p> : <PillCardContainer pillList={recentlyPill.pillList} />}
         </div>
         {/* 컴포넌트 구분선 */}
         <div className={toggleState === 2 ? 'content  active-content' : 'content'}>
           <h2>즐겨 찾기한 알약</h2>
           <Horizon />
-          {!userPill ? <p>즐겨찾기한 알약이 없습니다</p> : <PillCardContainer pillList={userPill.pillList} />}
+          {!userPill ? <p>즐겨 찾기한 알약이 없습니다</p> : <PillCardContainer pillList={userPill.pillList} />}
         </div>
-      </div>
-    </div>
+      </ContentTabs>
+    </TabContainer>
   );
 }
 
 export default Tabs;
 
-const Horizon = styled.hr`
-  margin: 0.625rem auto;
-`;
