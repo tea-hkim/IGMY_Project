@@ -31,7 +31,7 @@ const WhiteBox = styled.div`
     align-items: center;
     img {
       height: 60%;
-      margin: 0 1rem;
+      margin-right: 1rem;
     }
     h2 {
       font-size: 2rem;

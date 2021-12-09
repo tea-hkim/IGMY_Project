@@ -1,17 +1,45 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { Link } from 'react-router-dom';
 import * as faIcons from 'react-icons/fa';
 import * as grIcons from 'react-icons/gr';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { initializeInput } from '../redux/authSlice';
 import { SearchBoxData, AuthBoxData, PillBoxData } from '../helper/sidebarData';
 import { NavBox, MenuBox, MenuBoxContent, ContentBox } from '../styles/NavbarStyle';
 
 const Navbar = () => {
+  const dispatch = useDispatch();
   const [sidebar, setSidebar] = useState(false);
   const showSidebar = () => {
     setSidebar(!sidebar);
   };
   const { username, logged } = useSelector((state) => state.auth);
+
+  const Logout = async () => {
+    const LOGOUT_URL = 'http://localhost:8000/api/logout/';
+    const localRefreshToken = localStorage.getItem('refresh');
+    const sessionRefreshToken = sessionStorage.getItem('refresh');
+
+    try {
+      let refresh;
+      if (localRefreshToken) {
+        refresh = { refresh: localRefreshToken };
+      } else {
+        refresh = { refresh: sessionRefreshToken };
+      }
+      const { data } = await axios.post(LOGOUT_URL, refresh);
+      if (data === '로그아웃 성공') {
+        alert('로그아웃 되었습니다');
+      }
+    } catch (err) {
+      console.log(err);
+    }
+    localStorage.removeItem('refresh');
+    sessionStorage.removeItem('refresh');
+    dispatch(initializeInput());
+    window.location.href = '/';
+  };
 
   return (
     <>
@@ -65,7 +93,7 @@ const Navbar = () => {
                   );
                 })}
             {logged ? (
-              <button type="button" onClick={showSidebar}>
+              <button type="button" onClick={Logout}>
                 로그아웃
               </button>
             ) : null}
