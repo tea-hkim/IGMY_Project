@@ -75,19 +75,13 @@ function Tabs() {
         <div className={toggleState === 1 ? 'content  active-content' : 'content'}>
           <h2>내가 검색한 알약</h2>
           <Horizon />
-          {!recentlyPill ? (
-            <p>최근 검색한 알약이 없습니다</p>
-          ) : (
-            <button type="button" onClick={() => console.log('최근 검색 알약 리스트', recentlyPill.pillList)}>
-              성공
-            </button>
-          )}
+          {!recentlyPill ? <p>최근 검색한 알약이 없습니다</p> : <PillCardContainer pillList={recentlyPill.pillList} />}
         </div>
         {/* 컴포넌트 구분선 */}
         <div className={toggleState === 2 ? 'content  active-content' : 'content'}>
           <h2>즐겨 찾기한 알약</h2>
           <Horizon />
-          {!userPill ? <p>즐겨찾기한 알약이 없습니다</p> : <PillCardContainer pillList={userPill.pillList} />}
+          {!userPill ? <p>즐겨 찾기한 알약이 없습니다</p> : <PillCardContainer pillList={userPill.pillList} />}
         </div>
       </div>
     </div>

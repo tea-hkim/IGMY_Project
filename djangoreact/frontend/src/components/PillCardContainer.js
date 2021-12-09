@@ -13,7 +13,7 @@ const PillCardContainer = ({ pillList }) => {
         return (
           <PillCard onClick={() => navigate('/pilldetail', { state: { pillNum } })}>
             <img src={pill.image} alt="알약 사진" />
-            <div>{pill.item_name}</div>
+            <p>{pill.item_name}</p>
           </PillCard>
         );
       })}
