@@ -31,7 +31,7 @@ export const AboutUs = ({ engName, name, position, mbti, url, email, blog, comme
         </div>
         <div className="back_content">
           <h4>{blog ? '블로그' : '이메일'}</h4>
-          <a href={url}>
+          <a href={url} target="blank">
             {blog}
             {email}
           </a>
