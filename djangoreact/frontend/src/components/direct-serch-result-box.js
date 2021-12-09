@@ -56,7 +56,6 @@ const PillImage = styled.img`
 `;
 
 const DecriptionBox = styled.div`
-  position: relative;
   width: 70%;
   height: 85%;
   display: flex;
@@ -75,7 +74,6 @@ const DecriptionBox = styled.div`
       border: 2px solid ${palePink};
       padding: 5px 20px;
       border-radius: 20px;
-      z-index: 1;
     }
     p {
       height: 100%;
