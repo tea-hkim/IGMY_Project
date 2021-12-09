@@ -65,7 +65,7 @@ function App() {
         <Route path="/pilldetail" element={<PillDetailPage />} />
         <Route path="/about-us" element={<AboutUsPage />} />
         <Route path="/about-service" element={<AboutServicePage />} />
-        <Route path="oauth/callback/kakao" element={<Social />} />
+        <Route path="/oauth/callback/kakao" element={<Social />} />
       </Routes>
       <Footer />
     </div>
