@@ -58,6 +58,7 @@ const LoginPage = () => {
       } else {
         sessionStorage.setItem('refresh', refresh);
       }
+      axios.defaults.headers.common.Authorization = `Bearer ${access}`;
       navigate('/');
     } catch (error) {
       alert('아이디 또는 패스워드가 잘못되었습니다');

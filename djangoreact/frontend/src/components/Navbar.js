@@ -29,10 +29,7 @@ const Navbar = () => {
       } else {
         refresh = { refresh: sessionRefreshToken };
       }
-      const { data } = await axios.post(LOGOUT_URL, refresh);
-      if (data === '로그아웃 성공') {
-        alert('로그아웃 되었습니다');
-      }
+      await axios.post(LOGOUT_URL, refresh);
     } catch (err) {
       console.log(err);
     }

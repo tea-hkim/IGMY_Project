@@ -40,7 +40,9 @@ function App() {
     try {
       const { data } = await axios.post(REFRESH_URL, formData);
       const { access, username } = data;
+      console.log('access', access);
       axios.defaults.headers.common.Authorization = `Bearer ${access}`;
+      console.log('전역변수 설정 완료');
       dispatch(login({ username, access }));
     } catch (error) {
       localStorage.removeItem('refresh');
