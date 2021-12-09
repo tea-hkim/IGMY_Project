@@ -28,18 +28,23 @@ function App() {
   const initializeUser = async () => {
     const REFRESH_URL = 'http://localhost:8000/api/token/refresh/';
     const formData = new FormData();
-    const refreshToken = localStorage.getItem('refresh');
+    const localRefreshToken = localStorage.getItem('refresh');
+    const sessionRefreshToken = sessionStorage.getItem('refresh');
 
-    if (!refreshToken) return;
+    if (!localRefreshToken && !sessionRefreshToken) return;
 
-    formData.append('refresh', refreshToken);
+    if (localRefreshToken) {
+      formData.append('refresh', localRefreshToken);
+    } else formData.append('refresh', sessionRefreshToken);
 
     try {
       const { data } = await axios.post(REFRESH_URL, formData);
       const { access, username } = data;
+      axios.defaults.headers.common.Authorization = `Bearer ${access}`;
       dispatch(login({ username, access }));
     } catch (error) {
       localStorage.removeItem('refresh');
+      sessionStorage.removeItem('refresh');
     }
   };
 

@@ -3,29 +3,16 @@ import { useDispatch } from 'react-redux';
 import { login, initializeInput } from '../redux/authSlice';
 
 // const ACCESS_EXPIRY_TIME = 5 * 60 * 1000;
-const REFRESH_URL = 'http://localhost:8000/api/token/refresh/';
+const LOGOUT_URL = 'http://localhost:8000/api/logout/';
 const dispatch = useDispatch();
 
-export const Logout = () => {
+export const Logout = async () => {
+  try {
+  } catch (err) {
+    console.log(err);
+  }
   localStorage.removeItem('refresh');
   dispatch(initializeInput());
-};
-
-export const initializeUser = async () => {
-  const formData = new FormData();
-  const refreshToken = localStorage.getItem('refresh');
-
-  if (!refreshToken) return;
-
-  formData.append('refresh', refreshToken);
-
-  try {
-    const { data } = await axios.post(REFRESH_URL, formData);
-    const { access, username } = data;
-    dispatch(login({ username, access }));
-  } catch (error) {
-    localStorage.removeItem('refresh');
-  }
 };
 
 export const onSilentRefresh = () => {

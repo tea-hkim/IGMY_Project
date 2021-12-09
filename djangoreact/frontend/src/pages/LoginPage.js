@@ -46,15 +46,17 @@ const LoginPage = () => {
 
   const handelSubmit = async (event) => {
     event.preventDefault();
-    const loginURL = 'http://localhost:8000/api/token/';
+    const LOGIN_URL = 'http://localhost:8000/api/token/';
     const userData = { email, password };
 
     try {
-      const { data } = await axios.post(loginURL, userData);
+      const { data } = await axios.post(LOGIN_URL, userData);
       const { username, access, refresh } = data;
       dispatch(login({ username, access }));
       if (autoLogin) {
         localStorage.setItem('refresh', refresh);
+      } else {
+        sessionStorage.setItem('refresh', refresh);
       }
       navigate('/');
     } catch (error) {
