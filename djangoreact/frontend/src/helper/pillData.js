@@ -15,12 +15,12 @@ export const PillShapeData = [
   {
     title: '타원형',
     shape: '타원형',
-    icon: <img src="images/oval.png" alt="타원형" style={{ height: '1.25rem' }} />,
+    icon: <img src="image/oval.png" alt="타원형" style={{ height: '1.25rem' }} />,
   },
   {
     title: '반원형',
     shape: '반원형',
-    icon: <img src="images/semicircle.png" alt="타원형" style={{ height: '1.25rem' }} />,
+    icon: <img src="image/semicircle.png" alt="타원형" style={{ height: '1.25rem' }} />,
   },
   {
     title: '삼각형',

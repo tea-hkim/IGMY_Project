@@ -11,7 +11,7 @@ const MainPage = () => {
       <h1 className="main_container_title">이게모약</h1>
       <Box className="main_container_box">
         <Circle className="main_container_box_picture" onClick={() => navigate('/camera')}>
-          <img src="images/pill.png" alt="알약" />
+          <img src="image/pill.png" alt="알약" />
           <div>
             <mdIcons.MdOutlineImageSearch size="4rem" />
             사진 검색
@@ -32,7 +32,7 @@ const MainPage = () => {
           </div>
         </OtherThings>
         <Circle className="main_container_box_search" onClick={() => navigate('/direct')}>
-          <img src="images/pill.png" alt="알약" />
+          <img src="image/pill.png" alt="알약" />
           <div>
             <imIcons.ImSearch size="4rem" />
             직접 검색
