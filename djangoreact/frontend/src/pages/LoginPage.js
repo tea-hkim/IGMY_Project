@@ -121,14 +121,26 @@ const LoginPage = () => {
         <AuthFooterBox>
           <AuthFooterContent>
             <div>아직 이게모약 계정이 없으신가요?</div>
-            <div tabIndex="0" role="button" onClick={handleClickToLogin} onKeyDown={handleClickToLogin}>
+            <div
+              className="toButton"
+              tabIndex="0"
+              role="button"
+              onClick={handleClickToLogin}
+              onKeyDown={handleClickToLogin}
+            >
               가입하기
             </div>
           </AuthFooterContent>
           <Line />
           <AuthFooterContent>
             <div>혹시 비밀번호를 잊으셨나요?</div>
-            <div tabIndex="-1" role="button" onClick={handleClickToResetPw} onKeyDown={handleClickToResetPw}>
+            <div
+              className="toButton"
+              tabIndex="-1"
+              role="button"
+              onClick={handleClickToResetPw}
+              onKeyDown={handleClickToResetPw}
+            >
               비밀번호 재설정
             </div>
           </AuthFooterContent>

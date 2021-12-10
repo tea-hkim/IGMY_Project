@@ -65,7 +65,7 @@ const PillDetailPage = () => {
       setPillDeposit(response1.data[0].deposit_method_qesitm); // 보관방법
 
       const response2 = await axios.get(`${REACT_APP_HOST_IP_ADDRESS}api/user-pill/?pn=${location.state.pillNum}`);
-      
+
       if (response2.data) {
         setUserPill(true);
       }

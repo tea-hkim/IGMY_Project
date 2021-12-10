@@ -139,7 +139,7 @@ const RegisterPage = () => {
         <AuthFooterBox>
           <AuthFooterContent>
             이게모약 계정이 있으신가요?
-            <div tabIndex="0" role="button" onClick={handleClick} onKeyDown={handleClick}>
+            <div className="toButton" tabIndex="0" role="button" onClick={handleClick} onKeyDown={handleClick}>
               로그인 하기
             </div>
           </AuthFooterContent>

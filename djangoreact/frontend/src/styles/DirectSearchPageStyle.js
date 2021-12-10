@@ -8,7 +8,7 @@ export const SearchPage = styled.div`
   justify-content: flex-start;
   align-items: center;
   min-height: 100vh;
-
+  padding-bottom: 5vh;
   h1 {
     width: 60vw;
     color: white;
