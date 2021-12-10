@@ -22,7 +22,7 @@ const ResetPasswordPage = () => {
     const body = JSON.stringify({ email });
 
     try {
-      await axios.post('http://127.0.0.1:8000/auth/users/reset_password/', body, config);
+      await axios.post(`${process.env.REACT_APP_HOST_IP_ADDRESS}auth/users/reset_password/`, body, config);
 
       dispatch(resetpassword({ email }));
     } catch (error) {

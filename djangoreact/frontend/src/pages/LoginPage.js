@@ -46,7 +46,7 @@ const LoginPage = () => {
 
   const handelSubmit = async (event) => {
     event.preventDefault();
-    const LOGIN_URL = 'http://localhost:8000/api/token/';
+    const LOGIN_URL = `${process.env.REACT_APP_HOST_IP_ADDRESS}api/token/`;
     const userData = { email, password };
 
     try {

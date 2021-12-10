@@ -6,13 +6,14 @@ import { useParams } from 'react-router-dom';
 import { resetpasswordconfirm } from '../redux/authSlice';
 
 const ResetPasswordConfirmPage = () => {
-  const { uid, token } = useParams();
   const dispatch = useDispatch();
+  const { uid, token } = useParams();
   const [requestSent, setRequestSent] = useState(false);
   const [formData, setFormData] = useState({
     new_password: '',
     re_new_password: '',
   });
+  // const [isActive, setIsActive] = useState(false);
   // eslint-disable-next-line camelcase
   const { new_password, re_new_password } = formData;
 
@@ -26,7 +27,7 @@ const ResetPasswordConfirmPage = () => {
     const body = JSON.stringify({ uid, token, new_password });
 
     try {
-      await axios.post('http://127.0.0.1:8000/auth/users/reset_password_confirm/', body, config);
+      await axios.post(`${process.env.REACT_APP_HOST_IP_ADDRESS}auth/users/reset_password_confirm/`, body, config);
 
       dispatch(resetpasswordconfirm({ uid, token, new_password }));
     } catch (error) {
@@ -43,6 +44,10 @@ const ResetPasswordConfirmPage = () => {
 
   const onChange = (event) => setFormData({ ...formData, [event.target.name]: event.target.value });
 
+  // if (formData.new_password === formData.re_new_password) {
+  //   setIsActive(true);
+  // }
+
   if (requestSent) {
     return <useNavigate to="/login" />;
   }
@@ -54,7 +59,7 @@ const ResetPasswordConfirmPage = () => {
       <form onSubmit={(event) => onSubmit(event)}>
         <FormField>
           <input
-            className="form-control"
+            className="form-control1"
             type="password"
             placeholder="새 비밀번호"
             name="new_password"
@@ -69,7 +74,7 @@ const ResetPasswordConfirmPage = () => {
         <br />
         <FormField>
           <input
-            className="form-control"
+            className="form-control2"
             type="password"
             placeholder="새 비밀번호 확인"
             name="re_new_password"
@@ -94,7 +99,7 @@ export default ResetPasswordConfirmPage;
 
 const PasswordConfirmDiv = styled.div`
   width: 100%;
-  height: 90vh;
+  height: 65vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -102,23 +107,24 @@ const PasswordConfirmDiv = styled.div`
 `;
 
 const Button = styled.button`
-  box-shadow: 3px 4px 0px 0px #899599;
-  background: linear-gradient(to bottom, #ededed 5%, #bab1ba 100%);
-  background-color: #ededed;
-  border-radius: 15px;
-  border: 1px solid #d6bcd6;
+  box-shadow: inset 0px 1px 0px 0px #ffffff;
+  background: linear-gradient(to bottom, #ffffff 5%, #f6f6f6 100%);
+  background-color: #ffffff;
+  border-radius: 6px;
+  border: 1px solid #dcdcdc;
   display: inline-block;
   cursor: pointer;
-  color: #3a8a9e;
+  color: #666666;
   font-family: Arial;
-  font-size: 17px;
-  padding: 7px 25px;
+  font-size: 15px;
+  font-weight: bold;
+  padding: 6px 24px;
   text-decoration: none;
-  text-shadow: 0px 1px 0px #e1e2ed;
+  text-shadow: 0px 1px 0px #ffffff;
 
   &:hover {
-    background: linear-gradient(to bottom, #bab1ba 5%, #ededed 100%);
-    background-color: #bab1ba;
+    background: linear-gradient(to bottom, #f6f6f6 5%, #ffffff 100%);
+    background-color: #f6f6f6;
   }
   &:active {
     position: relative;

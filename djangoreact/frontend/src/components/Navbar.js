@@ -18,7 +18,7 @@ const Navbar = () => {
 
   const Logout = async () => {
     setSidebar(!sidebar);
-    const LOGOUT_URL = 'http://localhost:8000/api/logout/';
+    const LOGOUT_URL = `${process.env.REACT_APP_HOST_IP_ADDRESS}api/logout/`;
     const localRefreshToken = localStorage.getItem('refresh');
     const sessionRefreshToken = sessionStorage.getItem('refresh');
 

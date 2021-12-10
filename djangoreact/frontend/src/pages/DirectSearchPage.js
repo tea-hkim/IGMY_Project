@@ -29,7 +29,7 @@ function DirectSearchPage() {
 
   const directSearch = async () => {
     setIsLoaded(true);
-    const url = `http://localhost:8000/api/search-direct/?name=${pillName}&shape=${
+    const url = `${process.env.REACT_APP_HOST_IP_ADDRESS}api/search-direct/?name=${pillName}&shape=${
       shape !== '선택안함' ? shape : ''
     }&color_front=${color !== '선택안함' ? color : ''}&page=1`;
     const response = await axios.get(url);
@@ -79,7 +79,7 @@ function DirectSearchPage() {
   const printMoreItem = async () => {
     if (page > totalPage) return;
     setIsLoaded(true);
-    const url = `http://localhost:8000/api/search-direct/?name=${pillName}&shape=${
+    const url = `${process.env.REACT_APP_HOST_IP_ADDRESS}api/search-direct/?name=${pillName}&shape=${
       shape !== '선택안함' ? shape : ''
     }&color_front=${color !== '선택안함' ? color : ''}&page=${page}`;
     const response = await axios.get(url);
