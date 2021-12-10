@@ -23,6 +23,12 @@ export const AuthContainer = styled.div`
   border-radius: 0.625rem;
   text-align: center;
   background-color: white;
+  .autoLoginBox {
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-end;
+  }
 `;
 
 export const AuthTitle = styled.h1`
@@ -83,8 +89,11 @@ export const Button = styled.button`
 `;
 
 export const KakaoBox = styled.div`
-  width: ${loginWidth};
-  margin: 0 auto;
+  width: 100%;
+  margin-bottom: 5px;
+  img {
+    width: 80%;
+  }
 `;
 
 export const LoginForm = styled.form`
@@ -123,6 +132,11 @@ export const AuthFooterContent = styled.div`
   display: flex;
   justify-content: space-between;
   margin: ${marginBottom} 0;
+  padding: 0.625rem 0;
+  .toButton {
+    color: blue;
+    font-weight: 600;
+  }
 `;
 
 export const ValidMessage = styled.p`
