@@ -98,7 +98,7 @@ const CameraPage = () => {
                 {!imgSrc ? (
                   <>
                     <InputLabel htmlFor="files">
-                      <PreviewImgStyle src="images/pillCamera.png" alt="알약사진" />
+                      <PreviewImgStyle src="image/pillCamera.png" alt="알약사진" />
                     </InputLabel>
                     <input
                       id="files"
