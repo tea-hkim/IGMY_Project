@@ -31,7 +31,7 @@ GOOGLE_CLIENT_ID = "775963563051-uv8t5d689e6eerchgedpdu2f36bthj45.apps.googleuse
 GOOGLE_SECRET = "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"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -137,6 +137,8 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_WHITELIST = [
+    "http://elice-kdt-2nd-team6.koreacentral.cloudapp.azure.com:8000",
+    "http://elice-kdt-2nd-team6.koreacentral.cloudapp.azure.com:3000",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "http://localhost:8000",
@@ -144,6 +146,8 @@ CORS_ORIGIN_WHITELIST = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
+    "http://elice-kdt-2nd-team6.koreacentral.cloudapp.azure.com:8000",
+    "http://elice-kdt-2nd-team6.koreacentral.cloudapp.azure.com:3000",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "http://localhost:8000",

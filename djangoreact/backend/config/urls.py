@@ -11,7 +11,7 @@ urlpatterns = [
     url(r'^auth/', include('djoser.urls')),
     # url(r'auth/', include('djoser.urls.jwt')),
     # path('auth/', include('djoser.social.urls')),
-    #re_path('.*', TemplateView.as_view(template_name='index.html')),
+    # re_path('.*', TemplateView.as_view(template_name='index.html')),
 ]
 
 #urlpatterns += [re_path(r'^.*', TemplateView.as_view(template_name='index.html'))]

@@ -293,7 +293,6 @@ def search_history(request):
 with open('./AI/pill_90.json', 'r') as f:
     pill_dict = json.load(f)
 
-model = tf.keras.models.load_model('model')
 df = pd.read_excel('./AI/ai_medicine.xlsx')
 
 
@@ -422,6 +421,7 @@ def result_photo(request):
             predict_list.append(predict_img)
             predict_list = np.array(predict_list)
 
+            model = tf.keras.models.load_model('model')
             predict = model.predict(predict_list)
 
             predict_list = []
