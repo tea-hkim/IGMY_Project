@@ -535,125 +535,65 @@ KAKAO_CALLBACK_URI = BASE_URL + "/oauth/callback/kakao"
 
 '''kakao social login'''
 
-
-@api_view(["GET"])
+@api_view(["POST"])
 @permission_classes([AllowAny])
 def kakao_login(request):
-    code = request.GET['code']
-    KAKAO_REST_API_KEY = getattr(settings, 'KAKAO_REST_API_KEY')
-    REDIRECT_URI = KAKAO_CALLBACK_URI
-
+    code = request.GET.get("code", '')  # 파라미터
+    KAKAO_CLIENT_ID = "a99d9ab952d8ff978691e6981a20b3f4"  # secret으로 빼기
+    REDIRECT_URI = "http://localhost:3000/oauth/callback/kakao"
     # 카카오에 요청해서 token data 가져오기
-    request_uri = 'https://kauth.kakao.com/oauth/token?grant_type=authorization_code'
-    request_uri += '&client_id=' + KAKAO_REST_API_KEY
-    request_uri += '&code=' + code
-    request_uri += '&redirect_uri=' + REDIRECT_URI
-
+    request_uri = f"https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id={KAKAO_CLIENT_ID}&code={code}&redirect_uri={REDIRECT_URI}"
     token_data = requests.get(request_uri).json()
 
-    # return Response(token_data)  # test : 확인
-
-    access_token = token_data['access_token']
-    refresh_token = token_data['refresh_token']
-
+    access_token = token_data.get('access_token')
     # Authorization(인가코드) : header로 꼭 설정해야함 (카카오는 인가코드 기반으로 토큰을 요청, 받음)
     headers = {
-        'Authorization': f"Bearer {access_token}",
+        "Authorization": f"Bearer {access_token}",
     }
-
     # 사용자 정보 json 형식으로 가져오기
     get_user_info_url = 'https://kapi.kakao.com/v2/user/me'
     user_info_json = requests.get(get_user_info_url, headers=headers).json()
 
-    # return Response(user_info_json)  # test : 확인
-
-    '''
-    {
-        "id": 2003367790,
-        "connected_at": "2021-11-23T00:48:16Z",
-        "properties": {
-            "nickname": "\uac15\uc11d\uc601",
-            "profile_image": "http://k.kakaocdn.net/dn/b5NyPn/btrkz4wgIhn/zA3lMIXWu1cSlh7qeAsLKk/img_640x640.jpg",
-            "thumbnail_image": "http://k.kakaocdn.net/dn/b5NyPn/btrkz4wgIhn/zA3lMIXWu1cSlh7qeAsLKk/img_110x110.jpg"
-        },
-        "kakao_account": {
-            "profile_nickname_needs_agreement": false,
-            "profile_image_needs_agreement": false,
-            "profile": {
-                "nickname": "\uac15\uc11d\uc601",
-                "thumbnail_image_url": "http://k.kakaocdn.net/dn/cGnCMx/btrmKlB3UyN/0WKCOQ8p30n6CzoxqpT9lK/img_110x110.jpg",
-                "profile_image_url": "http://k.kakaocdn.net/dn/cGnCMx/btrmKlB3UyN/0WKCOQ8p30n6CzoxqpT9lK/img_640x640.jpg",
-                "is_default_image": false
-            },
-            "has_email": true,
-            "email_needs_agreement": false,
-            "is_email_valid": true,
-            "is_email_verified": true,
-            "email": "sy7434@naver.com"
-        }
-    }
-    카카오는 이메일이 없을 수 있기 때문에,
-    이메일 있으면 폼에 채워주고 없으면 이메일 받는 페이지 로드 : 프론트에 전달해주기
-    '''
-
-    uid = user_info_json['id']
-    email = user_info_json['kakao_account']['email']
-    nickname = user_info_json['kakao_account']['profile']['nickname']
+    uid = user_info_json.get("id")
+    email = user_info_json.get('kakao_account').get('email')
+    username = user_info_json.get('properties').get('nickname')
+    password = f"password{uid}"
     provider = "kakao"
 
-    # [test용]
-    # uid = 2003367790
-    # email = "sy7434@naver.com"
-    # nickname = "\uac15\uc11d\uc601"
-    # provider = "kakao"
-
-    # uid = 2024703665
-    # email = "tu1457@kakao.com"
-    # nickname = "김태호"
-    # provider = "kakao"
-
-    # user_test_data = {
-    #     'uid': uid,
-    #     'email': email,
-    #     'nickname': nickname,
-    #     'provider': provider,
-    # }
-    # return JsonResponse(user_test_data) # test완료
-
     # email 수집에 동의하지 않아서 값이 비어있는 경우
-    if email == "" or email == False:
-        return Response({"message": "No email."}, status=status.HTTP_400_BAD_REQUEST)
+    if email == "" or email == None:
+        email = f"{uid}@socialemail.com"
 
     # db에 이메일이 존재하는 경우
     if User.objects.filter(email=email).exists():
-        # [test]
-        # user_data_u = User.objects.get(email=email)
-        user_data_s = SocialAccount.objects.get(user=user_data_u)
-        # return JsonResponse({
-        #     'uid': user_data_s.uid,
-        #     'email': user_data_u.email,
-        #     'nickname': user_data_u.username,
-        #     'provider': user_data_s.provider,
-        # })
-
-        # 소셜로 로그인한적 있음
+        # 소셜 로그인 (토큰 발급)
         if SocialAccount.objects.filter(uid=uid).exists():
-            return Response({"message": "토큰발급예정1"})
-            # pass  # 자체적 토큰 발급 (class) → return으로 토큰과 200 응답 보내줌
+            URL = "http://localhost:8000/api/token/"
+            data = {
+                'email': email,
+                'password': password,
+            }
+            token_req = requests.post(url=URL, data=data)
+            return Response(token_req.json())
 
         # 해당 이메일로 자체로그인
         else:
-            return Response({"message": "Email exists But not social user. Try origin login."}, status=status.HTTP_400_BAD_REQUEST)
-
-    # db에 이메일이 존재하지 않는 경우 : 소셜로그인으로 처음 로그인 (회원가입이라고 생각하면 됨!)
+            return Response(
+                {"message": "Email exists But not social user. Try origin login."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+    # db에 이메일이 존재하지 않는 경우 (소셜로그인으로 처음 로그인, db에 저장)
     else:
-        user_data = User.objects.create(
-            email=email,
-            username=nickname,
-            date_joined=timezone.now(),
-        )
-        user_data.save()
-        user_info = User.objects.get(email=email)
+        URL = "http://localhost:8000/api/sign-up/"
+        data = {
+            'email': email,
+            'username': username,
+            'password': password,
+        }
+        requests.post(url=URL, data=data)
+
+        user_info = User.objects.filter(email=email).first()
+        # user_info = User.objects.get(email=email)
         social_user = SocialAccount(
             user=user_info,
             uid=uid,
@@ -661,12 +601,15 @@ def kakao_login(request):
         )
         social_user.save()
 
-        return JsonResponse({"message": "토큰발급예정2"})
+        # 로그인 시 토큰 발급
+        URL = "http://localhost:8000/api/token/"
+        data = {
+            'email': email,
+            'password': password,
+        }
+        token_req = requests.post(url=URL, data=data)
+        return Response(token_req.json())
 
-        # 자체적 토큰 발급 (class) → return으로 토큰과 200 응답 보내줌 (아래 두줄은 뇌피셜)
-        # data = {'email': email, 'username': nickname}
-        # return requests.post(
-        #     f"{BASE_URL}api/token/social/", data=data)
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
