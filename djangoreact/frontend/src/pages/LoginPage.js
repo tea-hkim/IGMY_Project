@@ -6,6 +6,7 @@ import KakaoLogin from '../auth/KakaoLogin';
 import InputWithLabel from '../auth/InputWithLabel';
 import AuthButton from '../auth/AuthButton';
 import { login } from '../redux/authSlice';
+import { REACT_APP_HOST_IP_ADDRESS } from '../env';
 import {
   AuthPage,
   AuthContainer,
@@ -46,7 +47,7 @@ const LoginPage = () => {
 
   const handelSubmit = async (event) => {
     event.preventDefault();
-    const LOGIN_URL = `${process.env.REACT_APP_HOST_IP_ADDRESS}api/token/`;
+    const LOGIN_URL = `${REACT_APP_HOST_IP_ADDRESS}api/token/`;
     const userData = { email, password };
 
     try {

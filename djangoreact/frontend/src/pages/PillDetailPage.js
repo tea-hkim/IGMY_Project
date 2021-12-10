@@ -6,6 +6,7 @@ import Modal from 'react-modal';
 import { AiOutlineStar, AiFillStar } from 'react-icons/ai';
 import { useLocation } from 'react-router';
 import { ScanImgStyle, modalStyles } from '../styles/ScanPageStyle';
+import { REACT_APP_HOST_IP_ADDRESS } from '../env';
 import {
   PillContainer,
   PillView1,
@@ -43,7 +44,7 @@ const PillDetailPage = () => {
     setPillNum(location.state.pillNum); // 일련번호
     try {
       const response1 = await axios.get(
-        `${process.env.REACT_APP_HOST_IP_ADDRESS}api/pill-detail/?pill_id=${location.state.pillNum}`,
+        `${REACT_APP_HOST_IP_ADDRESS}api/pill-detail/?pill_id=${location.state.pillNum}`,
         {
           headers: {
             Authorization: `Bearer ${access}`,
@@ -62,9 +63,7 @@ const PillDetailPage = () => {
       setPillInteraction(response1.data[0].intrc_qesitm); // 상호작용
       setPillDeposit(response1.data[0].deposit_method_qesitm); // 보관방법
 
-      const response2 = await axios.get(
-        `${process.env.REACT_APP_HOST_IP_ADDRESS}api/user-pill/?pn=${location.state.pillNum}`,
-      );
+      const response2 = await axios.get(`${REACT_APP_HOST_IP_ADDRESS}api/user-pill/?pn=${location.state.pillNum}`);
       const CheckPillNum = response2.data[0].item_num;
 
       if (CheckPillNum === location.state.pillNumNum) {
@@ -75,7 +74,7 @@ const PillDetailPage = () => {
     }
 
     // return async () => {
-    //   const response2 = await axios.get(`${process.env.REACT_APP_HOST_IP_ADDRESS}api/user-pill/?pn=${location.state.pillNum}`, {
+    //   const response2 = await axios.get(`${REACT_APP_HOST_IP_ADDRESS}api/user-pill/?pn=${location.state.pillNum}`, {
     //     headers: {
     //       Authorization: `Bearer ${access}`,
     //     },
@@ -90,7 +89,7 @@ const PillDetailPage = () => {
   const handleUserPill = async () => {
     if (!isUserPill) {
       try {
-        const response = await axios.post(`${process.env.REACT_APP_HOST_IP_ADDRESS}user-pill/?pn=${pillNum}`, pillNum, {
+        const response = await axios.post(`${REACT_APP_HOST_IP_ADDRESS}user-pill/?pn=${pillNum}`, pillNum, {
           headers: {
             Authorization: `Bearer ${access}`,
           },
@@ -102,7 +101,7 @@ const PillDetailPage = () => {
       }
     } else {
       try {
-        const response = await axios.delete(`${process.env.REACT_APP_HOST_IP_ADDRESS}user-pill/?pn=${pillNum}`, {
+        const response = await axios.delete(`${REACT_APP_HOST_IP_ADDRESS}user-pill/?pn=${pillNum}`, {
           headers: {
             Authorization: `Bearer ${access}`,
           },

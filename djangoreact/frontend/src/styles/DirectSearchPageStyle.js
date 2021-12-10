@@ -7,7 +7,7 @@ export const SearchPage = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  min-height: 95vh;
+  min-height: 100vh;
 
   h1 {
     width: 60vw;
@@ -108,13 +108,19 @@ export const SelectBox = styled.div`
     }
     return 'black';
   }};
-
+  box-shadow: ${(props) => {
+    if (props.className === 'checked') {
+      return '3px 3px 10px rgba(0,0,0,0.5)';
+    }
+    return '';
+  }};
   div {
     border-radius: 50%;
     width: 20px;
     height: 20px;
     border: 1px solid black;
     background-color: ${(props) => props.id};
+    margin-bottom: 1px;
   }
 `;
 
@@ -136,5 +142,6 @@ export const ButtonBox = styled.div`
     justify-content: center;
     align-items: center;
     padding: 5px 0;
+    cursor: pointer;
   }
 `;

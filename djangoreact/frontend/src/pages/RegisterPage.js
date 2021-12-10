@@ -6,6 +6,7 @@ import InputWithLabel from '../auth/InputWithLabel';
 import { register } from '../redux/authSlice';
 import AuthButton from '../auth/AuthButton';
 import { emailCheck, passwordCheck } from '../auth/checkUserInfo';
+import { REACT_APP_HOST_IP_ADDRESS } from '../env';
 import {
   AuthContainer,
   AuthTitle,
@@ -50,7 +51,7 @@ const RegisterPage = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const registerURL = `${process.env.REACT_APP_HOST_IP_ADDRESS}api/sign-up/`;
+    const registerURL = `${REACT_APP_HOST_IP_ADDRESS}api/sign-up/`;
     const username = userName;
     const userData = { email, password, username };
 

@@ -5,6 +5,7 @@ import * as faIcons from 'react-icons/fa';
 import * as grIcons from 'react-icons/gr';
 import { useSelector, useDispatch } from 'react-redux';
 import { initializeInput } from '../redux/authSlice';
+import { REACT_APP_HOST_IP_ADDRESS } from '../env';
 import { SearchBoxData, AuthBoxData, PillBoxData } from '../helper/sidebarData';
 import { NavBox, MenuBox, MenuBoxContent, ContentBox } from '../styles/NavbarStyle';
 
@@ -18,7 +19,7 @@ const Navbar = () => {
 
   const Logout = async () => {
     setSidebar(!sidebar);
-    const LOGOUT_URL = `${process.env.REACT_APP_HOST_IP_ADDRESS}api/logout/`;
+    const LOGOUT_URL = `${REACT_APP_HOST_IP_ADDRESS}api/logout/`;
     const localRefreshToken = localStorage.getItem('refresh');
     const sessionRefreshToken = sessionStorage.getItem('refresh');
 

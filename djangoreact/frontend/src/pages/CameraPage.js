@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import WhiteNavbar from '../components/WhiteNavbar';
+import { REACT_APP_HOST_IP_ADDRESS } from '../env';
 import {
   CameraPageContainer,
   LogoStyle,
@@ -21,7 +22,7 @@ const CameraPage = () => {
   const [isLoading, setLoading] = useState(false);
 
   const submitImg = async () => {
-    const URL = `${process.env.REACT_APP_HOST_IP_ADDRESS}api/result-photo/`;
+    const URL = `${REACT_APP_HOST_IP_ADDRESS}api/result-photo/`;
     const formData = new FormData();
     formData.append('files', file[0]);
 

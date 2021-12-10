@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const CameraPageContainer = styled.div`
-  padding-top: 15vh;
+  padding-top: 5vh;
   height: 100vh;
   display: flex;
   flex-direction: column;

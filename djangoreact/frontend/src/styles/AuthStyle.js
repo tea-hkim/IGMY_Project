@@ -6,8 +6,8 @@ const loginheight = '2rem';
 const marginBottom = '0.625rem';
 
 export const AuthPage = styled.div`
-  padding-top: 15vh;
-  min-height: 95vh;
+  padding-top: 10vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;

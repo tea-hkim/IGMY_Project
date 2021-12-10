@@ -21,12 +21,13 @@ import AboutServicePage from './pages/about-service-page';
 import PillDetailPage from './pages/PillDetailPage';
 import ResetPasswordConfimPage from './pages/ResetPasswordConfimPage';
 import Social from './auth/Social';
+import { REACT_APP_HOST_IP_ADDRESS } from './env';
 
 function App() {
   const dispatch = useDispatch();
 
   const initializeUser = async () => {
-    const REFRESH_URL = `${process.env.REACT_APP_HOST_IP_ADDRESS}api/token/refresh/`;
+    const REFRESH_URL = `${REACT_APP_HOST_IP_ADDRESS}api/token/refresh/`;
     const formData = new FormData();
     const localRefreshToken = localStorage.getItem('refresh');
     const sessionRefreshToken = sessionStorage.getItem('refresh');
@@ -40,9 +41,7 @@ function App() {
     try {
       const { data } = await axios.post(REFRESH_URL, formData);
       const { access, username } = data;
-      console.log('access', access);
       axios.defaults.headers.common.Authorization = `Bearer ${access}`;
-      console.log('전역변수 설정 완료');
       dispatch(login({ username, access }));
     } catch (error) {
       localStorage.removeItem('refresh');

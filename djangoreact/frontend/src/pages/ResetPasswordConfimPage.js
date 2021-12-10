@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
+import { REACT_APP_HOST_IP_ADDRESS } from '../env';
 import { resetpasswordconfirm } from '../redux/authSlice';
 
 const ResetPasswordConfirmPage = () => {
@@ -27,7 +28,7 @@ const ResetPasswordConfirmPage = () => {
     const body = JSON.stringify({ uid, token, new_password });
 
     try {
-      await axios.post(`${process.env.REACT_APP_HOST_IP_ADDRESS}auth/users/reset_password_confirm/`, body, config);
+      await axios.post(`${REACT_APP_HOST_IP_ADDRESS}auth/users/reset_password_confirm/`, body, config);
 
       dispatch(resetpasswordconfirm({ uid, token, new_password }));
     } catch (error) {
