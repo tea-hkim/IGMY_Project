@@ -64,39 +64,14 @@ const PillDetailPage = () => {
       setPillInteraction(response1.data[0].intrc_qesitm); // 상호작용
       setPillDeposit(response1.data[0].deposit_method_qesitm); // 보관방법
 
-<<<<<<< HEAD
       const response2 = await axios.get(`${REACT_APP_HOST_IP_ADDRESS}api/user-pill/?pn=${location.state.pillNum}`);
-      const CheckPillNum = response2.data[0].item_num;
 
-      if (CheckPillNum === location.state.pillNumNum) {
-=======
-      const response2 = await axios.get(
-        `${process.env.REACT_APP_HOST_IP_ADDRESS}api/user-pill/?pn=${location.state.pillNum}`,
-      );
-      
       if (response2.data) {
->>>>>>> f924e7c4de07824f19ad96e1411404e8247c407c
         setUserPill(true);
       }
     } catch (err) {
       console.log(err);
     }
-<<<<<<< HEAD
-
-    // return async () => {
-    //   const response2 = await axios.get(`${REACT_APP_HOST_IP_ADDRESS}api/user-pill/?pn=${location.state.pillNum}`, {
-    //     headers: {
-    //       Authorization: `Bearer ${access}`,
-    //     },
-    //   });
-    //   console.log(response2.data);
-    //   if (response2.data) {
-    //     setUserPill(true);
-    //   }
-    // }
-=======
-    
->>>>>>> f924e7c4de07824f19ad96e1411404e8247c407c
   }, []);
 
   const handleUserPill = async () => {
