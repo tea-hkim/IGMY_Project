@@ -7,6 +7,7 @@ import { AiOutlineStar, AiFillStar } from 'react-icons/ai';
 import { useLocation } from 'react-router';
 import { ScanImgStyle, modalStyles } from '../styles/ScanPageStyle';
 import { REACT_APP_HOST_IP_ADDRESS } from '../env';
+import WhiteNavbar from '../components/WhiteNavbar';
 import {
   PillContainer,
   PillView1,
@@ -63,15 +64,24 @@ const PillDetailPage = () => {
       setPillInteraction(response1.data[0].intrc_qesitm); // 상호작용
       setPillDeposit(response1.data[0].deposit_method_qesitm); // 보관방법
 
+<<<<<<< HEAD
       const response2 = await axios.get(`${REACT_APP_HOST_IP_ADDRESS}api/user-pill/?pn=${location.state.pillNum}`);
       const CheckPillNum = response2.data[0].item_num;
 
       if (CheckPillNum === location.state.pillNumNum) {
+=======
+      const response2 = await axios.get(
+        `${process.env.REACT_APP_HOST_IP_ADDRESS}api/user-pill/?pn=${location.state.pillNum}`,
+      );
+      
+      if (response2.data) {
+>>>>>>> f924e7c4de07824f19ad96e1411404e8247c407c
         setUserPill(true);
       }
     } catch (err) {
       console.log(err);
     }
+<<<<<<< HEAD
 
     // return async () => {
     //   const response2 = await axios.get(`${REACT_APP_HOST_IP_ADDRESS}api/user-pill/?pn=${location.state.pillNum}`, {
@@ -84,6 +94,9 @@ const PillDetailPage = () => {
     //     setUserPill(true);
     //   }
     // }
+=======
+    
+>>>>>>> f924e7c4de07824f19ad96e1411404e8247c407c
   }, []);
 
   const handleUserPill = async () => {
@@ -117,57 +130,60 @@ const PillDetailPage = () => {
   };
 
   return (
-    <PillContainer>
-      <PillView1>
-        <PillName>{pillName}</PillName>
-        <ScanImgStyle src={pillImg} alt="알약사진" onClick={() => setOpen(true)} />
-        <Modal isOpen={isOpen} style={modalStyles} onRequestClose={() => setOpen(false)}>
-          <img src={pillImg} alt="스캔된 사진" style={{ width: '100%', height: '100%' }} />
-        </Modal>
-      </PillView1>
-      <PillView2>
-        {/* 컴포넌트 구분선 */}
-        <PillBit>{pillBit}</PillBit>
-        <UserPill isUserPill={isUserPill} onClick={handleUserPill}>
-          {!isUserPill ? <AiOutlineStar size={20} /> : <AiFillStar size={20} style={{ margin: 'auto 0' }} />}
-          {!isUserPill ? <p>즐겨찾기 등록</p> : <p>즐겨찾기 완료</p>}
-        </UserPill>
-        <PillInfo>
-          <PillCategory>성분/함량</PillCategory>
-          <PillDetailInfo className="pillStyle">{pillSungbun}</PillDetailInfo>
-        </PillInfo>
-        <PillInfo>
-          <PillCategory>효능/효과</PillCategory>
-          <PillDetailInfo>{pillEfcy}</PillDetailInfo>
-        </PillInfo>
-        <PillInfo>
-          <PillCategory>용법/용량</PillCategory>
-          <PillDetailInfo>{pillUse}</PillDetailInfo>
-        </PillInfo>
-        <PillInfo>
-          <PillCategory>이상반응</PillCategory>
-          <PillDetailInfo>{pillSideEffect}</PillDetailInfo>
-        </PillInfo>
-        {/* 컴포넌트 구분선 */}
-        <MoreDetail isMoreDetail={isMoreDetail}>
+    <>
+      <WhiteNavbar />
+      <PillContainer>
+        <PillView1>
+          <PillName>{pillName}</PillName>
+          <ScanImgStyle src={pillImg} alt="알약사진" onClick={() => setOpen(true)} />
+          <Modal isOpen={isOpen} style={modalStyles} onRequestClose={() => setOpen(false)}>
+            <img src={pillImg} alt="스캔된 사진" style={{ width: '100%', height: '100%' }} />
+          </Modal>
+        </PillView1>
+        <PillView2>
+          {/* 컴포넌트 구분선 */}
+          <PillBit>{pillBit}</PillBit>
+          <UserPill isUserPill={isUserPill} onClick={handleUserPill}>
+            {!isUserPill ? <AiOutlineStar size={20} /> : <AiFillStar size={20} style={{ margin: 'auto 0' }} />}
+            {!isUserPill ? <p>즐겨찾기 등록</p> : <p>즐겨찾기 완료</p>}
+          </UserPill>
           <PillInfo>
-            <PillCategory>주의사항</PillCategory>
-            <PillDetailInfo>{pillAttention}</PillDetailInfo>
+            <PillCategory>성분/함량</PillCategory>
+            <PillDetailInfo className="pillStyle">{pillSungbun}</PillDetailInfo>
           </PillInfo>
           <PillInfo>
-            <PillCategory>상호작용</PillCategory>
-            <PillDetailInfo>{pillInteraction}</PillDetailInfo>
+            <PillCategory>효능/효과</PillCategory>
+            <PillDetailInfo>{pillEfcy}</PillDetailInfo>
           </PillInfo>
           <PillInfo>
-            <PillCategory>보관방법</PillCategory>
-            <PillDetailInfo className="pillStyle">{pillDeposit}</PillDetailInfo>
+            <PillCategory>용법/용량</PillCategory>
+            <PillDetailInfo>{pillUse}</PillDetailInfo>
           </PillInfo>
-        </MoreDetail>
-        <DetailButton onClick={() => setMoreDetail(!isMoreDetail)}>
-          {!isMoreDetail ? <p>+ 더보기</p> : <p>간략 보기</p>}
-        </DetailButton>
-      </PillView2>
-    </PillContainer>
+          <PillInfo>
+            <PillCategory>이상반응</PillCategory>
+            <PillDetailInfo>{pillSideEffect}</PillDetailInfo>
+          </PillInfo>
+          {/* 컴포넌트 구분선 */}
+          <MoreDetail isMoreDetail={isMoreDetail}>
+            <PillInfo>
+              <PillCategory>주의사항</PillCategory>
+              <PillDetailInfo>{pillAttention}</PillDetailInfo>
+            </PillInfo>
+            <PillInfo>
+              <PillCategory>상호작용</PillCategory>
+              <PillDetailInfo>{pillInteraction}</PillDetailInfo>
+            </PillInfo>
+            <PillInfo>
+              <PillCategory>보관방법</PillCategory>
+              <PillDetailInfo className="pillStyle">{pillDeposit}</PillDetailInfo>
+            </PillInfo>
+          </MoreDetail>
+          <DetailButton onClick={() => setMoreDetail(!isMoreDetail)}>
+            {!isMoreDetail ? <p>+ 더보기</p> : <p>간략 보기</p>}
+          </DetailButton>
+        </PillView2>
+      </PillContainer>
+    </>
   );
 };
 

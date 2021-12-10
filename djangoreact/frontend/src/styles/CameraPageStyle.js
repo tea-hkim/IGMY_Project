@@ -46,8 +46,6 @@ export const InfoStyle = styled.div`
   .scanning {
     font-size: 1.5rem;
     font-weight: bold;
-    margin: auto;
-    padding: 2.5rem;
   }
 `;
 
@@ -57,11 +55,13 @@ export const ContainerWrap = styled.div`
   width: 60vw;
   background-color: white;
   border-radius: 5px;
+  padding: 0.5rem;
 `;
 
 export const WebcamContainer = styled.div`
   border: 0.4rem solid #b4a2eb;
   border-radius: 0.4rem;
+  background-color: #b4a2eb;
   margin: 0 auto;
   width: 22vw; //모바일 60vw
   height: 22vw; //모바일 70vw
@@ -94,11 +94,12 @@ export const ButtonStyle = styled.div`
 export const PreviewImgStyle = styled.img`
   width: 100%;
   height: 100%;
+  padding: 0.5rem;
 `;
 
 export const InputLabel = styled.label`
   cursor: pointer;
   &:hover {
-    opacity: 0.7;
+    opacity: 0.6;
   }
 `;
