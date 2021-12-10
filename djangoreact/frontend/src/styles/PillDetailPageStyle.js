@@ -7,7 +7,8 @@ export const PillContainer = styled.div`
   align-items: flex-start;
   margin: 0 auto;
   width: 70vw;
-  padding: 15vh 0 5vh 0;
+  min-height: 100vh;
+  padding: 20vh 0 0;
 `;
 
 export const PillView1 = styled.div`
