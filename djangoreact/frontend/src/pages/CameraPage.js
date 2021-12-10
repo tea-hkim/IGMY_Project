@@ -98,7 +98,7 @@ const CameraPage = () => {
                 {!imgSrc ? (
                   <>
                     <InputLabel htmlFor="files">
-                      <PreviewImgStyle src="images/이게모약로고.png" alt="알약사진" />
+                      <PreviewImgStyle src="images/pillCamera.png" alt="알약사진" />
                     </InputLabel>
                     <input
                       id="files"
@@ -115,20 +115,7 @@ const CameraPage = () => {
                 )}
               </WebcamContainer>
               {!imgSrc ? (
-                <>
-                  <InputLabel htmlFor="files">
-                    <PreviewImgStyle src="images/이게모약로고.png" alt="알약사진" />
-                  </InputLabel>
-                  <input
-                    id="files"
-                    name="files"
-                    type="file"
-                    capture="camera"
-                    accept="image/*"
-                    style={{ display: 'none' }}
-                    onChange={(e) => setFile(e.target.files)}
-                  />
-                </>
+                <> </>
               ) : (
                 <ButtonStyle>
                   <button type="button" onClick={resetImg}>

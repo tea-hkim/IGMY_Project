@@ -3,8 +3,11 @@ import styled from 'styled-components';
 export const PillContainer = styled.div`
   display: flex;
   flex-direction: row;
+  justify-content: center;
+  align-items: center;
   margin: 0 auto;
   width: 90vw;
+  padding: 15vh 0 5vh 0;
 `;
 
 export const PillView1 = styled.div`
@@ -16,6 +19,10 @@ export const PillView1 = styled.div`
     width: 90%;
     margin: 1rem auto;
     border: 3px solid #dee2e6;
+  }
+
+  & + div {
+    margin-left: 0.5rem;
   }
 `;
 
@@ -75,6 +82,7 @@ export const PillInfo = styled.div`
   display: flex;
   flex-direction: row;
   width: 99%;
+  height: 10%;
 
   & + div {
     margin-top: 1.5rem;
