@@ -46,11 +46,6 @@ const PillDetailPage = () => {
     try {
       const response1 = await axios.get(
         `${REACT_APP_HOST_IP_ADDRESS}api/pill-detail/?pill_id=${location.state.pillNum}`,
-        {
-          headers: {
-            Authorization: `Bearer ${access}`,
-          },
-        },
       );
       console.log(response1.data);
       setPillName(response1.data[0].item_name); // 약 이름
