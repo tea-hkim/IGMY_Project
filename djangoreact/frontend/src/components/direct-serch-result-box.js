@@ -20,11 +20,11 @@ const ResultBox = ({ pill }) => {
           <p className="pill_info_bit">{pill.bit}</p>
         </div>
         <div className="pill_info_sungbun">
-          <h4>성분·함량</h4>
+          <h4>성분 함량</h4>
           {pill.sungbun}
         </div>
         <div className="pill_info_effect">
-          <h4>효능·효과</h4>
+          <h4>효능 효과</h4>
           {pill.efcy_qesitm}
         </div>
       </DecriptionBox>
@@ -69,7 +69,7 @@ const DecriptionBox = styled.div`
     justify-content: flex-start;
     align-items: flex-start;
     flex-wrap: nowrap;
-
+    padding-bottom: 1rem;
     h3 {
       border: 2px solid ${palePink};
       padding: 5px 20px;
@@ -86,8 +86,9 @@ const DecriptionBox = styled.div`
       background-color: ${palePink};
     }
     h4 {
-      margin: 0px;
-      width: 10%;
+      margin-left: 20px;
+      width: 6%;
+      color: #8b00ff;
     }
   }
 `;

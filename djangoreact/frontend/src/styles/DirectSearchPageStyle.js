@@ -13,6 +13,9 @@ export const SearchPage = styled.div`
     width: 60vw;
     color: white;
   }
+  .count_result {
+    margin: 20px 0;
+  }
 `;
 
 export const SearchBox = styled.form`

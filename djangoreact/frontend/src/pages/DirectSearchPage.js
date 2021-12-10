@@ -202,7 +202,7 @@ function DirectSearchPage() {
             </button>
           </ButtonBox>
         </SearchBox>
-        <div>
+        <div className="count_result">
           {count && (
             <h4>
               [{pillName}-{shape}-{color}]으로 {count} 건의 검색 결과가 있습니다
