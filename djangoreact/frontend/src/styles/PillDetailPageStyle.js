@@ -4,16 +4,16 @@ export const PillContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   margin: 0 auto;
-  width: 90vw;
+  width: 70vw;
   padding: 15vh 0 5vh 0;
 `;
 
 export const PillView1 = styled.div`
   display: flex;
   flex-direction: column;
-  width: 40%;
+  width: 35%;
 
   > img {
     width: 90%;
@@ -22,12 +22,13 @@ export const PillView1 = styled.div`
   }
 
   & + div {
-    margin-left: 0.5rem;
+    margin-left: 0.8rem;
   }
 `;
 
 export const PillView2 = styled.div`
-  width: 60%;
+  width: 65%;
+  background-color: white;
   border: 4px solid #dee2e6;
   border-radius: 0.5rem;
 `;
@@ -36,8 +37,9 @@ export const PillName = styled.p`
   font-size: 1.5rem;
   margin: 3rem auto;
   padding: 0.5rem 1rem;
-  border: 5px solid #dee2e6;
+  border: 3px solid #dee2e6;
   border-radius: 1rem;
+  background-color: white;
 `;
 
 export const PillBit = styled.p`
