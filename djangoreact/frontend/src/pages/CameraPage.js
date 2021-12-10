@@ -84,7 +84,7 @@ const CameraPage = () => {
                 <br />
                 각인이 잘 보일 수 있도록 촬영해주세요!
               </p>
-              <img src="images/알약샘플.png" alt="알약샘플" />
+              <img src="image/알약샘플.png" alt="알약샘플" />
             </>
           ) : (
             <p className="scanning">인공지능이 알약을 분석하는 중입니다...</p>
@@ -128,7 +128,7 @@ const CameraPage = () => {
               )}
             </>
           ) : (
-            <LogoStyle src="images/loading.gif" alt="로딩중" />
+            <LogoStyle src="image/loading.gif" alt="로딩중" />
           )}
         </ContainerWrap>
       </CameraPageContainer>

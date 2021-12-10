@@ -7,7 +7,7 @@ function WhiteNavbar() {
   return (
     <WhiteBox className="white_navbar_box">
       <Link to="/">
-        <img src="images/logo.png" alt="머슴러닝 로고" />
+        <img src="image/logo.png" alt="머슴러닝 로고" />
         <h2>이게모약</h2>
       </Link>
     </WhiteBox>

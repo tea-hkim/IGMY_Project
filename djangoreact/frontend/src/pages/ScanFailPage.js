@@ -15,7 +15,7 @@ const ScanFailPage = () => {
             <br />알 수 없는 알약입니다.
           </h2>
           <p>다른사진으로 다시 검색해주세요</p>
-          <img src="images/알약실패.png" alt="스캔된 사진" />
+          <img src="image/알약실패.png" alt="스캔된 사진" />
           <ButtonBox>
             <button id="switch" type="button" onClick={() => navigate('/camera')}>
               다시 촬영하기

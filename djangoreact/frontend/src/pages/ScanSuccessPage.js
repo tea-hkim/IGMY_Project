@@ -62,9 +62,9 @@ const ScanSuccessPage = () => {
               </ScanInfoStyle>
             </ScanBox1>
             <ScanBox2 hundred={hundred}>
-              <ScanImgStyle src="images/스캔알약샘플.png" alt="스캔된 사진" onClick={() => setOpen2(true)} />
+              <ScanImgStyle src="image/스캔알약샘플.png" alt="스캔된 사진" onClick={() => setOpen2(true)} />
               <Modal isOpen={isOpen2} style={modalStyles} onRequestClose={() => setOpen2(false)}>
-                <img src="images/스캔알약샘플.png" alt="스캔된 사진" style={{ width: '100%', height: '100%' }} />
+                <img src="image/스캔알약샘플.png" alt="스캔된 사진" style={{ width: '100%', height: '100%' }} />
               </Modal>
               <ScanInfoStyle>
                 <p>[인데놀 정]일 확률 85%</p>
@@ -74,9 +74,9 @@ const ScanSuccessPage = () => {
               </ScanInfoStyle>
             </ScanBox2>
             <ScanBox2 hundred={hundred}>
-              <ScanImgStyle src="images/스캔알약샘플.png" alt="스캔된 사진" onClick={() => setOpen3(true)} />
+              <ScanImgStyle src="image/스캔알약샘플.png" alt="스캔된 사진" onClick={() => setOpen3(true)} />
               <Modal isOpen={isOpen3} style={modalStyles} onRequestClose={() => setOpen3(false)}>
-                <img src="images/스캔알약샘플.png" alt="스캔된 사진" style={{ width: '100%', height: '100%' }} />
+                <img src="image/스캔알약샘플.png" alt="스캔된 사진" style={{ width: '100%', height: '100%' }} />
               </Modal>
               <ScanInfoStyle>
                 <p>[인데놀 정]일 확률 85%</p>
