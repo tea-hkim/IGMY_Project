@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import PillCardContainer from './PillCardContainer';
-import { Horizon, TabContainer, BlockTabs, ContentTabs } from '../styles/Tabs'
+import { Horizon, TabContainer, BlockTabs, ContentTabs } from '../styles/Tabs';
 
 function Tabs() {
   const [toggleState, setToggleState] = useState(1);
@@ -23,7 +23,7 @@ function Tabs() {
     };
 
     if (index === 1) {
-      const response1 = await axios.get('http://127.0.0.1:8000/api/search-history/', config);
+      const response1 = await axios.get(`${process.env.REACT_APP_HOST_IP_ADDRESS}api/search-history/`, config);
       console.log('최근 검색 알약 칸이 마운트 되었습니다', response1.data);
       setRecentlyPill((current) => {
         const pillList = response1.data;
@@ -31,7 +31,7 @@ function Tabs() {
         return newList;
       });
     } else if (index === 2) {
-      const response2 = await axios.get('http://127.0.0.1:8000/api/user-pill-list/', config);
+      const response2 = await axios.get(`${process.env.REACT_APP_HOST_IP_ADDRESS}api/user-pill-list/`, config);
       console.log('즐겨찾기 알약 칸이 마운트 되었습니다', response2.data);
       setUserPill((current) => {
         const pillList = response2.data;
@@ -43,7 +43,7 @@ function Tabs() {
 
   useEffect(async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:8000/api/search-history/', {
+      const response = await axios.get(`${process.env.REACT_APP_HOST_IP_ADDRESS}search-history/`, {
         headers: {
           Authorization: `Bearer ${access}`,
         },
@@ -88,4 +88,3 @@ function Tabs() {
 }
 
 export default Tabs;
-

@@ -21,7 +21,7 @@ const CameraPage = () => {
   const [isLoading, setLoading] = useState(false);
 
   const submitImg = async () => {
-    const URL = 'http://127.0.0.1:8000/api/result-photo/';
+    const URL = `${process.env.REACT_APP_HOST_IP_ADDRESS}api/result-photo/`;
     const formData = new FormData();
     formData.append('files', file[0]);
 

@@ -50,7 +50,7 @@ const RegisterPage = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const registerURL = 'http://localhost:8000/api/sign-up/';
+    const registerURL = `${process.env.REACT_APP_HOST_IP_ADDRESS}api/sign-up/`;
     const username = userName;
     const userData = { email, password, username };
 

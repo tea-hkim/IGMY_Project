@@ -26,7 +26,7 @@ function App() {
   const dispatch = useDispatch();
 
   const initializeUser = async () => {
-    const REFRESH_URL = 'http://localhost:8000/api/token/refresh/';
+    const REFRESH_URL = `${process.env.REACT_APP_HOST_IP_ADDRESS}api/token/refresh/`;
     const formData = new FormData();
     const localRefreshToken = localStorage.getItem('refresh');
     const sessionRefreshToken = sessionStorage.getItem('refresh');
