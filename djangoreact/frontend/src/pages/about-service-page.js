@@ -1,6 +1,7 @@
 /* eslint-disable  no-unused-vars */
 import React from 'react';
 import styled from 'styled-components';
+import WhiteNavbar from '../components/WhiteNavbar';
 
 const Section = ({ num }) => {
   const imgURL = `service/service_${num}.png`;
@@ -15,11 +16,14 @@ const serviceList = [1, 2, 3, 4, 5, 6, 7];
 
 const AboutServicePage = () => {
   return (
-    <AboutServiceContainer>
-      {serviceList.map((num) => {
-        return <Section num={num} />;
-      })}
-    </AboutServiceContainer>
+    <>
+      <WhiteNavbar />
+      <AboutServiceContainer>
+        {serviceList.map((num) => {
+          return <Section num={num} />;
+        })}
+      </AboutServiceContainer>
+    </>
   );
 };
 

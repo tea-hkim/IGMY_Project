@@ -3,7 +3,9 @@ import Modal from 'react-modal';
 import { useLocation } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 import { ButtonStyle } from '../styles/CameraPageStyle';
+import WhiteNavbar from '../components/WhiteNavbar';
 import {
+  SuccessPage,
   modalStyles,
   ContainerWrap,
   ScanContainer,
@@ -39,54 +41,59 @@ const ScanSuccessPage = () => {
   }, [pillName, pillImg, pillNum, probability]);
 
   return (
-    <ContainerWrap>
-      <h1>검색 결과</h1>
-      <ScanContainer>
-        <ScanBox1>
-          <ScanImgStyle src={pillImg} alt="스캔된 사진" onClick={() => setOpen1(true)} />
-          <Modal isOpen={isOpen1} style={modalStyles} onRequestClose={() => setOpen1(false)}>
-            <img src={pillImg} alt="스캔된 사진" style={{ width: '100%', height: '100%' }} />
-          </Modal>
-          <ScanInfoStyle>
-            <h1>
-              [{pillName}] 일 확률 {probability}
-            </h1>
-            <InfoButton type="button" onClick={() => navigate('/pilldetail', { state: { pillNum } })}>
-              해당 약 정보 확인
-            </InfoButton>
-          </ScanInfoStyle>
-        </ScanBox1>
-        <ScanBox2 hundred={hundred}>
-          <ScanImgStyle src="images/스캔알약샘플.png" alt="스캔된 사진" onClick={() => setOpen2(true)} />
-          <Modal isOpen={isOpen2} style={modalStyles} onRequestClose={() => setOpen2(false)}>
-            <img src="images/스캔알약샘플.png" alt="스캔된 사진" style={{ width: '100%', height: '100%' }} />
-          </Modal>
-          <ScanInfoStyle>
-            <p>[인데놀 정]일 확률 85%</p>
-            <InfoButton type="button" onClick={() => navigate('')}>
-              해당 약 정보 확인
-            </InfoButton>
-          </ScanInfoStyle>
-        </ScanBox2>
-        <ScanBox2 hundred={hundred}>
-          <ScanImgStyle src="images/스캔알약샘플.png" alt="스캔된 사진" onClick={() => setOpen3(true)} />
-          <Modal isOpen={isOpen3} style={modalStyles} onRequestClose={() => setOpen3(false)}>
-            <img src="images/스캔알약샘플.png" alt="스캔된 사진" style={{ width: '100%', height: '100%' }} />
-          </Modal>
-          <ScanInfoStyle>
-            <p>[인데놀 정]일 확률 85%</p>
-            <InfoButton type="button" onClick={() => navigate('')}>
-              해당 약 정보 확인
-            </InfoButton>
-          </ScanInfoStyle>
-        </ScanBox2>
-      </ScanContainer>
-      <ButtonStyle>
-        <button type="button" onClick={() => navigate('/camera')}>
-          다시 찍기
-        </button>
-      </ButtonStyle>
-    </ContainerWrap>
+    <>
+      <WhiteNavbar />
+      <SuccessPage>
+        <ContainerWrap>
+          <h1>검색 결과</h1>
+          <ScanContainer>
+            <ScanBox1>
+              <ScanImgStyle src={pillImg} alt="스캔된 사진" onClick={() => setOpen1(true)} />
+              <Modal isOpen={isOpen1} style={modalStyles} onRequestClose={() => setOpen1(false)}>
+                <img src={pillImg} alt="스캔된 사진" style={{ width: '100%', height: '100%' }} />
+              </Modal>
+              <ScanInfoStyle>
+                <h1>
+                  [{pillName}] 일 확률 {probability}
+                </h1>
+                <InfoButton type="button" onClick={() => navigate('/pilldetail', { state: { pillNum } })}>
+                  해당 약 정보 확인
+                </InfoButton>
+              </ScanInfoStyle>
+            </ScanBox1>
+            <ScanBox2 hundred={hundred}>
+              <ScanImgStyle src="image/스캔알약샘플.png" alt="스캔된 사진" onClick={() => setOpen2(true)} />
+              <Modal isOpen={isOpen2} style={modalStyles} onRequestClose={() => setOpen2(false)}>
+                <img src="image/스캔알약샘플.png" alt="스캔된 사진" style={{ width: '100%', height: '100%' }} />
+              </Modal>
+              <ScanInfoStyle>
+                <p>[인데놀 정]일 확률 85%</p>
+                <InfoButton type="button" onClick={() => navigate('')}>
+                  해당 약 정보 확인
+                </InfoButton>
+              </ScanInfoStyle>
+            </ScanBox2>
+            <ScanBox2 hundred={hundred}>
+              <ScanImgStyle src="image/스캔알약샘플.png" alt="스캔된 사진" onClick={() => setOpen3(true)} />
+              <Modal isOpen={isOpen3} style={modalStyles} onRequestClose={() => setOpen3(false)}>
+                <img src="image/스캔알약샘플.png" alt="스캔된 사진" style={{ width: '100%', height: '100%' }} />
+              </Modal>
+              <ScanInfoStyle>
+                <p>[인데놀 정]일 확률 85%</p>
+                <InfoButton type="button" onClick={() => navigate('')}>
+                  해당 약 정보 확인
+                </InfoButton>
+              </ScanInfoStyle>
+            </ScanBox2>
+          </ScanContainer>
+        </ContainerWrap>
+        <ButtonStyle>
+          <button type="button" onClick={() => navigate('/camera')}>
+            다시 찍기
+          </button>
+        </ButtonStyle>
+      </SuccessPage>
+    </>
   );
 };
 

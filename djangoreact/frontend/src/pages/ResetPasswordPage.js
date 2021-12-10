@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
+import { REACT_APP_HOST_IP_ADDRESS } from '../env';
 import { resetpassword } from '../redux/authSlice';
 
 const ResetPasswordPage = () => {
@@ -22,7 +23,7 @@ const ResetPasswordPage = () => {
     const body = JSON.stringify({ email });
 
     try {
-      await axios.post('http://127.0.0.1:8000/auth/users/reset_password/', body, config);
+      await axios.post(`${REACT_APP_HOST_IP_ADDRESS}auth/users/reset_password/`, body, config);
 
       dispatch(resetpassword({ email }));
     } catch (error) {
@@ -70,7 +71,7 @@ export default ResetPasswordPage;
 
 const PasswordDiv = styled.div`
   width: 100%;
-  height: 65vh;
+  height: 90vh;
   display: flex;
   flex-direction: column;
   justify-content: center;

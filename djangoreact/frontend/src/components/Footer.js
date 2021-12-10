@@ -33,7 +33,6 @@ const Footer = () => {
           >
             팀원 소개
           </span>
-          <span>사용 방법</span>
         </div>
         <div id="team_info">
           <span>팀명 : 머슴러닝</span>
@@ -62,7 +61,6 @@ const FooterBox = styled.div`
   align-items: center;
   width: 100%;
   height: 100%;
-  margin-top: 5vh;
   background-color: #fafafa;
 `;
 const ExplanateBox = styled.div`

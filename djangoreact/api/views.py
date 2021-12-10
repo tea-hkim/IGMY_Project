@@ -41,18 +41,6 @@ from django.utils import timezone
 from django.views.generic import ListView
 
 
-user = settings.DATABASES["default"]["USER"]
-password = settings.DATABASES["default"]["PASSWORD"]
-host = settings.DATABASES["default"]["HOST"]
-port = settings.DATABASES["default"]["PORT"]
-name = settings.DATABASES["default"]["NAME"]
-
-url = "postgresql+psycopg2://{}:{}@{}:{}/{}"
-url = url.format(user, password, host, port, name)
-
-engine = create_engine(url)
-
-
 """회원가입"""
 
 

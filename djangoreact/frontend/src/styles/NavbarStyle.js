@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { mainPink, palePink } from './color';
 
 export const NavBox = styled.div`
-  height: 10vh;
+  height: 8vh;
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -17,7 +17,6 @@ export const NavBox = styled.div`
 
 export const MenuBox = styled.nav`
   background-color: white;
-  border-left: 1px solid ${palePink};
   width: 20vw;
   height: 100vh;
   display: flex;
@@ -25,6 +24,7 @@ export const MenuBox = styled.nav`
   z-index: 3;
   top: 0;
   right: ${(props) => (props.active ? '0' : '-100%')};
+  box-shadow: -5px 0px 10px rgba(0, 0, 0, 0.2);
   transition: 800ms;
 `;
 
@@ -60,22 +60,39 @@ export const ContentBox = styled.div`
   display: flex;
   height: 40%;
   flex-direction: column;
+  font-size: 1.125rem;
+  font-weight: 600;
   li {
     width: 100%;
     height: 18%;
     border-radius: 5px;
     background-color: ${palePink};
-    font-size: 1.125rem;
     margin-bottom: 0.938rem;
     &:hover {
       background-color: ${mainPink};
-      font-weight: 800;
+      transform: scale(1.02);
     }
     a {
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100%;
+    }
+  }
+  button {
+    cursor: pointer;
+    height: 15%;
+    width: 100%;
+    font-size: 1.125rem;
+    font-weight: 600;
+    outline: none;
+    border-radius: 5px;
+    border: none;
+    background-color: blue;
+    color: white;
+
+    &:hover {
+      transform: scale(1.02);
     }
   }
 `;

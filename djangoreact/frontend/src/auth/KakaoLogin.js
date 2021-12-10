@@ -7,7 +7,7 @@ const KakaoLogin = () => {
 
   return (
     <a href={KAKAO_OAUTH_URI}>
-      <img src="images/카카오 버튼 PNG.png" alt="카카오버튼" />
+      <img src="image/카카오 버튼 PNG.png" alt="카카오버튼" />
     </a>
   );
 };

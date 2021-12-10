@@ -1,17 +1,44 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { Link } from 'react-router-dom';
 import * as faIcons from 'react-icons/fa';
 import * as grIcons from 'react-icons/gr';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { initializeInput } from '../redux/authSlice';
+import { REACT_APP_HOST_IP_ADDRESS } from '../env';
 import { SearchBoxData, AuthBoxData, PillBoxData } from '../helper/sidebarData';
 import { NavBox, MenuBox, MenuBoxContent, ContentBox } from '../styles/NavbarStyle';
 
 const Navbar = () => {
+  const dispatch = useDispatch();
   const [sidebar, setSidebar] = useState(false);
   const showSidebar = () => {
     setSidebar(!sidebar);
   };
   const { username, logged } = useSelector((state) => state.auth);
+
+  const Logout = async () => {
+    setSidebar(!sidebar);
+    const LOGOUT_URL = `${REACT_APP_HOST_IP_ADDRESS}api/logout/`;
+    const localRefreshToken = localStorage.getItem('refresh');
+    const sessionRefreshToken = sessionStorage.getItem('refresh');
+
+    try {
+      let refresh;
+      if (localRefreshToken) {
+        refresh = { refresh: localRefreshToken };
+      } else {
+        refresh = { refresh: sessionRefreshToken };
+      }
+      await axios.post(LOGOUT_URL, refresh);
+    } catch (err) {
+      console.log(err);
+    }
+    localStorage.removeItem('refresh');
+    sessionStorage.removeItem('refresh');
+    dispatch(initializeInput());
+    window.location.href = '/';
+  };
 
   return (
     <>
@@ -65,7 +92,7 @@ const Navbar = () => {
                   );
                 })}
             {logged ? (
-              <button type="button" onClick={showSidebar}>
+              <button type="button" onClick={Logout}>
                 로그아웃
               </button>
             ) : null}

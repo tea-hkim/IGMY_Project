@@ -21,25 +21,31 @@ import AboutServicePage from './pages/about-service-page';
 import PillDetailPage from './pages/PillDetailPage';
 import ResetPasswordConfimPage from './pages/ResetPasswordConfimPage';
 import Social from './auth/Social';
+import { REACT_APP_HOST_IP_ADDRESS } from './env';
 
 function App() {
   const dispatch = useDispatch();
 
   const initializeUser = async () => {
-    const REFRESH_URL = 'http://localhost:8000/api/token/refresh/';
+    const REFRESH_URL = `${REACT_APP_HOST_IP_ADDRESS}api/token/refresh/`;
     const formData = new FormData();
-    const refreshToken = localStorage.getItem('refresh');
+    const localRefreshToken = localStorage.getItem('refresh');
+    const sessionRefreshToken = sessionStorage.getItem('refresh');
 
-    if (!refreshToken) return;
+    if (!localRefreshToken && !sessionRefreshToken) return;
 
-    formData.append('refresh', refreshToken);
+    if (localRefreshToken) {
+      formData.append('refresh', localRefreshToken);
+    } else formData.append('refresh', sessionRefreshToken);
 
     try {
       const { data } = await axios.post(REFRESH_URL, formData);
       const { access, username } = data;
+      axios.defaults.headers.common.Authorization = `Bearer ${access}`;
       dispatch(login({ username, access }));
     } catch (error) {
       localStorage.removeItem('refresh');
+      sessionStorage.removeItem('refresh');
     }
   };
 
@@ -65,7 +71,7 @@ function App() {
         <Route path="/pilldetail" element={<PillDetailPage />} />
         <Route path="/about-us" element={<AboutUsPage />} />
         <Route path="/about-service" element={<AboutServicePage />} />
-        <Route path="oauth/callback/kakao" element={<Social />} />
+        <Route path="/oauth/callback/kakao" element={<Social />} />
       </Routes>
       <Footer />
     </div>

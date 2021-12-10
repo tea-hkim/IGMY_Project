@@ -2,14 +2,19 @@ import styled from 'styled-components';
 import { mainPink, palePink } from './color';
 
 export const SearchPage = styled.div`
+  padding-top: 15vh;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  min-height: 80vh;
+  min-height: 100vh;
+  padding-bottom: 5vh;
   h1 {
     width: 60vw;
     color: white;
+  }
+  .count_result {
+    margin: 20px 0;
   }
 `;
 
@@ -106,13 +111,19 @@ export const SelectBox = styled.div`
     }
     return 'black';
   }};
-
+  box-shadow: ${(props) => {
+    if (props.className === 'checked') {
+      return '3px 3px 10px rgba(0,0,0,0.5)';
+    }
+    return '';
+  }};
   div {
     border-radius: 50%;
     width: 20px;
     height: 20px;
     border: 1px solid black;
     background-color: ${(props) => props.id};
+    margin-bottom: 1px;
   }
 `;
 
@@ -123,6 +134,7 @@ export const ButtonBox = styled.div`
   width: 100%;
   margin-top: 20px;
   button {
+    border: none;
     border-radius: 5px;
     background-color: white;
     width: 20%;
@@ -133,5 +145,6 @@ export const ButtonBox = styled.div`
     justify-content: center;
     align-items: center;
     padding: 5px 0;
+    cursor: pointer;
   }
 `;
