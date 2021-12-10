@@ -77,7 +77,7 @@ const PillDetailPage = () => {
   const handleUserPill = async () => {
     if (!isUserPill) {
       try {
-        const response = await axios.post(`${REACT_APP_HOST_IP_ADDRESS}user-pill/?pn=${pillNum}`, pillNum, {
+        const response = await axios.post(`${REACT_APP_HOST_IP_ADDRESS}api/user-pill/?pn=${pillNum}`, pillNum, {
           headers: {
             Authorization: `Bearer ${access}`,
           },
@@ -89,7 +89,7 @@ const PillDetailPage = () => {
       }
     } else {
       try {
-        const response = await axios.delete(`${REACT_APP_HOST_IP_ADDRESS}user-pill/?pn=${pillNum}`, {
+        const response = await axios.delete(`${REACT_APP_HOST_IP_ADDRESS}api/user-pill/?pn=${pillNum}`, {
           headers: {
             Authorization: `Bearer ${access}`,
           },
