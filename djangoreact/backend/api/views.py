@@ -569,6 +569,7 @@ def kakao_login(request):
     if User.objects.filter(email=email).exists():
         # 소셜 로그인 (토큰 발급)
         if SocialAccount.objects.filter(uid=uid).exists():
+            print("111111")
             URL = "http://localhost:8000/api/token/"
             data = {
                 'email': email,
@@ -577,14 +578,24 @@ def kakao_login(request):
             token_req = requests.post(url=URL, data=data)
             return Response(token_req.json())
 
-        # 해당 이메일로 자체로그인
+        # 해당 이메일로 자체로그인한 경우
         else:
-            return Response(
-                {"message": "Email exist. turn login page."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            print("222222")
+            URL = "http://localhost:8000/api/token/"
+            data = {
+                'email': email,
+                'password': password,
+            }
+            token_req = requests.post(url=URL, data=data)
+            return Response(token_req.json())
+
+            # return Response(
+            #     {"message": "Email exist. turn login page."},
+            #     status=status.HTTP_400_BAD_REQUEST
+            # )
     # db에 이메일이 존재하지 않는 경우 (소셜로그인으로 처음 로그인, db에 저장)
     else:
+        print("333333")
         URL = "http://localhost:8000/api/sign-up/"
         data = {
             'email': email,
