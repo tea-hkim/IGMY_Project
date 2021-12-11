@@ -28,30 +28,6 @@ function DirectSearchPage() {
   let page = 0;
   let totalPage = 0;
 
-  const directSearch = async () => {
-    setIsLoaded(true);
-    const url = `${REACT_APP_HOST_IP_ADDRESS}api/search-direct/?name=${pillName}&shape=${
-      shape !== '선택안함' ? shape : ''
-    }&color_front=${color !== '선택안함' ? color : ''}&page=1`;
-    const response = await axios.get(url);
-    if (response.data.length === 0) {
-      setIsLoaded(false);
-      return;
-    }
-    if (response.data) {
-      totalPage = response.data[0].total_page;
-      setCount(response.data[1].count);
-      page = response.data[2].page + 1;
-      setPillList(response.data[3]);
-    }
-    setIsLoaded(false);
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    directSearch();
-  };
-
   const handleChange = (event) => {
     setPillName(event.target.value);
   };
@@ -77,6 +53,33 @@ function DirectSearchPage() {
     setIsLoaded(false);
   };
 
+  const directSearch = async () => {
+    setIsLoaded(true);
+    const url = `${REACT_APP_HOST_IP_ADDRESS}api/search-direct/?name=${pillName}&shape=${
+      shape !== '선택안함' ? shape : ''
+    }&color_front=${color !== '선택안함' ? color : ''}&page=1`;
+    const response = await axios.get(url);
+    if (response.data[1].count === 0) {
+      handleReset();
+      setCount(0);
+      setIsLoaded(false);
+      return;
+    }
+    if (response.data) {
+      console.log(response.data[1]);
+      totalPage = response.data[0].total_page;
+      setCount(response.data[1].count);
+      page = response.data[2].page + 1;
+      setPillList(response.data[3]);
+    }
+    setIsLoaded(false);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    directSearch();
+  };
+
   const printMoreItem = async () => {
     if (page > totalPage) return;
     setIsLoaded(true);
@@ -86,10 +89,10 @@ function DirectSearchPage() {
     const response = await axios.get(url);
     page += 1;
     const newPillList = response.data[3];
-    // if (pillList === null) {
-    //   setIsLoaded(false);
-    //   return;
-    // }
+    if (pillList === null) {
+      setIsLoaded(false);
+      return;
+    }
     setPillList((pillist) => pillist.concat(newPillList));
     await setIsLoaded(false);
   };
@@ -203,11 +206,15 @@ function DirectSearchPage() {
           </ButtonBox>
         </SearchBox>
         <div className="count_result">
-          {count && (
-            <h4>
-              [{pillName}-{shape}-{color}]으로 {count} 건의 검색 결과가 있습니다
-            </h4>
-          )}
+          {(function () {
+            if (count && count !== 0) {
+              return <h4>{count} 건의 검색 결과가 있습니다</h4>;
+            }
+            if (count === 0) {
+              return <h4>검색 결과가 없습니다</h4>;
+            }
+            return '';
+          })()}
         </div>
         {pillList && <DirectSearchResult pillList={pillList} />}
         <div ref={setTarget} className="target_element">
