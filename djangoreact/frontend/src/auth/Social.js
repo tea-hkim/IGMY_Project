@@ -32,8 +32,8 @@ const Social = () => {
       }
     } catch (error) {
       console.log(error);
-      alert('이미 가입된 이메일입니다. 로그인 해주세요!');
-      navigate('/login');
+      // alert('에러가 발생했습니다. 다시 로그인 해주세요');
+      // navigate('/login');
     }
   }, []);
 
@@ -48,9 +48,13 @@ const Social = () => {
 export default Social;
 
 const SocialPage = styled.div`
+  @media only screen and (min-device-width: 320px) and (max-device-width: 374px) {
+    padding-top: 20vh;
+  }
+  padding-top: 15vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   height: 100vh;
 `;

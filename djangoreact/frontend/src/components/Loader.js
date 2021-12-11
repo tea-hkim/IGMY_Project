@@ -5,7 +5,7 @@ import styled from 'styled-components';
 const Loader = () => {
   return (
     <LoaderWrap>
-      <ReactLoading type="spin" color="#A593E0" />
+      <ReactLoading type="spin" color="#A593E0" height="20%" width="20%" />
     </LoaderWrap>
   );
 };
@@ -13,8 +13,8 @@ const Loader = () => {
 export default memo(Loader);
 
 const LoaderWrap = styled.div`
-  width: 100%;
-  height: 80%;
+  width: 100vw;
+  height: 20vh;
   display: flex;
   justify-content: center;
   align-items: center;
