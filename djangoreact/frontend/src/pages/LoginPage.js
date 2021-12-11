@@ -56,6 +56,7 @@ const LoginPage = () => {
       if (access) {
         axios.defaults.headers.common.Authorization = `Bearer ${access}`;
         dispatch(login({ username, access }));
+        alert('로그인 되었습니다');
         navigate('/');
       }
       if (autoLogin) {
@@ -71,8 +72,10 @@ const LoginPage = () => {
   const handleChecked = ({ target }) => {
     if (!target.checked) {
       setAutoLogin(false);
+      sessionStorage.setItem('autoLogin', false);
     } else {
       setAutoLogin(true);
+      sessionStorage.setItem('autoLogin', true);
     }
   };
 
