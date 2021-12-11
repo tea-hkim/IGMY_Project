@@ -41,16 +41,15 @@ const CameraPage = () => {
       // 로딩끝!
       setLoading(false);
 
-      alert(response.data);
-
-      navigate('/scansuccess', {
-        state: {
-          probability: response.data['1.확률'], // 인공지능 확률
-          pillName: response.data['1.알약'][0].item_name, // 약 이름
-          pillNum: response.data['1.알약'][0].item_num, // 일련번호
-          pillImg: response.data['1.알약'][0].image, // 약 사진
-        },
-      });
+      if (response.data.message !== '알약 인식 성공') {
+        alert(response.data.message);
+      } 
+    
+      navigate('/scansuccess', { state: { pillList: response.data } });
+      // probability: response.data['1.확률'], // 인공지능 확률
+      // pillName: response.data['1.알약'][0].item_name, // 약 이름
+      // pillNum: response.data['1.알약'][0].item_num, // 일련번호
+      // pillImg: response.data['1.알약'][0].image, // 약 사진
     } catch (err) {
       console.log(err);
     }
