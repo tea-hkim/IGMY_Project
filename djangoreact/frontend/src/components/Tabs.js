@@ -24,18 +24,25 @@ function Tabs() {
     };
 
     if (index === 1) {
-      const response1 = await axios.get(`${REACT_APP_HOST_IP_ADDRESS}api/search-history/`, config);
-      console.log('최근 검색 알약 칸이 마운트 되었습니다', response1.data);
+      const { data } = await axios.get(`${REACT_APP_HOST_IP_ADDRESS}api/search-history/`, config);
+      console.log('최근 검색 알약 칸이 마운트 되었습니다', data.message);
+      if (data.message) {
+        return;
+      }
       setRecentlyPill((current) => {
-        const pillList = response1.data;
+        const pillList = data;
         const newList = { ...current, pillList };
         return newList;
       });
     } else if (index === 2) {
-      const response2 = await axios.get(`${REACT_APP_HOST_IP_ADDRESS}api/user-pill-list/`, config);
-      console.log('즐겨찾기 알약 칸이 마운트 되었습니다', response2.data);
+      const { data } = await axios.get(`${REACT_APP_HOST_IP_ADDRESS}api/user-pill-list/`, config);
+      console.log('즐겨찾기 알약 칸이 마운트 되었습니다', data);
+      if (data.length === 0) {
+        console.log('리스트가 비어있어요');
+        return;
+      }
       setUserPill((current) => {
-        const pillList = response2.data;
+        const pillList = data;
         const newList = { ...current, pillList };
         return newList;
       });
@@ -44,14 +51,15 @@ function Tabs() {
 
   useEffect(async () => {
     try {
-      const response = await axios.get(`${REACT_APP_HOST_IP_ADDRESS}api/search-history/`, {
-        headers: {
-          Authorization: `Bearer ${access}`,
-        },
-      });
-      console.log('마운트 시 반환 값 :', response.data);
+      const { data } = await axios.get(`${REACT_APP_HOST_IP_ADDRESS}api/search-history/`);
+      console.log('마운트 시 반환 값 :', data);
+
+      if (data.message) {
+        return;
+      }
+
       setRecentlyPill((current) => {
-        const pillList = response.data;
+        const pillList = data;
         const newList = { ...current, pillList };
         return newList;
       });
