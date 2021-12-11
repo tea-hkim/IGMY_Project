@@ -535,6 +535,7 @@ KAKAO_CALLBACK_URI = BASE_URL + "/oauth/callback/kakao"
 
 '''kakao social login'''
 
+
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def kakao_login(request):
@@ -579,7 +580,7 @@ def kakao_login(request):
         # 해당 이메일로 자체로그인
         else:
             return Response(
-                {"message": "Email exists But not social user. Try origin login."},
+                {"message": "Email exist. turn login page."},
                 status=status.HTTP_400_BAD_REQUEST
             )
     # db에 이메일이 존재하지 않는 경우 (소셜로그인으로 처음 로그인, db에 저장)
@@ -611,7 +612,6 @@ def kakao_login(request):
         return Response(token_req.json())
 
 
-
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
@@ -620,6 +620,8 @@ class MyTokenRefreshView(TokenViewBase):
     serializer_class = MyTokenRefreshSerializer
 
 # refresh 토큰을 blacklist로 올리는 api
+
+
 class LogoutView(GenericAPIView):
     serializer_class = RefreshTokenSerializer
     permission_classes = (permissions.IsAuthenticated,)
