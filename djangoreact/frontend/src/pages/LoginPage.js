@@ -53,14 +53,16 @@ const LoginPage = () => {
     try {
       const { data } = await axios.post(LOGIN_URL, userData);
       const { username, access, refresh } = data;
-      dispatch(login({ username, access }));
+      if (access) {
+        axios.defaults.headers.common.Authorization = `Bearer ${access}`;
+        dispatch(login({ username, access }));
+        navigate('/');
+      }
       if (autoLogin) {
         localStorage.setItem('refresh', refresh);
       } else {
         sessionStorage.setItem('refresh', refresh);
       }
-      axios.defaults.headers.common.Authorization = `Bearer ${access}`;
-      navigate('/');
     } catch (error) {
       alert('아이디 또는 패스워드가 잘못되었습니다');
     }

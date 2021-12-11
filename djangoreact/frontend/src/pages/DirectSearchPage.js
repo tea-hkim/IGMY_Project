@@ -48,9 +48,9 @@ function DirectSearchPage() {
     setColor('');
     setCount(null);
     setPillList(null);
+    setIsLoaded(false);
     totalPage = 0;
     page = 0;
-    setIsLoaded(false);
   };
 
   const directSearch = async () => {
