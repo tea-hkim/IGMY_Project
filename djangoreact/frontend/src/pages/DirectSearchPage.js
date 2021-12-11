@@ -66,7 +66,6 @@ function DirectSearchPage() {
       return;
     }
     if (response.data) {
-      console.log(response.data[1]);
       totalPage = response.data[0].total_page;
       setCount(response.data[1].count);
       page = response.data[2].page + 1;
