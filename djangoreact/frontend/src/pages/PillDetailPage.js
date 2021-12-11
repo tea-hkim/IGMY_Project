@@ -72,27 +72,23 @@ const PillDetailPage = () => {
   const handleUserPill = async () => {
     if (!isUserPill) {
       try {
-        const response = await axios.post(`${REACT_APP_HOST_IP_ADDRESS}api/user-pill/?pn=${pillNum}`);
+        const response = await axios.post(`${REACT_APP_HOST_IP_ADDRESS}api/user-pill/?pn=${pillNum}`, pillNum);
         console.log(response);
+        setUserPill(!isUserPill);
       } catch (err) {
         console.log(err);
         alert('로그인이 필요한 기능입니다');
       }
     } else {
       try {
-        const response = await axios.delete(`${REACT_APP_HOST_IP_ADDRESS}api/user-pill/?pn=${pillNum}`, {
-          headers: {
-            Authorization: `Bearer ${access}`,
-          },
-        });
+        const response = await axios.delete(`${REACT_APP_HOST_IP_ADDRESS}api/user-pill/?pn=${pillNum}`);
         console.log(response);
+        setUserPill(!isUserPill);
       } catch (err) {
         console.log(err);
         alert('로그인이 필요한 기능입니다');
       }
     }
-
-    setUserPill(!isUserPill);
   };
 
   return (
