@@ -53,14 +53,17 @@ const LoginPage = () => {
     try {
       const { data } = await axios.post(LOGIN_URL, userData);
       const { username, access, refresh } = data;
-      dispatch(login({ username, access }));
+      if (access) {
+        axios.defaults.headers.common.Authorization = `Bearer ${access}`;
+        dispatch(login({ username, access }));
+        alert('로그인 되었습니다');
+        navigate('/');
+      }
       if (autoLogin) {
         localStorage.setItem('refresh', refresh);
       } else {
         sessionStorage.setItem('refresh', refresh);
       }
-      axios.defaults.headers.common.Authorization = `Bearer ${access}`;
-      navigate('/');
     } catch (error) {
       alert('아이디 또는 패스워드가 잘못되었습니다');
     }
@@ -69,8 +72,10 @@ const LoginPage = () => {
   const handleChecked = ({ target }) => {
     if (!target.checked) {
       setAutoLogin(false);
+      sessionStorage.setItem('autoLogin', false);
     } else {
       setAutoLogin(true);
+      sessionStorage.setItem('autoLogin', true);
     }
   };
 

@@ -41,8 +41,10 @@ function App() {
     try {
       const { data } = await axios.post(REFRESH_URL, formData);
       const { access, username } = data;
-      axios.defaults.headers.common.Authorization = `Bearer ${access}`;
-      dispatch(login({ username, access }));
+      if (access) {
+        axios.defaults.headers.common.Authorization = `Bearer ${access}`;
+        dispatch(login({ username, access }));
+      }
     } catch (error) {
       localStorage.removeItem('refresh');
       sessionStorage.removeItem('refresh');
