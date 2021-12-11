@@ -42,16 +42,16 @@ export const ContainerWrap = styled.div`
 export const ScanContainer = styled.div`
   position: relative;
   width: 100%;
-  height: 60vh;
+  min-height: 25vh;
   margin: 1rem auto;
 `;
 
-export const ScanBox1 = styled.div`
+export const ScanBox = styled.div`
   display: flex;
   flex-direction: row;
   margin: 0 auto;
   width: 80%; //모바일 80vw
-  height: 36%;
+  height: 21vh;
   border: 0.3rem solid #b4a2eb;
   background-color: #b2acfa;
   border-radius: 0.5rem;
@@ -65,12 +65,12 @@ export const ScanBox2 = styled.div`
   display: flex;
   flex-direction: row;
   margin: 0 auto;
-  width: 70%; //모바일 75vw
-  height: 32%;
-  border: 0.3rem solid #b4a2eb;
+  width: 77%; //모바일 75vw
+  height: 15vh;
+  border: 0.3rem solid lightgray;
   background-color: #dee2e6;
   border-radius: 0.5rem;
-  visibility: ${(props) => (props.hundred ? 'hidden' : 'visible')};
+  display: ${(props) => (props.isDataNull ? 'flex' : 'none')};
 
   & + div {
     margin-top: 0.5rem;
@@ -78,7 +78,7 @@ export const ScanBox2 = styled.div`
 `;
 
 export const ScanImgStyle = styled.img`
-  width: 40%;
+  width: 35%;
   margin: 0.5rem;
   padding: 0.2rem;
   border-radius: 0.5rem;
@@ -101,23 +101,31 @@ export const ScanInfoStyle = styled.div`
   }
 
   > p {
-    margin: 0 auto;
-    font-size: 0.9rem;
+    margin: 0.5rem auto;
+    font-size: 1.2rem;
+    font-weight: 800;
+  }
+
+  > .probability {
+    margin: 0.5rem auto;
+    font-size: 2rem;
+    font-weight: 600;
+    color: white;
   }
 `;
 
 export const InfoButton = styled.button`
-  margin: 1rem auto 0 auto;
+  margin: 0.1rem auto 0 auto;
   padding: 0.2rem;
   width: 8rem;
   background-color: white;
-  border: 2px solid #b4a2eb;
+  border: 2px solid lightgray;
   border-radius: 0.5rem;
   color: black;
 
   &:hover {
     color: white;
-    background-color: #b4a2eb;
+    background-color: black;
     font-weight: bold;
     cursor: pointer;
     opacity: 0.6;

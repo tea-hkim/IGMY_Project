@@ -44,7 +44,7 @@ function Tabs() {
 
   useEffect(async () => {
     try {
-      const response = await axios.get(`${REACT_APP_HOST_IP_ADDRESS}search-history/`, {
+      const response = await axios.get(`${REACT_APP_HOST_IP_ADDRESS}api/search-history/`, {
         headers: {
           Authorization: `Bearer ${access}`,
         },
