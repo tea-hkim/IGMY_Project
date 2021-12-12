@@ -67,10 +67,6 @@ function Tabs() {
       console.log(err);
     }
   }, []);
-
-  const onHTMq
-
-
   return (
     <TabContainer>
       <BlockTabs className="bloc-tabs">

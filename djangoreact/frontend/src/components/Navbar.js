@@ -43,21 +43,21 @@ const Navbar = () => {
   return (
     <>
       <NavBox className="navbar">
-        <faIcons.FaBars onClick={showSidebar} size="2.5rem" />
+        <faIcons.FaBars onClick={showSidebar} />
       </NavBox>
       <MenuBox active={sidebar} className={sidebar ? 'sidebar_active' : 'sidebar_unactive'}>
         <MenuBoxContent className="nav_menu_list">
-          <div className="nav_menu_list_header" style={{ display: 'flex' }}>
+          <div className="nav_menu_list_header">
             <li className="navTogle">
-              <grIcons.GrFormClose onClick={showSidebar} size="3.125rem" />
+              <grIcons.GrFormClose onClick={showSidebar} />
             </li>
-            {logged && (
-              <div>
-                <h2>{username}님</h2>
-                <span>건강한 하루를 응원합니다</span>
-              </div>
-            )}
           </div>
+          {logged && (
+            <div className="">
+              <h2>{username}님</h2>
+              <span>건강한 하루를 응원합니다</span>
+            </div>
+          )}
           <h3>알약 검색</h3>
           <ContentBox className="nav_menu_list_search">
             {SearchBoxData.map((item) => {
@@ -70,7 +70,7 @@ const Navbar = () => {
               );
             })}
           </ContentBox>
-          {logged && <h2>내 알약상자</h2>}
+          {logged && <h3>내 알약상자</h3>}
           <ContentBox className="nav_menu_list_Auth">
             {logged
               ? PillBoxData.map((item) => {
