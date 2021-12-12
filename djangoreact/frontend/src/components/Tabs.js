@@ -68,6 +68,9 @@ function Tabs() {
     }
   }, []);
 
+  const onHTMq
+
+
   return (
     <TabContainer>
       <BlockTabs className="bloc-tabs">
@@ -88,6 +91,7 @@ function Tabs() {
         {/* 컴포넌트 구분선 */}
         <div className={toggleState === 2 ? 'content  active-content' : 'content'}>
           <h2>즐겨 찾기한 알약</h2>
+          <button type="button" onClick></button>
           <Horizon />
           {!userPill ? <p>즐겨 찾기한 알약이 없습니다</p> : <PillCardContainer pillList={userPill.pillList} />}
         </div>

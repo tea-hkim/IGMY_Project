@@ -18,7 +18,7 @@ export const MainContainer = styled.div`
     transition: 500ms;
   }
 
-  @media screen and (max-width: 48em) {
+  @media screen and (max-width: 48rem) {
     width: 100%;
     font-size: 1.75rem;
     > h1 {
@@ -40,7 +40,7 @@ export const Box = styled.div`
   div {
     cursor: pointer;
   }
-  @media screen and (max-width: 48em) {
+  @media screen and (max-width: 48rem) {
     width: 70vw;
     height: 70vw;
   } ;
@@ -82,7 +82,7 @@ export const Circle = styled.div`
       }
     }
   }
-  @media screen and (max-width: 48em) {
+  @media screen and (max-width: 48rem) {
     background-color: white;
     box-shadow: 3px 2px 10px 3px gray;
     img {
