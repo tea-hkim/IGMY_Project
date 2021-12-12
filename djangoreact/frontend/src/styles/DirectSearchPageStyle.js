@@ -103,7 +103,7 @@ export const ShapeColorBox = styled.div`
   }
   span {
     flex-shrink: 0;
-    margin-right: 0.313em;
+    margin-right: 0.625em;
     color: ${mainPink};
     font-size: 1.25em;
     font-weight: 700;

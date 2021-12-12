@@ -25,4 +25,10 @@ const ResultContainer = styled.div`
   &:hover {
     cursor: pointer;
   }
+  > div + div {
+    margin-top: 0.625rem;
+  }
+  @media screen and (max-width: 48rem) {
+    padding: 0 10vw;
+  } ;
 `;
