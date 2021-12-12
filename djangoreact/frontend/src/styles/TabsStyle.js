@@ -27,10 +27,6 @@ export const BlockTabs = styled.div`
 
   .active-tabs {
     background: white;
-    border-top: 2px solid blue;
-    border-bottom: none;
-    border-left: none;
-    border-right: none;
   }
 `;
 
@@ -41,15 +37,17 @@ export const ContentTabs = styled.div`
     width: 100%;
     height: 100%;
     display: none;
+    position: relative;
   }
   .content h2 {
     padding-bottom: 5px;
+    font-weight: bold;
   }
   .content hr {
-    width: 100px;
-    height: 2px;
+    width: 30rem;
+    height: 0.1rem;
     background: #222;
-    margin-bottom: 0.313rem;
+    margin-bottom: 1rem;
   }
   .content p {
     width: 100%;
@@ -57,5 +55,24 @@ export const ContentTabs = styled.div`
   }
   .active-content {
     display: block;
+  }
+`;
+
+export const SavePillButton = styled.button`
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 1rem 1.5rem 0 0;
+  border-radius: 5px;
+  background-color: #b2acfa;
+  padding: 0.2rem 0.5rem;
+  font-size: 1rem;
+  font-weight: 800;
+  color: black;
+  &:hover {
+    cursor: pointer;
+    color: white;
+    background-color: #b4a2eb;
+    transform: scale(1.02);
   }
 `;

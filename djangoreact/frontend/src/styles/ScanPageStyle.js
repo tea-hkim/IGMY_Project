@@ -66,7 +66,7 @@ export const ScanBox2 = styled.div`
   flex-direction: row;
   margin: 0 auto;
   width: 77%; //모바일 75vw
-  height: 15vh;
+  height: 20vh;
   border: 0.3rem solid lightgray;
   background-color: #dee2e6;
   border-radius: 0.5rem;

@@ -26,8 +26,9 @@ export default PillBoxPage;
 
 const PillBoxContainer = styled.div`
   padding-top: 15vh;
+  padding-bottom: 10vh;
   width: 100vw;
-  height: 115vh;
+  min-height: 115vh;
   display: flex;
   flex-direction: column;
   align-items: center;

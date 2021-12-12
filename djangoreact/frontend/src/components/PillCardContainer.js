@@ -1,17 +1,19 @@
-import React from 'react';
+/* eslint-disable */
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { mainPink } from '../styles/color';
 
 const PillCardContainer = ({ pillList }) => {
   const navigate = useNavigate();
+
   return (
     <CardContainer>
       {pillList.map((pill) => {
         // 내부에서는 pill.item_num을 인식하지 못해서 변수로 선언하여 넣어줬습니다.
         const pillNum = pill.item_num;
         return (
-          <PillCard onClick={() => navigate('/pilldetail', { state: { pillNum } })}>
+          <PillCard key={pill.item_num} onClick={() => navigate('/pilldetail', { state: { pillNum } })}>
             <img src={pill.image} alt="알약 사진" />
             <p>{pill.item_name}</p>
           </PillCard>
@@ -44,7 +46,7 @@ const PillCard = styled.div`
   }
 
   &:hover {
-    cursor: grab;
+    cursor: pointer;
     opacity: 0.7;
     transform: scale(1.02);
   }

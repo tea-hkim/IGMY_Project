@@ -78,6 +78,7 @@ const PillDetailPage = () => {
           },
         });
         console.log(response);
+        setUserPill(true);
       } catch (err) {
         console.log(err);
         alert('로그인이 필요한 기능입니다');
@@ -90,13 +91,12 @@ const PillDetailPage = () => {
           },
         });
         console.log(response);
+        setUserPill(false);
       } catch (err) {
         console.log(err);
         alert('로그인이 필요한 기능입니다');
       }
     }
-
-    setUserPill(!isUserPill);
   };
 
   return (

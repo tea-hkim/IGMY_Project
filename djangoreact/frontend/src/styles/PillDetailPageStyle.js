@@ -8,7 +8,7 @@ export const PillContainer = styled.div`
   margin: 0 auto;
   width: 70vw;
   min-height: 100vh;
-  padding: 20vh 0 0;
+  padding: 20vh 0 5vh 0;
 `;
 
 export const PillView1 = styled.div`
