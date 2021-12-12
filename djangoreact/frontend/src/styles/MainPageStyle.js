@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { mainPink, lightYellow, lightGreen } from './color';
+import { palePink, lightYellow, lightGreen } from './color';
 
 export const MainContainer = styled.div`
   height: 100vh;
@@ -8,26 +8,42 @@ export const MainContainer = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
+  font-size: 2rem;
   > h1 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
+    font-size: 1.25em;
+    margin-bottom: 0.5em;
     color: white;
   }
   div {
     transition: 500ms;
   }
+
+  @media screen and (max-width: 48em) {
+    width: 100%;
+    font-size: 1.75rem;
+    > h1 {
+      font-size: 1.25em;
+      margin-bottom: 0.313em;
+      color: white;
+    }
+  } ;
 `;
+
 export const Box = styled.div`
   display: grid;
   grid-template: repeat(2, 1fr) / repeat(2, 1fr);
   place-items: center;
   width: 55vh;
   height: 55vh;
-  border: 30px solid white;
+  border: 0.781em solid white;
   border-radius: 15%;
   div {
     cursor: pointer;
   }
+  @media screen and (max-width: 48em) {
+    width: 70vw;
+    height: 70vw;
+  } ;
 `;
 
 export const Circle = styled.div`
@@ -56,11 +72,34 @@ export const Circle = styled.div`
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      font-size: 1.25rem;
+      font-size: 0.5em;
       font-weight: 600;
-      color: ${mainPink};
+      color: ${palePink};
       svg {
-        margin-bottom: 5px;
+        width: 3em;
+        height: 3em;
+        margin-bottom: 0.313em;
+      }
+    }
+  }
+  @media screen and (max-width: 48em) {
+    background-color: white;
+    box-shadow: 3px 2px 10px 3px gray;
+    img {
+      display: none;
+    }
+    div {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.5em;
+      font-weight: 600;
+      color: ${palePink};
+      svg {
+        width: 2.5em;
+        height: 2.5em;
+        margin-bottom: 0.313em;
       }
     }
   }
@@ -74,15 +113,15 @@ export const OtherThings = styled.div`
   ${(props) => {
     if (props.team) {
       return `
-        border-top: 25px solid ${lightYellow};
-        border-right: 25px solid ${lightYellow};
+        border-top: 0.813em solid ${lightYellow};
+        border-right: 0.813em solid ${lightYellow};
 
         width: 55%;
         height: 55%;
       `;
     }
     return `
-      border: 25px solid ${lightGreen};
+      border: 0.813em solid ${lightGreen};
       border-radius: 15%;
 
       width: 60%;
@@ -103,7 +142,7 @@ export const OtherThings = styled.div`
     background-color: ${(props) => (props.team ? lightYellow : lightGreen)};
     div {
       display: flex;
-      font-size: 1.563rem;
+      font-size: 0.688em;
       font-weight: 600;
     }
   }
