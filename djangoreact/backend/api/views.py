@@ -158,12 +158,9 @@ def user_pill(request):
     }
 
     user_email = request.user  # 유저 불러오기
-    print(user_email)
 
     if "#$%" in user_email.email:
         user_email.email = user_email.email.split("#$%")[1]
-
-    print(user_email.email)
 
     pill = InfoPill.objects.all()  # 약 정보 데이터 베이스 전부 가져오기
     pn = request.GET.get("pn", "")  # 약 넘버
