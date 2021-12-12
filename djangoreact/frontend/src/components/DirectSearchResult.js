@@ -19,8 +19,8 @@ const ResultContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 60vw;
-  margin-top: 10px;
+  width: 100%;
+  padding: 0 15vw;
 
   &:hover {
     cursor: pointer;

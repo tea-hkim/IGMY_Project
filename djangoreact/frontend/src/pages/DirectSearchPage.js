@@ -52,8 +52,10 @@ function DirectSearchPage() {
 
     const { data } = await axios.get(url);
     if (data[1].count === 0) {
-      handleReset();
+      setPillList(null);
       setCount(0);
+      page = 0;
+      totalPage = 0;
       return;
     }
     if (data) {
