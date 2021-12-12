@@ -14,7 +14,6 @@ import {
   KakaoBox,
   LineBox,
   Or,
-  Line,
   LoginForm,
   AuthFooterBox,
   AuthFooterContent,
@@ -95,7 +94,6 @@ const LoginPage = () => {
           <KakaoLogin />
         </KakaoBox>
         <LineBox>
-          <Line />
           <Or> 또는 </Or>
         </LineBox>
         <LoginForm onSubmit={handelSubmit}>
@@ -118,11 +116,11 @@ const LoginPage = () => {
           <AuthButton className={isActive ? 'activeBtn' : 'unactiveBtn'} type="submit" disabled={!isActive}>
             로그인
           </AuthButton>
+          <div className="autoLoginBox">
+            <input type="checkbox" checked={autoLogin} onChange={handleChecked} />
+            자동로그인
+          </div>
         </LoginForm>
-        <div className="autoLoginBox">
-          <input type="checkbox" checked={autoLogin} onChange={handleChecked} />
-          자동로그인
-        </div>
         <AuthFooterBox>
           <AuthFooterContent>
             <div>아직 이게모약 계정이 없으신가요?</div>
@@ -136,7 +134,6 @@ const LoginPage = () => {
               가입하기
             </div>
           </AuthFooterContent>
-          <Line />
           <AuthFooterContent>
             <div>혹시 비밀번호를 잊으셨나요?</div>
             <div

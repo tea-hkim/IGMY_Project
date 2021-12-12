@@ -10,8 +10,6 @@ import { REACT_APP_HOST_IP_ADDRESS } from '../env';
 import {
   AuthContainer,
   AuthTitle,
-  LineBox,
-  Line,
   LoginForm,
   AuthFooterBox,
   AuthFooterContent,
@@ -133,9 +131,6 @@ const RegisterPage = () => {
             회원가입
           </AuthButton>
         </LoginForm>
-        <LineBox>
-          <Line />
-        </LineBox>
         <AuthFooterBox>
           <AuthFooterContent>
             이게모약 계정이 있으신가요?
