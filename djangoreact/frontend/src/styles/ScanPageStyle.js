@@ -11,16 +11,13 @@ export const SuccessPage = styled.div`
 `;
 
 export const modalStyles = {
-  overlay: {
-    backgroundColor: '#dee2e6',
-  },
   content: {
     position: 'fixed',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '80%',
-    height: '60%',
+    width: '90%',
+    height: '50%',
     borderRadius: '10px',
   },
 };
@@ -37,6 +34,15 @@ export const ContainerWrap = styled.div`
   > h1 {
     margin: 0 auto;
   }
+
+  @media screen and (max-width: 48em) {
+    width: 90%;
+    font-size: 1.75rem;
+
+    h1 {
+      font-size: 1.4em;
+    }
+  } ;
 `;
 
 export const ScanContainer = styled.div`
@@ -59,6 +65,11 @@ export const ScanBox = styled.div`
   & + div {
     margin-top: 0.5rem;
   }
+
+  @media screen and (max-width: 48em) {
+    width: 100%;
+    height: 100%;
+  } ;
 `;
 
 export const ScanBox2 = styled.div`
@@ -75,6 +86,11 @@ export const ScanBox2 = styled.div`
   & + div {
     margin-top: 0.5rem;
   }
+
+  @media screen and (max-width: 48em) {
+    width: 100%;
+    height: 100%;
+  } ;
 `;
 
 export const ScanImgStyle = styled.img`
@@ -130,6 +146,10 @@ export const InfoButton = styled.button`
     cursor: pointer;
     opacity: 0.6;
   }
+
+  @media screen and (max-width: 48em) {
+    margin: 0.3rem;
+  } ;
 `;
 
 export const InfoContainer = styled.div`

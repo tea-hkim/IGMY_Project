@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Modal from 'react-modal';
 import html2canvas from 'html2canvas';
 import domtoimage from 'dom-to-image';
 import { saveAs } from 'file-saver';
@@ -16,6 +17,7 @@ const Tabs = () => {
   const [userPill, setUserPill] = useState();
   const [pillNum, setPillNum] = useState();
   const [shareImg, setShareImg] = useState();
+  const [isOpen, setOpen] = useState(false);
   const pillBoxRef = useRef(null);
   const navigate = useNavigate();
   const { access } = useSelector((state) => state.auth);
@@ -49,24 +51,25 @@ const Tabs = () => {
   };
 
   // 알약 상자 이미지 캡처해서 다운로드
-  const shareImgHandler = async () => {
-    const pillBox = pillBoxRef.current;
-    console.log(pillBox);
-    await domtoimage.toBlob(pillBox).then((blob) => {
-      saveAs(blob, 'pillBox.png');
-    });
-  };
-
   // const shareImgHandler = async () => {
-  //   window.scrollTo(0, 0);
-  //   let url = '';
-  //   await html2canvas(pillBoxRef.current).then(async (canvas) => {
-  //     url = await canvas.toDataURL('image/jpg').split(',')[1];
+  //   const pillBox = pillBoxRef.current;
+  //   console.log(pillBox);
+  //   await domtoimage.toBlob(pillBox).then((blob) => {
+  //     window.saveAs(blob, 'pillBox.png');
   //   });
-  //   console.log(url)
-
-  //   await uploadImgur(url);
   // };
+
+  const shareImgHandler = async () => {
+    window.scrollTo(0, 0);
+    // let url = '';
+    await html2canvas(pillBoxRef.current).then(async (canvas) => {
+      saveAs(canvas.toDataURL(), 'pillBox.png');
+      // url = await canvas.toDataURL('image/jpg').split(',')[1];
+    });
+    // console.log("URL :", url)
+
+    // await uploadImgur(url);
+  };
 
   // const uploadImgur = (url) => {
   //   const apiBase = 'https://api.imgur.com/3/image';

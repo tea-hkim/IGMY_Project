@@ -77,7 +77,7 @@ const CameraPage = () => {
                 <br />
                 중앙에 약의 모양이 가득 채워지고
                 <br />
-                각인이 잘 보일 수 있도록 촬영해주세요!
+                각인이 잘 보이도록 촬영해주세요!
               </p>
               <img src="image/알약샘플.png" alt="알약샘플" />
             </>
@@ -123,7 +123,7 @@ const CameraPage = () => {
               )}
             </>
           ) : (
-            <LogoStyle src="image/loading.gif" alt="로딩중" />
+            <LogoStyle className="loading" src="image/loading.gif" alt="로딩중" />
           )}
         </ContainerWrap>
       </CameraPageContainer>
