@@ -16,7 +16,7 @@ export const NavBox = styled.div`
     height: 2.25rem;
   }
   @media screen and (max-width: 48rem) {
-    padding: 5% 10% 0 0;
+    padding: 0.313rem 10vw 0.313rem 0;
     svg {
       cursor: pointer;
       width: 2rem;
@@ -73,10 +73,10 @@ export const MenuBoxContent = styled.ul`
   h3 {
     width: 100%;
     padding-bottom: 0.313rem;
-    font-size: 1.563rem;
+    font-size: 1.5rem;
     border-bottom: 3px solid ${mainPink};
     margin: 1rem 0;
-    color: rgba(0, 0, 0, 0.8);
+    color: rgba(0, 0, 0, 0.7);
   }
   span {
     font-weight: 600;
