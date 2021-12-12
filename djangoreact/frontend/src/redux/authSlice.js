@@ -35,9 +35,8 @@ export const authSlice = createSlice({
       return state;
     },
     resetpasswordconfirm: (state, action) => {
-      // eslint-disable-next-line camelcase
-      const { uid, token, new_password } = action.payload;
-      state = { uid, token, new_password };
+      const { uid, token, newPassword } = action.payload;
+      state = { uid, token, newPassword };
       return state;
     },
   },
