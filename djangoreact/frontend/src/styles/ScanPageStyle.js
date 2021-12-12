@@ -38,7 +38,6 @@ export const ContainerWrap = styled.div`
   @media screen and (max-width: 48em) {
     width: 90%;
     font-size: 1.75rem;
-
     h1 {
       font-size: 1.4em;
     }

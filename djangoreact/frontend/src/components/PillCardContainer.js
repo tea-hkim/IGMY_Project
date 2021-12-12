@@ -32,6 +32,10 @@ const CardContainer = styled.div`
   /* 알약 이미지는 사이즈를 정해둬서 그리드의 높이는 따로 지정을 안해줘도 될 것 같습니다. */
   grid-auto-flow: row;
   grid-gap: 0.625rem;
+
+  @media screen and (max-width: 48em) {
+    grid-template-columns: repeat(1, 1fr);
+  }
 `;
 
 const PillCard = styled.div`
@@ -49,5 +53,17 @@ const PillCard = styled.div`
     cursor: pointer;
     opacity: 0.7;
     transform: scale(1.02);
+  }
+
+  @media screen and (max-width: 48em){
+    width: 100%;
+    font-size: 1.75rem;
+
+    h2 {
+      font-size: 1.4em;
+    }
+    p {
+      font-size: 0.6em;
+    }
   }
 `;
