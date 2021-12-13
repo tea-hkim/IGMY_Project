@@ -1,6 +1,7 @@
 /* eslint-disable */
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import axios from 'axios';
 import Modal from 'react-modal';
 import html2canvas from 'html2canvas';
@@ -19,6 +20,7 @@ const Tabs = () => {
   const [shareImg, setShareImg] = useState();
   const [isOpen, setOpen] = useState(false);
   const pillBoxRef = useRef(null);
+  const location = useLocation();
   const navigate = useNavigate();
   const { access } = useSelector((state) => state.auth);
 
@@ -110,6 +112,12 @@ const Tabs = () => {
       if (data.message) {
         return;
       }
+
+      if (location.state.index === 1) {
+        toggleTab(1);
+      } else if (location.state.index === 2) {
+        toggleTab(2);
+      };
 
       setRecentlyPill((current) => {
         const pillList = data;
