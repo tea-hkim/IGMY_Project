@@ -40,55 +40,94 @@ const PillInfoBox = styled.div`
   align-items: center;
   border-radius: 5px;
   width: 100%;
-  height: 25vh;
+  height: 24vh;
   background-color: white;
-  margin-top: 10px;
   &:hover {
     transition: 300ms;
     transform: scale(1.02);
   }
+  @media screen and (max-width: 48rem) {
+    height: 13vh;
+  }
 `;
 
 const PillImage = styled.img`
-  width: 27%;
-  height: 85%;
+  height: 100%;
+  padding: 0.313em;
+  flex-shrink: 0;
   overflow: hidden;
+  @media screen and (max-width: 48rem) {
+    flex-shrink: 1;
+  }
 `;
 
 const DecriptionBox = styled.div`
-  width: 70%;
-  height: 85%;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  overflow: hidden;
-  border: 2px solid ${palePink};
-  padding: 5px 10px;
+  overflow: auto;
+  padding: 0.375em;
+
   div {
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
-    flex-wrap: nowrap;
-    padding-bottom: 1rem;
+    padding-bottom: 1em;
     h3 {
+      font-size: 1em;
       border: 2px solid ${palePink};
-      padding: 5px 20px;
-      border-radius: 20px;
+      border-radius: 1.25em 0 0 1.25em;
+      padding: 0.313em 0.625em 0.313em 1.25em;
     }
     p {
-      height: 100%;
-      font-weight: 600;
+      overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 5px 20px;
-      border-radius: 20px;
+      height: 100%;
+      font-weight: 600;
+      padding: 0.313em 1.25em 0.313em 0.625em;
+      border-radius: 0 1.25em 1.25em 0;
       background-color: ${palePink};
     }
     h4 {
-      margin-left: 20px;
+      flex-shrink: 0;
+      margin: 0 0.625em;
       width: 6%;
       color: #8b00ff;
+    }
+  }
+
+  @media screen and (max-width: 48rem) {
+    div {
+      overflow: scroll;
+      h3 {
+        overflow: auto;
+        white-space: nowrap;
+        border-radius: 1.25em 0 0 1.25em;
+        padding: 0 0.313em;
+        height: 1rem;
+      }
+      p {
+        overflow: auto;
+        white-space: nowrap;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 1rem;
+        font-weight: 600;
+        padding: 0 0.313em;
+        border-radius: 0 1.25em 1.25em 0;
+        background-color: ${palePink};
+      }
+      h4 {
+        flex-shrink: 0;
+        margin: 0 0.625em;
+        width: 15%;
+        color: #8b00ff;
+      }
     }
   }
 `;

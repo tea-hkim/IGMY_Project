@@ -9,9 +9,19 @@ export const NavBox = styled.div`
   right: 0;
   position: fixed;
   z-index: 2;
-  padding: 0.625rem 15vw 0.625rem 0;
+  padding: 0.313rem 15vw 0.313rem 0;
   svg {
     cursor: pointer;
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+  @media screen and (max-width: 48rem) {
+    padding: 0.313rem 10vw 0.313rem 0;
+    svg {
+      cursor: pointer;
+      width: 2rem;
+      height: 2rem;
+    }
   }
 `;
 
@@ -25,7 +35,11 @@ export const MenuBox = styled.nav`
   top: 0;
   right: ${(props) => (props.active ? '0' : '-100%')};
   box-shadow: -5px 0px 10px rgba(0, 0, 0, 0.2);
-  transition: 800ms;
+  transition: 500ms;
+  @media screen and (max-width: 48rem) {
+    width: 90%;
+    trnsition: 300ms;
+  }
 `;
 
 export const MenuBoxContent = styled.ul`
@@ -33,32 +47,46 @@ export const MenuBoxContent = styled.ul`
   flex-direction: column;
   align-items: start;
   margin: 0;
-  padding: 0.938rem;
+  padding: 0.313rem 0.938rem 0;
   width: 100%;
-  list-style: none;
+
   div {
     width: 100%;
+    &:first-child {
+      margin-bottom: 1rem;
+    }
   }
+
   a {
-    text-decoration: none;
     width: 100%;
   }
+
   .navTogle {
     cursor: pointer;
     display: flex;
     justify-content: start;
+    svg {
+      width: 3.25rem;
+      height: 3.25rem;
+    }
   }
   h3 {
     width: 100%;
-    padding-bottom: 10px;
-    font-size: 1.563rem;
+    padding-bottom: 0.313rem;
+    font-size: 1.5rem;
     border-bottom: 3px solid ${mainPink};
     margin: 1rem 0;
+    color: rgba(0, 0, 0, 0.7);
+  }
+  span {
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.8);
   }
 `;
+
 export const ContentBox = styled.div`
   display: flex;
-  height: 40%;
+  height: 35%;
   flex-direction: column;
   font-size: 1.125rem;
   font-weight: 600;
@@ -90,7 +118,6 @@ export const ContentBox = styled.div`
     border: none;
     background-color: blue;
     color: white;
-
     &:hover {
       transform: scale(1.02);
     }

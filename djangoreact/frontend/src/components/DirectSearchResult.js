@@ -19,10 +19,16 @@ const ResultContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 60vw;
-  margin-top: 10px;
+  width: 100%;
+  padding: 0 15vw;
 
   &:hover {
     cursor: pointer;
   }
+  > div + div {
+    margin-top: 0.625rem;
+  }
+  @media screen and (max-width: 48rem) {
+    padding: 0 10vw;
+  } ;
 `;

@@ -44,7 +44,7 @@ const Footer = () => {
           이게모약은 입원 과정에서 많은 시간이 들어가지만 꼭 필요한 환자 복용약 시간을 줄여주고 그만큼 의료진들과 환자
           간의 접촉 시간을 늘릴 수 있도록 하여,
           <br />
-          한국 의료 서비스의 질을 높이기 위해 이 서비스를 기획하였습니다.
+          한국 의료 서비스의 질을 높을 높이자는 목표하에 이 서비스를 기획하였습니다.
         </div>
         <div id="copyright">Copyright 2021 이게모약 All rights reserved.</div>
       </ExplanateBox>
@@ -56,15 +56,18 @@ export default Footer;
 
 const FooterBox = styled.div`
   display: flex;
-  padding: 2vh 0;
+  padding: 1rem 15vw;
   justify-content: center;
   align-items: center;
   width: 100%;
   height: 100%;
   background-color: #fafafa;
+  @media screen and (max-width: 48rem) {
+    padding: 1rem 10vw;
+  }
 `;
 const ExplanateBox = styled.div`
-  width: 70%;
+  width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -93,5 +96,13 @@ const ExplanateBox = styled.div`
   }
   #copyright {
     font-weight: 800;
+  }
+
+  @media screen and (max-width: 48rem) {
+    #team_info{
+      span{
+        display: block
+      }
+    }
   }
 `;

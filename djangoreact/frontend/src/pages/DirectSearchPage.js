@@ -2,7 +2,6 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import DirectSearchResult from '../components/DirectSearchResult';
 import { PillShapeData, PillColorData } from '../helper/pillData';
-import Loader from '../components/Loader';
 import WhiteNavbar from '../components/WhiteNavbar';
 import { REACT_APP_HOST_IP_ADDRESS } from '../env';
 import {
@@ -21,10 +20,10 @@ function DirectSearchPage() {
   const [color, setColor] = useState('');
 
   const [target, setTarget] = useState(null);
-  const [isLoaded, setIsLoaded] = useState(false);
   const [count, setCount] = useState(null);
   const [pillList, setPillList] = useState(null);
 
+  let start = true;
   let page = 0;
   let totalPage = 0;
 
@@ -43,35 +42,29 @@ function DirectSearchPage() {
   };
 
   const handleReset = () => {
-    setPillName('');
-    setShape('');
-    setColor('');
-    setCount(null);
-    setPillList(null);
-    setIsLoaded(false);
-    totalPage = 0;
-    page = 0;
+    window.location.replace('/direct');
   };
 
   const directSearch = async () => {
-    setIsLoaded(true);
     const url = `${REACT_APP_HOST_IP_ADDRESS}api/search-direct/?name=${pillName}&shape=${
       shape !== '선택안함' ? shape : ''
     }&color_front=${color !== '선택안함' ? color : ''}&page=1`;
-    const response = await axios.get(url);
-    if (response.data[1].count === 0) {
-      handleReset();
+
+    const { data } = await axios.get(url);
+    if (data[1].count === 0) {
+      setPillList(null);
       setCount(0);
-      setIsLoaded(false);
+      page = 0;
+      totalPage = 0;
       return;
     }
-    if (response.data) {
-      totalPage = response.data[0].total_page;
-      setCount(response.data[1].count);
-      page = response.data[2].page + 1;
-      setPillList(response.data[3]);
+    if (data) {
+      totalPage = data[0].total_page;
+      setCount(data[1].count);
+      page = data[2].page + 1;
+      setPillList(data[3]);
+      start = false;
     }
-    setIsLoaded(false);
   };
 
   const handleSubmit = (event) => {
@@ -80,25 +73,27 @@ function DirectSearchPage() {
   };
 
   const printMoreItem = async () => {
+    console.log(start);
     if (page > totalPage) return;
-    setIsLoaded(true);
-    const url = `${REACT_APP_HOST_IP_ADDRESS}api/search-direct/?name=${pillName}&shape=${
-      shape !== '선택안함' ? shape : ''
-    }&color_front=${color !== '선택안함' ? color : ''}&page=${page}`;
-    const response = await axios.get(url);
+    if (start) return;
+
+    const parameter = `?name=${pillName}&shape=${shape !== '선택안함' ? shape : ''}&color_front=${
+      color !== '선택안함' ? color : ''
+    }&page=${page}`;
+    const url = `${REACT_APP_HOST_IP_ADDRESS}api/search-direct/${parameter}`;
+
+    const { data } = await axios.get(url);
+
     page += 1;
-    const newPillList = response.data[3];
-    if (pillList === null) {
-      setIsLoaded(false);
-      return;
-    }
+
+    const newPillList = data[3];
+
     setPillList((pillist) => pillist.concat(newPillList));
-    await setIsLoaded(false);
   };
 
   const onIntersect = ([{ isIntersecting }]) => {
     if (page === 0) return;
-    if (isIntersecting) printMoreItem();
+    if (isIntersecting && page !== 0) printMoreItem();
   };
 
   if (target) {
@@ -108,6 +103,7 @@ function DirectSearchPage() {
     observer.observe(target);
   }
 
+  console.log('재랜더링');
   return (
     <>
       <WhiteNavbar />
@@ -217,7 +213,7 @@ function DirectSearchPage() {
         </div>
         {pillList && <DirectSearchResult pillList={pillList} />}
         <div ref={setTarget} className="target_element">
-          {isLoaded && <Loader />}
+          {' '}
         </div>
       </SearchPage>
     </>

@@ -18,24 +18,42 @@ export default WhiteNavbar;
 
 const WhiteBox = styled.div`
   position: fixed;
-  width: 100vw;
+  width: 100%;
   height: 8vh;
   z-index: 1;
   background-color: white;
-  padding: 0.625rem 15vw;
+  padding: 0.313rem 15vw;
   a {
+    display: inline-block;
     height: 100%;
     width: 30%;
+    display: block;
     display: flex;
     justify-content: flex-start;
     align-items: center;
     img {
       height: 60%;
-      margin-right: 1rem;
+      margin-right: 0.625rem;
     }
     h2 {
-      font-size: 2rem;
+      font-size: 1.875rem;
       color: ${mainPink};
+      padding: 0.313rem 0 0;
     }
   }
+
+  @media screen and (max-width: 48rem) {
+    padding: 0 10vw;
+    height: 8vh;
+    a {
+      width: 55%;
+      img {
+        height: 50%;
+        margin-right: 0.625rem;
+      }
+      h2 {
+        font-size: 1.625rem;
+      }
+    }
+  } ;
 `;

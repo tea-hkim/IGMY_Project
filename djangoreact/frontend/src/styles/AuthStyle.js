@@ -3,10 +3,10 @@ import { mainPink, palePink, warningSign } from './color';
 
 const loginWidth = '80%';
 const loginheight = '2rem';
-const marginBottom = '0.625rem';
+const marginBottom = '0.313rem';
 
 export const AuthPage = styled.div`
-  padding-top: 10vh;
+  padding-top: 5vh;
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -16,10 +16,11 @@ export const AuthPage = styled.div`
 export const AuthContainer = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: space-evenly;
   height: 70vh;
-  width: 25%;
+  width: 30%;
   margin: 0 auto;
-  padding: 1.563rem 0;
+  padding: 1rem 0;
   border-radius: 0.625rem;
   text-align: center;
   background-color: white;
@@ -28,12 +29,18 @@ export const AuthContainer = styled.div`
     margin: 0 auto;
     display: flex;
     justify-content: flex-end;
+    input {
+      width: 5%;
+    }
+  }
+  @media screen and (max-width: 48rem) {
+    width: 90%;
   }
 `;
 
 export const AuthTitle = styled.h1`
   text-align: start;
-  font-size: 2.2rem;
+  font-size: 2rem;
   width: ${loginWidth};
   margin: ${marginBottom} auto;
 `;
@@ -53,19 +60,11 @@ export const Or = styled.div`
   font-weight: 500;
 `;
 
-export const Line = styled.div`
-  position: absolute;
-  border-top: 3px dotted black;
-  width: 100%;
-  top: 50%;
-  z-index: -1;
-`;
-
 export const Button = styled.button`
   display: flex;
   justify-content: space-evenly;
   width: ${loginWidth};
-  margin: 0 auto 1.25rem;
+  margin: 0.313rem auto 1.25rem;
   padding: 0.313rem;
   border: none;
   border-radius: 10px;
@@ -90,7 +89,7 @@ export const Button = styled.button`
 
 export const KakaoBox = styled.div`
   width: 100%;
-  margin-bottom: 5px;
+  margin: 0.313rem 0;
   img {
     width: 80%;
   }
@@ -102,6 +101,8 @@ export const LoginForm = styled.form`
   > div {
     margin: ${marginBottom} auto;
     width: ${loginWidth};
+    margin-bottom: 2%;
+
     > input {
       padding: 0.625rem;
       width: 100%;
@@ -115,24 +116,25 @@ export const LoginForm = styled.form`
     > h3 {
       width: ${loginWidth};
       text-align: start;
-      margin-bottom: ${marginBottom};
     }
   }
 `;
 
 export const AuthFooterBox = styled.div`
-  position: relative;
   display: flex;
   flex-direction: column;
   width: ${loginWidth};
-  margin: 0 auto ${marginBottom};
+  margin: 0 auto;
+  > div + div {
+    margin-top: 0.313rem;
+  }
 `;
 
 export const AuthFooterContent = styled.div`
   display: flex;
   justify-content: space-between;
   margin: ${marginBottom} 0;
-  padding: 0.625rem 0;
+  font-size: 0.875em;
   .toButton {
     color: blue;
     font-weight: 600;
