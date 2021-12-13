@@ -73,7 +73,6 @@ function DirectSearchPage() {
   };
 
   const printMoreItem = async () => {
-    console.log(start);
     if (page > totalPage) return;
     if (start) return;
 
@@ -102,8 +101,6 @@ function DirectSearchPage() {
     });
     observer.observe(target);
   }
-
-  console.log('재랜더링');
   return (
     <>
       <WhiteNavbar />

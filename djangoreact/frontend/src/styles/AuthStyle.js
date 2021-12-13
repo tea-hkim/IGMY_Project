@@ -93,10 +93,8 @@ export const Button = styled.button`
 
 export const KakaoBox = styled.div`
   width: 100%;
-  margin: 0.313rem 0;
-  img {
-    width: ${loginWidth};
-  }
+  display: flex;
+  justify-content: center;
 `;
 
 export const LoginForm = styled.form`
