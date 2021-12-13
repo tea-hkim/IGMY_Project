@@ -37,7 +37,6 @@ const ResetPasswordPage = () => {
   const onSubmit = (event) => {
     event.preventDefault();
     resetPassword(email);
-    setRequestSent(true);
   };
 
   const onChange = (event) => setFormData({ ...formData, [event.target.name]: event.target.value });

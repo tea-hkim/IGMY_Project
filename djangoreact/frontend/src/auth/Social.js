@@ -5,18 +5,15 @@ import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { login } from '../redux/authSlice';
 import Loader from '../components/Loader';
+import { REACT_APP_HOST_IP_ADDRESS } from '../env';
 
 const Social = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(async () => {
     const code = new URL(window.location.href).searchParams.get('code');
-    const KAKAKO_LOGIN = `http://elice-kdt-2nd-team6.koreacentral.cloudapp.azure.com/api/login/kakao/?code=${code}`;
     const autoLogin = sessionStorage.getItem('autoLogin');
-    console.log(typeof code);
-
     try {
-      const { data } = await axios.post(KAKAKO_LOGIN, code);
       const { username, access, refresh } = data;
 
       if (access) {
@@ -31,9 +28,8 @@ const Social = () => {
         navigate('/');
       }
     } catch (error) {
-      console.log(error);
-      // alert('에러가 발생했습니다. 다시 로그인 해주세요');
-      // navigate('/login');
+      alert('에러가 발생했습니다. 다시 로그인 해주세요');
+      navigate('/login');
     }
   }, []);
 

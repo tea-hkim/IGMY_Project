@@ -95,7 +95,7 @@ const DecriptionBox = styled.div`
     h4 {
       flex-shrink: 0;
       margin: 0 0.625em;
-      width: 6%;
+      width: 2rem;
       color: #8b00ff;
     }
   }
@@ -125,7 +125,7 @@ const DecriptionBox = styled.div`
       h4 {
         flex-shrink: 0;
         margin: 0 0.625em;
-        width: 15%;
+        width: 1.5rem;
         color: #8b00ff;
       }
     }
