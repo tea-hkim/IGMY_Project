@@ -14,7 +14,7 @@ const PillCardContainer = ({ pillList }) => {
         const pillNum = pill.item_num;
         return (
           <PillCard key={pill.item_num} onClick={() => navigate('/pilldetail', { state: { pillNum } })}>
-            <img src={pill.image} alt="알약 사진" />
+            <img src={`m_images/${pill.item_num}.jpg`} alt="알약 사진" />
             <p>{pill.item_name}</p>
           </PillCard>
         );

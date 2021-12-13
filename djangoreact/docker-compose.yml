@@ -4,7 +4,7 @@ services:
   backend:
     build:
       context: ./backend
-    command: gunicorn config.wsgi --bind 0.0.0.0:8000
+    command: gunicorn config.wsgi --bind 0.0.0.0:8000 --timeout 180
     ports:
       - "8000:8000"
   frontend:
