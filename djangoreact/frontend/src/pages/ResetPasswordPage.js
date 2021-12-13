@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import { REACT_APP_HOST_IP_ADDRESS } from '../env';
 import { resetpassword } from '../redux/authSlice';
-import { useNavigate } from 'react-router-dom';
 
 const ResetPasswordPage = () => {
   const navigate = useNavigate();

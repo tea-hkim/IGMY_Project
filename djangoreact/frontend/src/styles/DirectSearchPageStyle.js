@@ -107,6 +107,7 @@ export const ShapeColorBox = styled.div`
     color: ${mainPink};
     font-size: 1.25em;
     font-weight: 700;
+    min
   }
 `;
 
