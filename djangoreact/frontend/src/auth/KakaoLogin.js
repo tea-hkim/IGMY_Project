@@ -24,6 +24,7 @@ const KakaoContainer = styled.a`
   height: 2.5rem;
   border-radius: 12px;
   background-color: #fee500;
+  font-weight: 600;
   img {
     height: 35%;
     margin-right: 0.625rem;
