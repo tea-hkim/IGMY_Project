@@ -4,10 +4,11 @@ import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { REACT_APP_HOST_IP_ADDRESS } from '../env';
 import { resetpassword } from '../redux/authSlice';
+import { useNavigate } from 'react-router-dom';
 
 const ResetPasswordPage = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [requestSent, setRequestSent] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
   });
@@ -33,16 +34,11 @@ const ResetPasswordPage = () => {
 
   const onSubmit = (event) => {
     event.preventDefault();
-
     resetPassword(email);
-    setRequestSent(true);
+    navigate('/login');
   };
 
   const onChange = (event) => setFormData({ ...formData, [event.target.name]: event.target.value });
-
-  if (requestSent) {
-    return <useNavigate to="/login" />;
-  }
 
   return (
     <PasswordDiv>
