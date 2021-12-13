@@ -106,6 +106,12 @@ export const ContentBox = styled.div`
       align-items: center;
       height: 100%;
     }
+    .pillBox {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
   }
   button {
     cursor: pointer;
