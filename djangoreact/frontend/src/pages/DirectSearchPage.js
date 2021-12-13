@@ -189,11 +189,11 @@ function DirectSearchPage() {
             </ShapeColorBox>
           </NonNameContainer>
           <ButtonBox className="search_button_box">
-            <button type="submit" className="search_button">
-              검색
-            </button>
             <button type="button" className="reset_button" onClick={handleReset}>
               초기화
+            </button>
+            <button type="submit" className="search_button">
+              검색
             </button>
           </ButtonBox>
         </SearchBox>

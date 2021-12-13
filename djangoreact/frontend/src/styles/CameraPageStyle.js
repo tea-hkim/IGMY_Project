@@ -13,6 +13,7 @@ export const CameraPageContainer = styled.div`
     width: 100%;
   }
   h1 {
+    font-size: 2rem;
     color: white;
     margin-bottom: 1rem;
   }
@@ -41,7 +42,7 @@ export const LogoStyle = styled.img`
 
 export const InfoStyle = styled.div`
   display: flex;
-  height: 12vh;
+  height: 15vh;
   justify-content: space-evenly;
   align-items: center;
   margin-bottom: 1rem;
@@ -49,15 +50,20 @@ export const InfoStyle = styled.div`
   border-radius: 5px;
   background-color: white;
 
+  @media screen and (max-width: 48em) {
+    height: 12vh;
+  }
+
   img {
     float: right;
-    height: 100%;
-    border: 3px solid black;
+    height: 90%;
+    border: 3px solid #b4a2eb;
     border-radius: 5px;
   }
 
   > p {
     font-size: 1.25rem;
+    height: 90%;
   }
 
   .scanning {

@@ -110,15 +110,15 @@ const PillDetailPage = () => {
             {!isUserPill ? <p>즐겨찾기 등록</p> : <p>즐겨찾기 완료</p>}
           </UserPill>
           <PillInfo>
-            <PillCategory>성분/함량</PillCategory>
+            <PillCategory>성분함량</PillCategory>
             <PillDetailInfo className="pillStyle">{pillSungbun}</PillDetailInfo>
           </PillInfo>
           <PillInfo>
-            <PillCategory>효능/효과</PillCategory>
+            <PillCategory>효능효과</PillCategory>
             <PillDetailInfo>{pillEfcy}</PillDetailInfo>
           </PillInfo>
           <PillInfo>
-            <PillCategory>용법/용량</PillCategory>
+            <PillCategory>용법용량</PillCategory>
             <PillDetailInfo>{pillUse}</PillDetailInfo>
           </PillInfo>
           <PillInfo>

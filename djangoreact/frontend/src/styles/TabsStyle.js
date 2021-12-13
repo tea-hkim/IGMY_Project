@@ -81,7 +81,7 @@ export const ContentTabs = styled.div`
     .active-content button {
       display: block;
       width: 88%;
-      margin-top: 3.5rem;
+      margin-top: 2.5rem;
       font-size: 1.3rem;
       font-weight: 600;
     }
@@ -109,5 +109,9 @@ export const SavePillButton = styled.button`
     color: white;
     background-color: #b4a2eb;
     transform: scale(1.02);
+  }
+
+  @media screen and (max-width: 48rem) {
+    margin-right: 1.3rem;
   }
 `;

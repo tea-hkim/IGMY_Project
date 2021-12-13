@@ -140,6 +140,8 @@ const Tabs = () => {
       </BlockTabs>
       <ContentTabs className="content-tabs">
         <div className={toggleState === 1 ? 'content  active-content' : 'content'}>
+          <h2>최근 검색한 알약</h2>
+          <Horizon />
           {!recentlyPill ? <p>최근 검색한 알약이 없습니다</p> : <PillCardContainer pillList={recentlyPill.pillList} />}
         </div>
         {/* 컴포넌트 구분선 */}
