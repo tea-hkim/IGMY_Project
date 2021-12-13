@@ -50,6 +50,8 @@ export const InfoStyle = styled.div`
   img {
     float: right;
     height: 100%;
+    border: 3px solid black;
+    border-radius: 5px;
   }
 
   > p {
@@ -97,7 +99,6 @@ export const ContainerWrap = styled.div`
 export const WebcamContainer = styled.div`
   border: 0.4rem solid #b4a2eb;
   border-radius: 0.4rem;
-  background-color: #b4a2eb;
   margin: 0 auto;
   width: 22vw; //모바일 60vw
   height: 22vw; //모바일 70vw
