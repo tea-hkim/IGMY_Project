@@ -14,6 +14,19 @@ export const CameraPageContainer = styled.div`
     color: white;
     margin-bottom: 1rem;
   }
+
+  @media screen and (max-width: 48em) {
+    width: 100%;
+    font-size: 1.75rem;
+
+    h1 {
+      font-size: 1.1em;
+    }
+
+    .camerapage_header {
+      width: 80%;
+    }
+  } ;
 `;
 
 export const LogoStyle = styled.img`
@@ -47,6 +60,20 @@ export const InfoStyle = styled.div`
     font-size: 1.5rem;
     font-weight: bold;
   }
+
+  @media screen and (max-width: 48em) {
+    width: 80%;
+    font-size: 1.75rem;
+
+    p {
+      font-size: 0.5em;
+      padding: 0.5rem;
+    }
+
+    .scanning {
+      font-size: 0.8em;
+    }
+  } ;
 `;
 
 export const ContainerWrap = styled.div`
@@ -56,6 +83,15 @@ export const ContainerWrap = styled.div`
   background-color: white;
   border-radius: 5px;
   padding: 0.5rem;
+
+  @media screen and (max-width: 48em) {
+    width: 80%;
+
+    .loading {
+      width: 95%;
+      height: 100%;
+    }
+  } ;
 `;
 
 export const WebcamContainer = styled.div`
@@ -65,6 +101,13 @@ export const WebcamContainer = styled.div`
   margin: 0 auto;
   width: 22vw; //모바일 60vw
   height: 22vw; //모바일 70vw
+
+  @media screen and (max-width: 48em) {
+    width: 97%;
+    height: 100%;
+    font-size: 1.75rem;
+    border: 0;
+  } ;
 `;
 
 export const ButtonStyle = styled.div`
@@ -88,6 +131,14 @@ export const ButtonStyle = styled.div`
       background-color: #b4a2eb;
       font-weight: 800;
     }
+
+    @media screen and (max-width: 48em) {
+      font-size: 1rem;
+    }
+  }
+
+  @media screen and (max-width: 48em) {
+    margin: 0.5rem auto;
   }
 `;
 
