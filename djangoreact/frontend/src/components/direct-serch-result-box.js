@@ -13,7 +13,7 @@ const ResultBox = ({ pill }) => {
       id={pill.item_num}
       onClick={() => navigate('/pilldetail', { state: { pillNum } })}
     >
-      <PillImage src={pill.image} alt={pill.item_name} />
+      <PillImage src={`m_images/${pill.item_num}.jpg`} alt={pill.item_name} />
       <DecriptionBox className="description_box">
         <div className="description_box_header">
           <h3 className="pill_info_name">{pill.item_name}</h3>

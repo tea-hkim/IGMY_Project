@@ -11,7 +11,7 @@ const Social = () => {
   const dispatch = useDispatch();
   useEffect(async () => {
     const code = new URL(window.location.href).searchParams.get('code');
-    const KAKAKO_LOGIN = `http://localhost:8000/api/login/kakao/?code=${code}`;
+    const KAKAKO_LOGIN = `http://elice-kdt-2nd-team6.koreacentral.cloudapp.azure.com/api/login/kakao/?code=${code}`;
     const autoLogin = sessionStorage.getItem('autoLogin');
     console.log(typeof code);
 
@@ -23,12 +23,12 @@ const Social = () => {
         axios.defaults.headers.common.Authorization = `Bearer ${access}`;
         dispatch(login({ username, access }));
         alert('로그인 되었습니다');
+        if (autoLogin) {
+          localStorage.setItem('refresh', refresh);
+        } else {
+          sessionStorage.setItem('refresh', refresh);
+        }
         navigate('/');
-      }
-      if (autoLogin) {
-        localStorage.setItem('refresh', refresh);
-      } else {
-        sessionStorage.setItem('refresh', refresh);
       }
     } catch (error) {
       console.log(error);

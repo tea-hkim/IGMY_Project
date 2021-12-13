@@ -40,6 +40,7 @@ const PillDetailPage = () => {
   const [pillAttention, setPillAttention] = useState();
   const [pillInteraction, setPillInteraction] = useState();
   const [pillDeposit, setPillDeposit] = useState();
+  const [pillItemNum, setPillItemNum] = useState();
 
   useEffect(async () => {
     setPillNum(location.state.pillNum); // 일련번호
@@ -97,9 +98,9 @@ const PillDetailPage = () => {
       <PillContainer>
         <PillView1>
           <PillName>{pillName}</PillName>
-          <ScanImgStyle src={pillImg} alt="알약사진" onClick={() => setOpen(true)} />
+          <ScanImgStyle src={`m_images/${location.state.pillNum}.jpg`} alt="알약사진" onClick={() => setOpen(true)} />
           <Modal isOpen={isOpen} style={modalStyles} onRequestClose={() => setOpen(false)}>
-            <img src={pillImg} alt="스캔된 사진" style={{ width: '100%', height: '100%' }} />
+            <img src={`m_images/${location.state.pillNum}.jpg`} alt="스캔된 사진" style={{ width: '100%', height: '100%' }} />
           </Modal>
         </PillView1>
         <PillView2>
