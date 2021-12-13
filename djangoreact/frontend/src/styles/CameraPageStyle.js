@@ -7,8 +7,10 @@ export const CameraPageContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  padding: 0 15vw;
   .camerapage_header {
-    width: 60vw;
+    width: 100%;
   }
   h1 {
     color: white;
@@ -17,6 +19,7 @@ export const CameraPageContainer = styled.div`
 
   @media screen and (max-width: 48em) {
     width: 100%;
+    padding: 15vh 0 5vh;
     font-size: 1.75rem;
 
     h1 {
@@ -41,9 +44,8 @@ export const InfoStyle = styled.div`
   height: 12vh;
   justify-content: space-evenly;
   align-items: center;
-  padding: 0.625rem 0;
   margin-bottom: 1rem;
-  width: 60vw; //모바일 90vw
+  width: 100%; //모바일 90vw
   border-radius: 5px;
   background-color: white;
 
@@ -63,7 +65,7 @@ export const InfoStyle = styled.div`
 
   @media screen and (max-width: 48em) {
     width: 80%;
-    font-size: 1.75rem;
+    font-size: 1.65rem;
 
     p {
       font-size: 0.5em;
@@ -79,7 +81,7 @@ export const InfoStyle = styled.div`
 export const ContainerWrap = styled.div`
   display: flex;
   flex-direction: column;
-  width: 60vw;
+  width: 100%;
   background-color: white;
   border-radius: 5px;
   padding: 0.5rem;
