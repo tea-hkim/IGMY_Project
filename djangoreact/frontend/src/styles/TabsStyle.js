@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import styled from 'styled-components';
 
 export const Horizon = styled.hr`
@@ -9,6 +11,9 @@ export const TabContainer = styled.div`
   flex-direction: column;
   position: relative;
   width: 60vw;
+  @media screen and (max-width: 48em) {
+    width: 100%;
+  }
 `;
 
 export const BlockTabs = styled.div`
@@ -28,6 +33,11 @@ export const BlockTabs = styled.div`
   .active-tabs {
     background: white;
   }
+  @media screen and (max-width: 48em) {
+    .tabs, .active-tabs {
+      font-size: 1.05rem;
+    }
+  }
 `;
 
 export const ContentTabs = styled.div`
@@ -44,7 +54,7 @@ export const ContentTabs = styled.div`
     font-weight: bold;
   }
   .content hr {
-    width: 30rem;
+    // width: 30rem;
     height: 0.1rem;
     background: #222;
     margin-bottom: 1rem;
@@ -55,6 +65,29 @@ export const ContentTabs = styled.div`
   }
   .active-content {
     display: block;
+  }
+  .toggle_header {
+    display: flex;
+  }
+
+  @media screen and (max-width: 48em) {
+    .content h2 {
+      font-size: 1.25rem;
+    }
+    .active-content button {
+      display: block;
+      width: 88%;
+      margin-top: 3.5rem;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+    .toggle_header {
+      display: flex;
+      flex-direction: column;
+      min-height : 4.5rem;
+      // justify-content: center;
+      // align-items: center;
+    }
   }
 `;
 

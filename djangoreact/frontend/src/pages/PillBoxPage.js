@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import React from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
@@ -11,9 +13,9 @@ const PillBoxPage = () => {
     <>
       <WhiteNavbar />
       <PillBoxContainer>
-        <div className="pillbox_header">
-          <imIcons.ImAidKit className="pillIcon" size="1.428rem" />
-          <h1 className="camerapage_header">내 알약 상자</h1>
+        <div className="pillbox_header" size="1.4rem">
+          <imIcons.ImAidKit size="1.428rem" />
+          <h1>내 알약 상자</h1>
           <span>{username}님</span>
         </div>
         <Tabs />
@@ -54,19 +56,21 @@ const PillBoxContainer = styled.div`
   }
 
   @media screen and (max-width: 48em) {
-    width: 100%;
-    font-size: 1.75rem;
-
-    h1 {
-      font-size: 1.1em;
+    .pillbox_header {
+      width:80%;
+      h1,
+      svg {
+        font-size: 1.25rem;
+        color: white;
+        margin-right: 0.625rem;
+      }
+      span {
+        // display:inline-block;
+        // padding-right: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
     }
-
-    .pillIcon {
-      size: 10rem;
-    }
-
-    .camerapage_header {
-      width: 80%;
-    }
-  } ;
+  }
 `;
+

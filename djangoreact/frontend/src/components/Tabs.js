@@ -140,8 +140,10 @@ const Tabs = () => {
         </div>
         {/* 컴포넌트 구분선 */}
         <div className={toggleState === 2 ? 'content  active-content' : 'content'}>
-          <h2>즐겨 찾기한 알약</h2>
-          <SavePillButton onClick={shareImgHandler}>알약 상자 저장</SavePillButton>
+          <div className="toggle_header" >
+            <h2>즐겨 찾기한 알약</h2>
+            <SavePillButton onClick={shareImgHandler}>알약 상자 저장</SavePillButton>
+          </div>
           <Horizon />
           <div ref={pillBoxRef}>
             {!userPill ? <p>즐겨 찾기한 알약이 없습니다</p> : <PillCardContainer pillList={userPill.pillList} />}
