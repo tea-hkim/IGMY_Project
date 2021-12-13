@@ -537,8 +537,8 @@ class SearchHistoryView(APIView, ListView):
 
 
 '''OAuth : kakao social login'''
-URL_FRONT = "http://localhost:3000/"
-URL_BACK = "http://localhost:8000/"
+URL_FRONT = "http://http://elice-kdt-2nd-team6.koreacentral.cloudapp.azure.com/"
+URL_BACK = "http://http://elice-kdt-2nd-team6.koreacentral.cloudapp.azure.com/"
 
 
 @api_view(["POST"])
