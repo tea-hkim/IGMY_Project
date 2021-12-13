@@ -123,7 +123,7 @@ const LoginPage = () => {
         </LoginForm>
         <AuthFooterBox>
           <AuthFooterContent>
-            <div>아직 이게모약 계정이 없으신가요?</div>
+            <div className="question">아직 이게모약 계정이 없으신가요?</div>
             <div
               className="toButton"
               tabIndex="0"
@@ -135,7 +135,7 @@ const LoginPage = () => {
             </div>
           </AuthFooterContent>
           <AuthFooterContent>
-            <div>혹시 비밀번호를 잊으셨나요?</div>
+            <div className="question">혹시 비밀번호를 잊으셨나요?</div>
             <div
               className="toButton"
               tabIndex="-1"

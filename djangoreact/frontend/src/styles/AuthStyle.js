@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { mainPink, palePink, warningSign } from './color';
 
-const loginWidth = '80%';
+const loginWidth = '85%';
 const loginheight = '2rem';
 const marginBottom = '0.313rem';
 
@@ -18,7 +18,7 @@ export const AuthContainer = styled.div`
   flex-direction: column;
   justify-content: space-evenly;
   height: 70vh;
-  width: 30%;
+  width: 26%;
   margin: 0 auto;
   padding: 1rem 0;
   border-radius: 0.625rem;
@@ -35,6 +35,7 @@ export const AuthContainer = styled.div`
   }
   @media screen and (max-width: 48rem) {
     width: 90%;
+    height: 80vh;
   }
 `;
 
@@ -91,7 +92,7 @@ export const KakaoBox = styled.div`
   width: 100%;
   margin: 0.313rem 0;
   img {
-    width: 80%;
+    width: ${loginWidth};
   }
 `;
 
@@ -135,9 +136,13 @@ export const AuthFooterContent = styled.div`
   justify-content: space-between;
   margin: ${marginBottom} 0;
   font-size: 0.875em;
+  .question {
+    text-align: start;
+  }
   .toButton {
     color: blue;
     font-weight: 600;
+    text-align: end;
   }
 `;
 
