@@ -8,7 +8,14 @@ export const PillContainer = styled.div`
   margin: 0 auto;
   width: 70vw;
   min-height: 100vh;
-  padding: 20vh 0 0;
+  padding: 20vh 0 5vh 0;
+
+  @media screen and (max-width: 48em) {
+    width: 100%;
+    padding: 7vh 0 5vh 0;
+    font-size: 1.75rem;
+    flex-direction: column;
+  } ;
 `;
 
 export const PillView1 = styled.div`
@@ -24,7 +31,16 @@ export const PillView1 = styled.div`
 
   & + div {
     margin-left: 0.8rem;
+
+    @media screen and (max-width: 48em) {
+      margin-left: 0;
+    }
   }
+
+  @media screen and (max-width: 48em) {
+    width: 85%;
+    margin: 0 auto;
+  } ;
 `;
 
 export const PillView2 = styled.div`
@@ -32,6 +48,11 @@ export const PillView2 = styled.div`
   background-color: white;
   border: 4px solid #dee2e6;
   border-radius: 0.5rem;
+
+  @media screen and (max-width: 48em) {
+    position: relative;
+    width: 100%;
+  } ;
 `;
 
 export const PillName = styled.p`
@@ -41,6 +62,13 @@ export const PillName = styled.p`
   border: 3px solid #dee2e6;
   border-radius: 1rem;
   background-color: white;
+
+  @media screen and (max-width: 48em) {
+    width: 90%;
+    margin-top: 3rem;
+    margin-bottom: 0;
+    font-size: 1.2rem;
+  } ;
 `;
 
 export const PillBit = styled.p`
@@ -79,6 +107,14 @@ export const UserPill = styled.div`
   > p {
     margin-left: 0.2rem;
   }
+
+  @media screen and (max-width: 48em) {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 0.8rem;
+    margin-right: 0.5rem;
+  }
 `;
 
 export const PillInfo = styled.div`
@@ -102,11 +138,20 @@ export const PillCategory = styled.p`
   font-weight: bold;
   width: 15%;
   margin: 0.2rem 0 1rem 1.5rem;
+
+  @media screen and (max-width: 48em) {
+    width: 13.5%;
+    font-size: 0.6em;
+  }
 `;
 
 export const PillDetailInfo = styled.p`
   width: 85%;
   margin: auto 0.5rem;
+
+  @media screen and (max-width: 48em) {
+    font-size: 0.5em;
+  }
 `;
 
 export const DetailButton = styled.button`

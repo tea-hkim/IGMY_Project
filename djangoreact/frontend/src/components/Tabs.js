@@ -1,19 +1,27 @@
 /* eslint-disable */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Modal from 'react-modal';
+import html2canvas from 'html2canvas';
+import domtoimage from 'dom-to-image';
+import { saveAs } from 'file-saver';
 import { useSelector } from 'react-redux';
 import PillCardContainer from './PillCardContainer';
 import { REACT_APP_HOST_IP_ADDRESS } from '../env';
-import { Horizon, TabContainer, BlockTabs, ContentTabs } from '../styles/Tabs';
+import { Horizon, TabContainer, BlockTabs, ContentTabs, SavePillButton } from '../styles/TabsStyle';
 
-function Tabs() {
+const Tabs = () => {
   const [toggleState, setToggleState] = useState(1);
   const [recentlyPill, setRecentlyPill] = useState();
   const [userPill, setUserPill] = useState();
   const [pillNum, setPillNum] = useState();
+  const [shareImg, setShareImg] = useState();
+  const [isOpen, setOpen] = useState(false);
+  const pillBoxRef = useRef(null);
   const navigate = useNavigate();
   const { access } = useSelector((state) => state.auth);
+
   const toggleTab = async (index) => {
     setToggleState(index);
     const config = {
@@ -49,6 +57,51 @@ function Tabs() {
     }
   };
 
+  // 알약 상자 이미지 캡처해서 다운로드
+  // const shareImgHandler = async () => {
+  //   const pillBox = pillBoxRef.current;
+  //   console.log(pillBox);
+  //   await domtoimage.toBlob(pillBox).then((blob) => {
+  //     window.saveAs(blob, 'pillBox.png');
+  //   });
+  // };
+
+  const shareImgHandler = async () => {
+    window.scrollTo(0, 0);
+    // let url = '';
+    await html2canvas(pillBoxRef.current).then(async (canvas) => {
+      saveAs(canvas.toDataURL(), 'pillBox.png');
+      // url = await canvas.toDataURL('image/jpg').split(',')[1];
+    });
+    // console.log("URL :", url)
+
+    // await uploadImgur(url);
+  };
+
+  // const uploadImgur = (url) => {
+  //   const apiBase = 'https://api.imgur.com/3/image';
+  //   axios
+  //     .post(
+  //       apiBase,
+  //       {
+  //         image: url,
+  //         type: 'base64',
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: 'Client-ID 20fe858d3434513',
+  //         },
+  //       },
+  //     )
+  //     .then((res) => {
+  //       console.log(res.data.data.link);
+  //       setShareImg(res.data.data.link);
+  //     })
+  //     .catch((e) => {
+  //       console.log(e);
+  //     });
+  // };
+
   useEffect(async () => {
     try {
       const { data } = await axios.get(`${REACT_APP_HOST_IP_ADDRESS}api/search-history/`);
@@ -67,6 +120,10 @@ function Tabs() {
       console.log(err);
     }
   }, []);
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/front@
   return (
     <TabContainer>
       <BlockTabs className="bloc-tabs">
@@ -86,14 +143,18 @@ function Tabs() {
         </div>
         {/* 컴포넌트 구분선 */}
         <div className={toggleState === 2 ? 'content  active-content' : 'content'}>
-          <h2>즐겨 찾기한 알약</h2>
-          <button type="button" onClick></button>
+          <div className="toggle_header" >
+            <h2>즐겨 찾기한 알약</h2>
+            <SavePillButton onClick={shareImgHandler}>알약 상자 저장</SavePillButton>
+          </div>
           <Horizon />
-          {!userPill ? <p>즐겨 찾기한 알약이 없습니다</p> : <PillCardContainer pillList={userPill.pillList} />}
+          <div ref={pillBoxRef}>
+            {!userPill ? <p>즐겨 찾기한 알약이 없습니다</p> : <PillCardContainer pillList={userPill.pillList} />}
+          </div>
         </div>
       </ContentTabs>
     </TabContainer>
   );
-}
+};
 
 export default Tabs;
