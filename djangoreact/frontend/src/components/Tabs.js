@@ -120,10 +120,6 @@ const Tabs = () => {
       console.log(err);
     }
   }, []);
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/front@
   return (
     <TabContainer>
       <BlockTabs className="bloc-tabs">

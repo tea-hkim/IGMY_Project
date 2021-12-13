@@ -302,7 +302,7 @@ with open('./AI/pill_90.json', 'r') as f:
     pill_dict = json.load(f)
 
 df = pd.read_excel('./AI/ai_medicine.xlsx')
-
+model = tf.keras.models.load_model('model')
 
 def color_distance(r1, g1, b1, r2, g2, b2):
     red_mean = int(round((r1 + r2) / 2))
@@ -429,7 +429,6 @@ def result_photo(request):
             predict_list.append(predict_img)
             predict_list = np.array(predict_list)
 
-            model = tf.keras.models.load_model('model')
             predict = model.predict(predict_list)
 
             predict_list = []
