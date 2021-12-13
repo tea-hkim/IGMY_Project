@@ -37,6 +37,9 @@ export const AuthContainer = styled.div`
     width: 90%;
     height: 80vh;
   }
+  @media screen and (min-width: 106rem) {
+    width: 20%;
+  }
 `;
 
 export const AuthTitle = styled.h1`
