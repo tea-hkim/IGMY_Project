@@ -122,19 +122,16 @@ const Tabs = () => {
   }, []);
   return (
     <TabContainer>
-      <BlockTabs className="bloc-tabs">
-        <button type="button" className={toggleState === 1 ? 'tabs active-tabs' : 'tabs'} onClick={() => toggleTab(1)}>
+      <BlockTabs>
+        <button type="button" className={toggleState === 1 ? ' active-tabs' : 'tabs'} onClick={() => toggleTab(1)}>
           최근 검색한 알약
         </button>
-        <button type="button" className={toggleState === 2 ? 'tabs active-tabs' : 'tabs'} onClick={() => toggleTab(2)}>
+        <button type="button" className={toggleState === 2 ? ' active-tabs' : 'tabs'} onClick={() => toggleTab(2)}>
           즐겨찾기한 알약
         </button>
       </BlockTabs>
-
       <ContentTabs className="content-tabs">
         <div className={toggleState === 1 ? 'content  active-content' : 'content'}>
-          <h2>내가 검색한 알약</h2>
-          <Horizon />
           {!recentlyPill ? <p>최근 검색한 알약이 없습니다</p> : <PillCardContainer pillList={recentlyPill.pillList} />}
         </div>
         {/* 컴포넌트 구분선 */}

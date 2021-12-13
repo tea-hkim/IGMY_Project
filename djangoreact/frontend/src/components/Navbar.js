@@ -32,7 +32,7 @@ const Navbar = () => {
       }
       await axios.post(LOGOUT_URL, refresh);
     } catch (err) {
-      alert('서버에 문제가 있습니다. 로그아웃을 다시 시도해주세요');
+      console.log(err);
     }
     localStorage.removeItem('refresh');
     sessionStorage.removeItem('refresh');
