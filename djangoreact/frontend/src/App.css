@@ -1,38 +1,29 @@
-.App {
-  text-align: center;
+@font-face {
+  font-family: 'Elice_bold';
+  src: url('./styles/font/EliceDigitalBaeum_Bold.ttf');
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+@font-face {
+  font-family: 'Elice_regular';
+  src: url('./styles/font/EliceDigitalBaeum_Regular.ttf');
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+@font-face {
+  font-family: 'Kyobo_handwriting';
+  src: url('./styles/font/Kyobo\ Handwriting\ 2019.ttf');
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+@font-face {
+  font-family: 'Gmarket_light';
+  src: url('./styles/font/GmarketSansTTFLight.ttf');
 }
 
-.App-link {
-  color: #61dafb;
+@font-face {
+  font-family: 'Gmarket_Medium';
+  src: url('./styles/font/GmarketSansTTFMedium.ttf');
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+@font-face {
+  font-family: 'Gmarket_bold';
+  src: url('./styles/font/GmarketSansTTFBold.ttf');
 }
